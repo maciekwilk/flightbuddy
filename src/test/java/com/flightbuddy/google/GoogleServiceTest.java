@@ -24,8 +24,6 @@ import com.flightbuddy.google.response.tripoption.TripOption;
 import com.flightbuddy.results.FoundTrip;
 
 @RunWith(MockitoJUnitRunner.class)
-//@ContextConfiguration(classes = { Application.class})
-//@TestPropertySource({"classpath:environment.properties"})
 public class GoogleServiceTest {
 	
 	private GoogleService googleService;
