@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
-import com.flightbuddy.google.response.tripdata.Carrier;
 import com.flightbuddy.google.response.tripdata.TripData;
 import com.flightbuddy.google.response.tripoption.TripOption;
 import com.flightbuddy.google.response.tripoption.slice.Leg;
@@ -38,10 +38,10 @@ public class GoogleFlightConverter {
 
 	private List<FoundTrip> getFoundTrips(TripOption[] tripOptions, TripData tripData) {
 		List<FoundTrip> trips = new ArrayList<>(tripOptions.length);
-		for (TripOption tripOption : tripOptions) {
+		Arrays.stream(tripOptions).forEach((tripOption) -> {
 			FoundTrip trip = getFoundTrip(tripOption, tripData);
 			trips.add(trip);
-		}
+		});
 		return trips;
 	}
 
@@ -68,19 +68,19 @@ public class GoogleFlightConverter {
 
 	private List<Flight> getFlights(FoundTrip foundTrip, Slice[] slices, TripData tripData) {
 		List<Flight> flights = new ArrayList<>(2);
-		for (Slice slice : slices) {
+		Arrays.stream(slices).forEach((slice) -> {
 			Flight flight = createFlight(foundTrip, slice, tripData);
 			flights.add(flight);
-		}
+		});
 		return flights;
 	}
 	
 	private Flight createFlight(FoundTrip foundTrip, Slice slice, TripData tripData) {
 		Flight flight = new Flight();
 		flight.setFoundTrip(foundTrip);
-		for (Segment segment : slice.getSegment()) {
+		Arrays.stream(slice.getSegment()).forEach((segment) -> {
 			extractFlightInfoFromSegment(flight, segment, tripData);
-		}
+		});
 		return flight;
 	}
 
@@ -88,9 +88,9 @@ public class GoogleFlightConverter {
 		if (segment.getFlight() != null && segment.getFlight().getCarrier() != null) {
 			addAirlineToFlight(flight, segment, tripData);
 		}
-		for (Leg leg : segment.getLeg()) {
+		Arrays.stream(segment.getLeg()).forEach((leg) -> {
 			extractFlightInfoFromLeg(flight, leg);
-		}
+		});
 	}
 
 	private void addAirlineToFlight(Flight flight, Segment segment, TripData tripData) {
@@ -112,11 +112,9 @@ public class GoogleFlightConverter {
 
 	private String getAirlineName(String airlineShort, TripData tripData) {
 		if (tripData != null && tripData.getCarrier() != null) {
-			for (Carrier carrier : tripData.getCarrier()) {
-				if (airlineShort.equals(carrier.getCode())) {
-					return carrier.getName();
-				}
-			}
+			return Arrays.stream(tripData.getCarrier()).filter(
+						(carrier) -> airlineShort.equals(carrier.getCode())
+					).findFirst().map((carrier) -> carrier.getName()).orElse(airlineShort);
 		}
 		return airlineShort;
 	}

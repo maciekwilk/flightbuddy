@@ -37,9 +37,7 @@ public abstract class AbstractDao<T, K> implements Dao<T> {
 
 	@Override
 	public void remove(Collection<T> entities) {
-		for (T t : entities) {
-			remove(t);
-		}
+		entities.forEach(entity -> remove(entity));
 	}
 
 	public boolean exists(JPAQuery<?> query) {

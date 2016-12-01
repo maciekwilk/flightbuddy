@@ -17,8 +17,6 @@ public class FoundTripService {
 	}
 	
 	public void saveFoundTrips(List<FoundTrip> foundTrips) {
-		for (FoundTrip foundTrip : foundTrips) {
-    		saveFoundTrip(foundTrip);
-    	}
+		foundTrips.forEach(foundTrip -> saveFoundTrip(foundTrip));
 	}
 }
