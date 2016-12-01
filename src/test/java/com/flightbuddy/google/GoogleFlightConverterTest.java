@@ -3,6 +3,8 @@ package com.flightbuddy.google;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -51,7 +53,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertThat(trip.getPrice(), equalTo(0.0f));
+		assertThat(trip.getPrice(), equalTo(BigDecimal.ZERO));
 	}
 	
 	@Test
@@ -61,7 +63,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertThat(trip.getPrice(), equalTo(0.0f));
+		assertThat(trip.getPrice(), equalTo(BigDecimal.ZERO));
 	}
 	
 	@Test
@@ -71,7 +73,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertThat(trip.getPrice(), equalTo(0.0f));
+		assertThat(trip.getPrice(), equalTo(BigDecimal.ZERO));
 	}
 	
 	@Test
@@ -81,7 +83,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertThat(trip.getPrice(), equalTo(40f));
+		assertThat(trip.getPrice(), equalTo(new BigDecimal(40)));
 	}
 
 	@Test
@@ -91,7 +93,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertThat(trip.getPrice(), equalTo(540.0f));
+		assertThat(trip.getPrice(), equalTo(new BigDecimal(540.0)));
 	}
 	
 	@Test
@@ -101,7 +103,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertThat(trip.getPrice(), equalTo(540.40f));
+		assertThat(trip.getPrice(), equalTo(createBigDecimal(540.40)));
 	}
 	
 	@Test
@@ -315,8 +317,8 @@ public class GoogleFlightConverterTest {
 		TripOption[] tripOptions = new TripOption[] {createTripOption("EUR540", slices), createTripOption("EUR240", secondSlices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = googleFlightConverter.convertResponseToTrips(googleResponse);
-		assertPriceAndDateAndStopsEqualTo(result.get(0), 540f, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
-		assertPriceAndDateAndStopsEqualTo(result.get(1), 240f, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
+		assertPriceAndDateAndStopsEqualTo(result.get(0), 540, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
+		assertPriceAndDateAndStopsEqualTo(result.get(1), 240, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
 	}
 	
 	private GoogleResponse createEmptyGoogleResponse() {
@@ -377,8 +379,8 @@ public class GoogleFlightConverterTest {
 		assertThat(flight.getStops(), equalTo(null));
 	}
 	
-	private void assertPriceAndDateAndStopsEqualTo(FoundTrip trip, float price, LocalDate date, String[] stopCodes) {
-		assertThat(trip.getPrice(), equalTo(price));
+	private void assertPriceAndDateAndStopsEqualTo(FoundTrip trip, double price, LocalDate date, String[] stopCodes) {
+		assertThat(trip.getPrice(), equalTo(new BigDecimal(price)));
 		assertDateAndStopsEqualTo(trip, date, stopCodes);
 	}
 
@@ -407,5 +409,9 @@ public class GoogleFlightConverterTest {
 
 	private LocalDate parseLocalDate(String date) {
 		return LocalDate.parse(date, formatter);
+	}
+
+	private BigDecimal createBigDecimal(double price) {
+		return new BigDecimal(price).setScale(2, RoundingMode.HALF_UP);
 	}
 }
