@@ -45,7 +45,7 @@ public class GoogleConnectionService {
 	@Value("${google.request.url}")
 	private String requestUrl;
 	
-	public GoogleResponse askGoogleForTheFlights(SearchInputData searchInputData) {
+	public GoogleResponse askGoogleForTheTrips(SearchInputData searchInputData) {
 		try {
 			HttpClient httpclient = HttpClients.createDefault();
 			HttpPost httpPost = prepareHttpPost(searchInputData);

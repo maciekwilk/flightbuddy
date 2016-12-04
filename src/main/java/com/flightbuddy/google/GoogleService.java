@@ -26,8 +26,8 @@ public class GoogleService {
 	@Value("${google.date.format}")
 	private String dateFormat = "uuuu-MM-dd";
 	
-	public List<FoundTrip> getGoogleFlights(SearchInputData searchInputData) {
-		GoogleResponse response = googleConnectionService.askGoogleForTheFlights(searchInputData);
+	public List<FoundTrip> getGoogleTrips(SearchInputData searchInputData) {
+		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
 		Trips trips = response.getTrips();
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
 			handleResponseWithoutFlights(searchInputData);

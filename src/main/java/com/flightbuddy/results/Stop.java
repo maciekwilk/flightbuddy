@@ -5,6 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Stop {
 
@@ -14,6 +16,7 @@ public class Stop {
 
 	private String code;
 
+	@JsonIgnore
 	@ManyToOne
 	private Flight flight;
 

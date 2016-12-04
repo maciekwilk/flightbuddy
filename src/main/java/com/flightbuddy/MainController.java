@@ -12,7 +12,7 @@ public class MainController {
 
     @GetMapping("/google")
     public void google() {
-    	flightService.getTrips();
+    	flightService.handleGoogleTrips();
     }
 
 }

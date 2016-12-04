@@ -42,22 +42,22 @@ public class GoogleServiceTest {
 	
 	@Test(expected = NoFlightsFoundException.class)
 	public void checkGetGoogleFlightsWithEmptyGoogleConnectionServiceResponse() {
-		when(googleConnectionService.askGoogleForTheFlights(any())).thenReturn(new GoogleResponse());
-		 googleService.getGoogleFlights(new SearchInputData());
+		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(new GoogleResponse());
+		 googleService.getGoogleTrips(new SearchInputData());
 	}
 	
 	@Test(expected = NoFlightsFoundException.class)
 	public void checkGetGoogleFlightsWithGoogleConnectionServiceResponseWithNullTripOption() {
 		Trips trips = createTrips(null);
 		mockGoogleConnectionService(trips);
-		googleService.getGoogleFlights(new SearchInputData());
+		googleService.getGoogleTrips(new SearchInputData());
 	}
 	
 	@Test(expected = NoFlightsFoundException.class)
 	public void checkGetGoogleFlightsWithGoogleConnectionServiceResponseWithEmptyTripOption() {
 		Trips trips = createTrips(new TripOption[0]);
 		mockGoogleConnectionService(trips);
-		googleService.getGoogleFlights(new SearchInputData());
+		googleService.getGoogleTrips(new SearchInputData());
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class GoogleServiceTest {
 		Trips trips = createTrips(tripOption);
 		GoogleResponse googleResponse = mockGoogleConnectionService(trips);
 		List<FoundTrip> conversionResult = mockGoogleFlightConverter(googleResponse);
-		List<FoundTrip> result = googleService.getGoogleFlights(new SearchInputData());
+		List<FoundTrip> result = googleService.getGoogleTrips(new SearchInputData());
 		verify(googleFlightConverter, times(1)).convertResponseToTrips(googleResponse);
 		assertThat(result, equalTo(conversionResult));
 	}
@@ -86,7 +86,7 @@ public class GoogleServiceTest {
 
 	private GoogleResponse mockGoogleConnectionService(Trips trips) {
 		GoogleResponse googleResponse = createGoogleResponse(trips);
-		when(googleConnectionService.askGoogleForTheFlights(any())).thenReturn(googleResponse);
+		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		return googleResponse;
 	}
 
