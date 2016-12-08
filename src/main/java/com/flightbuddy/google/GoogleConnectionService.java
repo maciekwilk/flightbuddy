@@ -65,8 +65,7 @@ public class GoogleConnectionService {
 		return httpPost;
 	}
 
-	private void addEntity(SearchInputData searchInputData, HttpPost httpPost) 
-			throws JsonProcessingException, UnsupportedEncodingException {
+	private void addEntity(SearchInputData searchInputData, HttpPost httpPost) throws JsonProcessingException, UnsupportedEncodingException {
 		GoogleRequest request = createGoogleRequest(searchInputData);
 		String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(request);
 		log.info(json);
@@ -115,6 +114,6 @@ public class GoogleConnectionService {
 	private void handleErrorResponse(String responseEntity) throws JsonParseException, JsonMappingException, IOException {
 		ErrorResponse errorResponse = new ObjectMapper().readValue(responseEntity, ErrorResponse.class);
 		Error error = errorResponse.getError();
-		throw new ConnectionException(Messages.get("google.response.error", new Object[]{error.getCode(), error.getMessage()}));
+		throw new ConnectionException(Messages.get("google.response.error", error.getCode(), error.getMessage()));
 	}
 }
