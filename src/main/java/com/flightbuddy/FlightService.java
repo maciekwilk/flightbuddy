@@ -32,7 +32,7 @@ public class FlightService {
     	SearchInputData inputData = prepareInputData();
     	List<FoundTrip> foundTrips = googleService.getGoogleTrips(inputData);
     	foundTripService.saveFoundTrips(foundTrips);
-    	mailService.sendMail(foundTrips);
+    	mailService.sendTrips(foundTrips);
     }
 
 	private SearchInputData prepareInputData() {

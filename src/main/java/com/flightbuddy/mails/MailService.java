@@ -2,20 +2,16 @@ package com.flightbuddy.mails;
 
 import java.util.List;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
 
 @Service
@@ -25,29 +21,34 @@ public class MailService {
 	
 	@Value("${mail.address}")
 	private String emailAddress;
+	
 	@Autowired
     private JavaMailSender javaMailSender;
+	@Autowired
+	private MessageWriter messageWriter;
 	
-	public void sendMail(List<FoundTrip> foundTrips) {
-        MimeMessage mail = javaMailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(mail, true);
-	        helper.setTo(emailAddress);
-	        helper.setFrom(emailAddress);
-	        ObjectWriter writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
-	        String message = "";
-	        for (FoundTrip foundTrip : foundTrips) {
-	    		try {
-	    			message += writer.writeValueAsString(foundTrip);
-	    		} catch(JsonProcessingException e) {
-	    			log.error(e.getMessage());
-	    		}
-	        }
-	        helper.setText(message);
-        } catch (MessagingException e) {
-        	log.error(e.getMessage());
+	public void sendTrips(List<FoundTrip> foundTrips) {
+		String message = messageWriter.prepareMessage(foundTrips);
+		String subject = Messages.get("mail.trips.subject");
+		sendMail(emailAddress, emailAddress, subject, message);
+	}
+	
+	private void sendMail(String from, String to, String subject, String message) {
+		SimpleMailMessage mailMessage = new SimpleMailMessage();
+		mailMessage.setFrom(from);
+        mailMessage.setTo(to);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+        send(mailMessage);
+	}
+
+	private void send(SimpleMailMessage mailMessage) {
+		try {
+            javaMailSender.send(mailMessage);
+            log.info(Messages.get("mail.success", mailMessage.getFrom(), mailMessage.getTo(), mailMessage.getSubject()));
+        } catch (MailException ex) {
+            log.error(Messages.get("error.mail.sending", mailMessage.getFrom(), mailMessage.getTo(), mailMessage.getSubject()), ex);
         }
-        this.javaMailSender.send(mail);
 	}
 
 }
