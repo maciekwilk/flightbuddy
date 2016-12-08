@@ -1,8 +1,8 @@
 package com.flightbuddy;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +25,12 @@ public class LoggingRestInterceptor implements ClientHttpRequestInterceptor{
     private void log(HttpRequest request, byte[] body, ClientHttpResponse response) throws IOException {
         log(request.getMethod() + " " + request.getURI(), response.getRawStatusCode());
         log("Request headers : " + request.getHeaders(), response.getRawStatusCode());
-        log("Request body : " + new String(body, Charsets.UTF_8), response.getRawStatusCode());
+        log("Request body : " + new String(body, StandardCharsets.UTF_8), response.getRawStatusCode());
 	    log("Response : " + response.getStatusCode() + " " + response.getStatusText(), response.getRawStatusCode());
         log("Response headers : " + response.getHeaders(), response.getRawStatusCode());
        
         if(response.getStatusCode().is4xxClientError() || response.getStatusCode().is5xxServerError()){
-                log.error("Response body : " + IOUtils.toString(response.getBody()));               
+                log.error("Response body : " + IOUtils.toString(response.getBody(), StandardCharsets.UTF_8));               
         }
     }
    
