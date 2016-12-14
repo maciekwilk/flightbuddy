@@ -43,7 +43,7 @@ public class GoogleService {
 			fromDate = dates[0].format(formatter);
 			returnDate = formatReturnDate(dates, formatter);
 		}
-		throw new NoFlightsFoundException(Messages.get("google.flights.no", new Object[]{searchInputData.getPrice(), fromDate, returnDate,
+		throw new NoFlightsFoundException(Messages.get("error.google.flights.no", new Object[]{searchInputData.getPrice(), fromDate, returnDate,
 				searchInputData.getFrom(), searchInputData.getTo()}));
 	}
 

@@ -103,7 +103,7 @@ public class GoogleConnectionService {
 	private GoogleResponse handleResponse(HttpResponse response) throws JsonParseException, JsonMappingException, IOException {
 		String responseEntity = EntityUtils.toString(response.getEntity());
 		if (responseEntity == null || responseEntity.isEmpty()) {
-			throw new ConnectionException(Messages.get("google.response.empty"));
+			throw new ConnectionException(Messages.get("error.google.response.empty"));
 		}
 		if (responseEntity.contains("error")) {
 			handleErrorResponse(responseEntity);
@@ -114,6 +114,6 @@ public class GoogleConnectionService {
 	private void handleErrorResponse(String responseEntity) throws JsonParseException, JsonMappingException, IOException {
 		ErrorResponse errorResponse = new ObjectMapper().readValue(responseEntity, ErrorResponse.class);
 		Error error = errorResponse.getError();
-		throw new ConnectionException(Messages.get("google.response.error", error.getCode(), error.getMessage()));
+		throw new ConnectionException(Messages.get("error.google.response.error", error.getCode(), error.getMessage()));
 	}
 }
