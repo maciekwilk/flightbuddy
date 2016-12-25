@@ -8,11 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Service;
 
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
+import com.flightbuddy.google.schedule.GoogleTask;
+import com.flightbuddy.google.schedule.GoogleTrigger;
 import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
 
@@ -29,13 +32,21 @@ public class GoogleService {
 	@Value("${google.date.format}")
 	private String dateFormat;
 	
-	public List<FoundTrip> getGoogleTrips(SearchInputData searchInputData) {
+	public List<FoundTrip> getTrips(SearchInputData searchInputData) {
 		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
 		Trips trips = response.getTrips();
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
 			handleResponseWithoutFlights(searchInputData);
 		}
 		return googleFlightConverter.convertResponseToTrips(response);
+	}
+	
+	public Trigger getTrigger() {
+		return new GoogleTrigger();
+	}
+	
+	public Runnable getTask() {
+		return new GoogleTask();
 	}
 
 	private void handleResponseWithoutFlights(SearchInputData searchInputData) {
@@ -55,13 +66,5 @@ public class GoogleService {
 			return dates[1].format(formatter);
 		}
 		return "";
-	}
-	
-	public void setGoogleConnectionService(GoogleConnectionService googleConnectionService) {
-		this.googleConnectionService = googleConnectionService;
-	}
-	
-	public void setGoogleFlightConverter(GoogleFlightConverter googleFlightConverter) {
-		this.googleFlightConverter = googleFlightConverter;
 	}
 }
