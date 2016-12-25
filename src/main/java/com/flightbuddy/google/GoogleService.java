@@ -4,12 +4,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.flightbuddy.SearchInputData;
-import com.flightbuddy.exceptions.NoFlightsFoundException;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
 import com.flightbuddy.resources.Messages;
@@ -18,13 +19,15 @@ import com.flightbuddy.results.FoundTrip;
 @Service
 public class GoogleService {
 
+	Logger log = LoggerFactory.getLogger(GoogleService.class);
+	
 	@Autowired
 	private GoogleConnectionService googleConnectionService;
 	@Autowired
 	private GoogleFlightConverter googleFlightConverter;
 	
 	@Value("${google.date.format}")
-	private String dateFormat = "uuuu-MM-dd";
+	private String dateFormat;
 	
 	public List<FoundTrip> getGoogleTrips(SearchInputData searchInputData) {
 		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
@@ -43,7 +46,7 @@ public class GoogleService {
 			fromDate = dates[0].format(formatter);
 			returnDate = formatReturnDate(dates, formatter);
 		}
-		throw new NoFlightsFoundException(Messages.get("error.google.flights.no", new Object[]{searchInputData.getPrice(), fromDate, returnDate,
+		log.error(Messages.get("error.google.flights.no", new Object[]{searchInputData.getPrice(), fromDate, returnDate,
 				searchInputData.getFrom(), searchInputData.getTo()}));
 	}
 
