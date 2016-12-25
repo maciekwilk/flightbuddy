@@ -7,9 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.flightbuddy.db.ImmutableEntity;
 
 @Entity
-public class Airline {
+public class Airline extends ImmutableEntity {
 
 	@Id
 	private String id;

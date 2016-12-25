@@ -7,9 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.flightbuddy.db.ImmutableEntity;
 
 @Entity
-public class Stop {
+public class Stop extends ImmutableEntity {
 
 	@Id
 	private String id;

@@ -9,8 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.flightbuddy.db.ImmutableEntity;
+
 @Entity
-public class FoundTrip {
+public class FoundTrip extends ImmutableEntity {
 
 	@Id
 	private String id;
