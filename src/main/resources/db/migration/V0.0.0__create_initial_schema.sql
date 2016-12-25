@@ -55,7 +55,7 @@ DROP TABLE IF EXISTS `FOUNDTRIP`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `FOUNDTRIP` (
   `ID` varchar(255) NOT NULL,
-  `PRICE` float DEFAULT NULL,
+  `PRICE` decimal DEFAULT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

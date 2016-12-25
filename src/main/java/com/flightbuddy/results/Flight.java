@@ -2,15 +2,13 @@ package com.flightbuddy.results;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -18,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Flight {
 
 	@Id
-	@GeneratedValue(generator="system-uuid")
 	private String id;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
@@ -27,13 +24,17 @@ public class Flight {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
 	private List<Airline> airlines;
 
-	@Temporal(value = TemporalType.TIMESTAMP)
 	private LocalDate date;
 	
 	@JsonIgnore
 	@ManyToOne
 	private FoundTrip foundTrip;
 
+	public Flight() {
+		String uuid = UUID.randomUUID().toString();
+		id = uuid.replaceAll("-", "");
+	}
+	
 	public List<Stop> getStops() {
 		return stops;
 	}

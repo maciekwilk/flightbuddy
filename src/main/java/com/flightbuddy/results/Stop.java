@@ -1,7 +1,8 @@
 package com.flightbuddy.results;
 
+import java.util.UUID;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -11,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Stop {
 
 	@Id
-	@GeneratedValue(generator="system-uuid")
 	private String id;
 
 	private String code;
@@ -19,6 +19,11 @@ public class Stop {
 	@JsonIgnore
 	@ManyToOne
 	private Flight flight;
+
+	public Stop() {
+		String uuid = UUID.randomUUID().toString();
+		id = uuid.replaceAll("-", "");
+	}
 
 	public String getId() {
 		return id;
