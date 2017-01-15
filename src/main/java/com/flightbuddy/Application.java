@@ -1,7 +1,9 @@
 package com.flightbuddy;
 
-import org.springframework.boot.SpringApplication;
+import java.util.Properties;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
@@ -9,7 +11,8 @@ import org.springframework.context.annotation.PropertySource;
 public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+    	Properties properties = new Properties();
+    	properties.setProperty("logging.level.org.apache.http.wire", "ERROR");
+    	new SpringApplicationBuilder(Application.class).properties(properties).run(args);
     }
-
 }
