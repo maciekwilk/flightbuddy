@@ -12,7 +12,7 @@ public class Application {
 
     public static void main(String[] args) {
     	Properties properties = new Properties();
-    	properties.setProperty("logging.level.org.apache.http.wire", "ERROR");
+    	properties.setProperty("logging.level.com.flightbuddy.interceptors.LoggingRestInterceptor", "DEBUG");
     	new SpringApplicationBuilder(Application.class).properties(properties).run(args);
     }
 }

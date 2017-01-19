@@ -1,25 +1,22 @@
 package com.flightbuddy.google;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.exceptions.ConnectionException;
 import com.flightbuddy.google.request.GoogleRequest;
@@ -28,13 +25,14 @@ import com.flightbuddy.google.request.Request;
 import com.flightbuddy.google.request.Slice;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.error.Error;
-import com.flightbuddy.google.response.error.ErrorResponse;
 import com.flightbuddy.resources.Messages;
 
 @Service
 public class GoogleConnectionService {
 	
 	Logger log = LoggerFactory.getLogger(GoogleConnectionService.class);
+	
+	@Autowired RestTemplate restTemplate;
 
 	@Value("${google.date.format}")
 	private String dateFormat;
@@ -47,30 +45,22 @@ public class GoogleConnectionService {
 	
 	public GoogleResponse askGoogleForTheTrips(SearchInputData searchInputData) {
 		try {
-			HttpClient httpclient = HttpClients.createDefault();
-			HttpPost httpPost = prepareHttpPost(searchInputData);
-			HttpResponse response = httpclient.execute(httpPost);
+			RequestEntity<GoogleRequest> requestEntity = prepareRequestEntity(searchInputData);
+			ResponseEntity<GoogleResponse> response = restTemplate.exchange(requestEntity, GoogleResponse.class);
 			GoogleResponse googleResponse = handleResponse(response);
 			return googleResponse;
-		} catch (IOException e) {
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 		return new GoogleResponse();
 	}
 
-	private HttpPost prepareHttpPost(SearchInputData searchInputData) throws UnsupportedEncodingException, JsonProcessingException {
-		HttpPost httpPost = new HttpPost(requestUrl + "?key=" + googleApiKey);
-		addEntity(searchInputData, httpPost);
-		addHeaders(httpPost);
-		return httpPost;
-	}
-
-	private void addEntity(SearchInputData searchInputData, HttpPost httpPost) throws JsonProcessingException, UnsupportedEncodingException {
-		GoogleRequest request = createGoogleRequest(searchInputData);
-		String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(request);
-		log.info(json);
-		StringEntity entity = new StringEntity(json);
-		httpPost.setEntity(entity);
+	private RequestEntity<GoogleRequest> prepareRequestEntity(SearchInputData searchInputData) throws URISyntaxException {
+		GoogleRequest googleRequest = createGoogleRequest(searchInputData);
+		MultiValueMap<String, String> headers = createHeaders();
+		URI uri = new URI(requestUrl + "?key=" + googleApiKey);
+		RequestEntity<GoogleRequest> requestEntity = new RequestEntity<GoogleRequest>(googleRequest, headers, HttpMethod.POST, uri);
+		return requestEntity;
 	}
 
 	private GoogleRequest createGoogleRequest(SearchInputData searchInputData) {
@@ -95,25 +85,27 @@ public class GoogleConnectionService {
 		return slice;
 	}
 
-	private void addHeaders(HttpPost httpPost) {
-		httpPost.addHeader("content-type", "application/json");
-		httpPost.addHeader("Accept","application/json");
+	private MultiValueMap<String, String> createHeaders() {
+		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>(2);
+		headers.add("content-type", "application/json");
+		headers.add("Accept","application/json");
+		return headers;
 	}
 
-	private GoogleResponse handleResponse(HttpResponse response) throws JsonParseException, JsonMappingException, IOException {
-		String responseEntity = EntityUtils.toString(response.getEntity());
-		if (responseEntity == null || responseEntity.isEmpty()) {
+	private GoogleResponse handleResponse(ResponseEntity<GoogleResponse> response) {
+		if (response == null || response.getBody() == null) {
 			throw new ConnectionException(Messages.get("error.google.response.empty"));
 		}
-		if (responseEntity.contains("error")) {
-			handleErrorResponse(responseEntity);
+		GoogleResponse googleResponse = response.getBody();
+		if (googleResponse.getError() != null) {
+			handleErrorResponse(googleResponse.getError());
 		}
-	    return new ObjectMapper().readValue(responseEntity, GoogleResponse.class);
+	    return googleResponse;
 	}
 
-	private void handleErrorResponse(String responseEntity) throws JsonParseException, JsonMappingException, IOException {
-		ErrorResponse errorResponse = new ObjectMapper().readValue(responseEntity, ErrorResponse.class);
-		Error error = errorResponse.getError();
-		throw new ConnectionException(Messages.get("error.google.response.error", error.getCode(), error.getMessage()));
+	private void handleErrorResponse(Error googleError) {
+		String code = googleError.getCode();
+		String message = googleError.getMessage();
+		throw new ConnectionException(Messages.get("error.google.response.error", code, message));
 	}
 }
