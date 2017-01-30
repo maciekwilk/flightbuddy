@@ -18,7 +18,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.flightbuddy.SearchInputData;
-import com.flightbuddy.exceptions.ConnectionException;
 import com.flightbuddy.google.request.GoogleRequest;
 import com.flightbuddy.google.request.Passengers;
 import com.flightbuddy.google.request.Request;
@@ -94,7 +93,7 @@ public class GoogleConnectionService {
 
 	private GoogleResponse handleResponse(ResponseEntity<GoogleResponse> response) {
 		if (response == null || response.getBody() == null) {
-			throw new ConnectionException(Messages.get("error.google.response.empty"));
+			log.error(Messages.get("error.google.response.empty"));
 		}
 		GoogleResponse googleResponse = response.getBody();
 		if (googleResponse.getError() != null) {
@@ -106,6 +105,6 @@ public class GoogleConnectionService {
 	private void handleErrorResponse(Error googleError) {
 		String code = googleError.getCode();
 		String message = googleError.getMessage();
-		throw new ConnectionException(Messages.get("error.google.response.error", code, message));
+		log.error(Messages.get("error.google.response.error", code, message));
 	}
 }
