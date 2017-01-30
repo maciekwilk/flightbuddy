@@ -2,44 +2,42 @@ package com.flightbuddy;
 
 import java.time.LocalDate;
 
-public class SearchInputData {
+public final class SearchInputData {
 	
-	private String from;
-	private String to;
-	private String price;
-	private LocalDate[] dates;
-	private boolean withReturn;
+	private final String from;
+	private final String to;
+	private final String price;
+	private final LocalDate[] dates;
+	private final boolean withReturn;
 	
+	public SearchInputData(String from, String to, String price, LocalDate[] dates, boolean withReturn) {
+		this.from = from;
+		this.to = to;
+		this.price = price;
+		this.dates = new LocalDate[dates.length];
+		for (int i = 0; i < dates.length; i++) {
+			this.dates[i] = LocalDate.of(dates[i].getYear(), dates[i].getMonth(), dates[i].getDayOfMonth());
+		}
+		this.withReturn = withReturn;
+	}
+
 	public String getFrom() {
 		return from;
 	}
-	public void setFrom(String from) {
-		this.from = from;
-	}
+
 	public String getTo() {
 		return to;
 	}
-	public void setTo(String to) {
-		this.to = to;
-	}
+
 	public String getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
-		this.price = price;
-	}
+
 	public LocalDate[] getDates() {
-		return dates;
-	}
-	public void setDates(LocalDate[] dates) {
-		this.dates = dates;
+		return (LocalDate[]) dates.clone();
 	}
 
 	public boolean isWithReturn() {
 		return withReturn;
-	}
-
-	public void setWithReturn(boolean withReturn) {
-		this.withReturn = withReturn;
 	}
 }
