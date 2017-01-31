@@ -4,8 +4,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,6 +15,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,8 +30,10 @@ import com.flightbuddy.google.response.tripoption.TripOption;
 import com.flightbuddy.google.schedule.GoogleTask;
 import com.flightbuddy.results.FoundTrip;
 
-@RunWith(SpringRunner.class)
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest
+@PrepareForTest(GoogleFlightConverter.class)
 public class GoogleServiceIT {
 	
 	@Autowired
@@ -36,15 +42,16 @@ public class GoogleServiceIT {
 	@MockBean
 	private GoogleConnectionService googleConnectionService;
 	@MockBean
-	private GoogleFlightConverter googleFlightConverter;
-	@MockBean
 	private GoogleTask googleTask;
 	
 	private SearchInputData emptyInputData;
+//	private GoogleFlightConverter googleFlightConverter;
 
 	@Before
 	public void setUp() {
 		emptyInputData = new SearchInputData(null, null, null, new LocalDate[]{}, false);
+//		googleFlightConverter = mock(GoogleFlightConverter.class);
+		mockStatic(GoogleFlightConverter.class);
 	}
 	
 	@Test
@@ -52,7 +59,8 @@ public class GoogleServiceIT {
 		GoogleResponse emptyGoogleResponse = new GoogleResponse();
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(emptyGoogleResponse);
 		googleService.getTrips(emptyInputData);
-		verify(googleFlightConverter, times(1)).convertResponseToTrips(emptyGoogleResponse);
+		verifyStatic(times(1));
+		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse);
 	}
 	
 	@Test
@@ -61,7 +69,8 @@ public class GoogleServiceIT {
 		GoogleResponse googleResponse = createGoogleResponse(trips);
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		googleService.getTrips(emptyInputData);
-		verify(googleFlightConverter, times(1)).convertResponseToTrips(googleResponse);
+		verifyStatic(times(1));
+		GoogleFlightConverter.convertResponseToTrips(googleResponse);
 	}
 	
 	@Test
@@ -70,7 +79,8 @@ public class GoogleServiceIT {
 		GoogleResponse googleResponse = createGoogleResponse(trips);
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		googleService.getTrips(emptyInputData);
-		verify(googleFlightConverter, times(1)).convertResponseToTrips(googleResponse);
+		verifyStatic(times(1));
+		GoogleFlightConverter.convertResponseToTrips(googleResponse);
 	}
 	
 	@Test
@@ -81,8 +91,9 @@ public class GoogleServiceIT {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		List<FoundTrip> conversionResult = mockGoogleFlightConverter(googleResponse);
 		List<FoundTrip> result = googleService.getTrips(emptyInputData);
-		verify(googleFlightConverter, times(1)).convertResponseToTrips(googleResponse);
 		assertThat(result, equalTo(conversionResult));
+		verifyStatic(times(1));
+		GoogleFlightConverter.convertResponseToTrips(googleResponse);
 	}
 
 	private Trips createTrips(TripOption[] tripOption) {
@@ -100,7 +111,7 @@ public class GoogleServiceIT {
 	private List<FoundTrip> mockGoogleFlightConverter(GoogleResponse googleResponse) {
 		List<FoundTrip> conversionResult = new ArrayList<>(1);
 		conversionResult.add(new FoundTrip());
-		when(googleFlightConverter.convertResponseToTrips(googleResponse)).thenReturn(conversionResult);
+		when(GoogleFlightConverter.convertResponseToTrips(googleResponse)).thenReturn(conversionResult);
 		return conversionResult;
 	}
 }

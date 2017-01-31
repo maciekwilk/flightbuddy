@@ -5,10 +5,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import org.springframework.stereotype.Component;
 
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
@@ -24,19 +23,21 @@ import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.Stop;
 import com.flightbuddy.utils.RegularExpressions;
 
-@Component
 public class GoogleFlightConverter {
 
 	private static final LocalDate DEFAULT_DATE = LocalDate.of(2000, 1, 1);
 
-	public List<FoundTrip> convertResponseToTrips(GoogleResponse googleResponse) {
+	public static List<FoundTrip> convertResponseToTrips(GoogleResponse googleResponse) {
 		Trips trips = googleResponse.getTrips();
+		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
+			return Collections.emptyList();
+		}
 		TripData tripData = trips.getData();
 		TripOption[] tripOptions = trips.getTripOption();
 		return getFoundTrips(tripOptions, tripData);
 	}
 
-	private List<FoundTrip> getFoundTrips(TripOption[] tripOptions, TripData tripData) {
+	private static List<FoundTrip> getFoundTrips(TripOption[] tripOptions, TripData tripData) {
 		List<FoundTrip> trips = new ArrayList<>(tripOptions.length);
 		Arrays.stream(tripOptions).forEach((tripOption) -> {
 			FoundTrip trip = getFoundTrip(tripOption, tripData);
@@ -45,7 +46,7 @@ public class GoogleFlightConverter {
 		return trips;
 	}
 
-	private FoundTrip getFoundTrip(TripOption tripOption, TripData tripData) {
+	private static FoundTrip getFoundTrip(TripOption tripOption, TripData tripData) {
 		FoundTrip foundTrip = new FoundTrip();
 		BigDecimal price = getPrice(tripOption);
 		foundTrip.setPrice(price); 
@@ -55,7 +56,7 @@ public class GoogleFlightConverter {
 		return foundTrip;
 	}
 
-	private BigDecimal getPrice(TripOption tripOption) {
+	private static BigDecimal getPrice(TripOption tripOption) {
 		String priceWithCurrency = tripOption.getSaleTotal();
 		if (priceWithCurrency != null && !priceWithCurrency.isEmpty()) {
 			String price = priceWithCurrency.substring(3);
@@ -66,7 +67,7 @@ public class GoogleFlightConverter {
 		return BigDecimal.ZERO;
 	}
 
-	private List<Flight> getFlights(FoundTrip foundTrip, Slice[] slices, TripData tripData) {
+	private static List<Flight> getFlights(FoundTrip foundTrip, Slice[] slices, TripData tripData) {
 		List<Flight> flights = new ArrayList<>(2);
 		Arrays.stream(slices).forEach((slice) -> {
 			Flight flight = createFlight(foundTrip, slice, tripData);
@@ -75,7 +76,7 @@ public class GoogleFlightConverter {
 		return flights;
 	}
 	
-	private Flight createFlight(FoundTrip foundTrip, Slice slice, TripData tripData) {
+	private static Flight createFlight(FoundTrip foundTrip, Slice slice, TripData tripData) {
 		Flight flight = new Flight();
 		flight.setFoundTrip(foundTrip);
 		Arrays.stream(slice.getSegment()).forEach((segment) -> {
@@ -84,7 +85,7 @@ public class GoogleFlightConverter {
 		return flight;
 	}
 
-	private void extractFlightInfoFromSegment(Flight flight, Segment segment, TripData tripData) {
+	private static void extractFlightInfoFromSegment(Flight flight, Segment segment, TripData tripData) {
 		if (segment.getFlight() != null && segment.getFlight().getCarrier() != null) {
 			addAirlineToFlight(flight, segment, tripData);
 		}
@@ -93,7 +94,7 @@ public class GoogleFlightConverter {
 		});
 	}
 
-	private void addAirlineToFlight(Flight flight, Segment segment, TripData tripData) {
+	private static void addAirlineToFlight(Flight flight, Segment segment, TripData tripData) {
 		ResponseFlight responseFlight = segment.getFlight();
 		String carrier = responseFlight.getCarrier();
 		Airline airline = createAirline(flight, carrier, tripData);
@@ -102,7 +103,7 @@ public class GoogleFlightConverter {
 		flight.setAirlines(airlines);
 	}
 	
-	private Airline createAirline(Flight flight, String carrier, TripData tripData) {
+	private static Airline createAirline(Flight flight, String carrier, TripData tripData) {
 		Airline airline = new Airline();
 		String name = getAirlineName(carrier, tripData);
 		airline.setName(name);
@@ -110,7 +111,7 @@ public class GoogleFlightConverter {
 		return airline;
 	}
 
-	private String getAirlineName(String airlineShort, TripData tripData) {
+	private static String getAirlineName(String airlineShort, TripData tripData) {
 		if (tripData != null && tripData.getCarrier() != null) {
 			return Arrays.stream(tripData.getCarrier()).filter(
 						(carrier) -> airlineShort.equals(carrier.getCode())
@@ -119,7 +120,7 @@ public class GoogleFlightConverter {
 		return airlineShort;
 	}
 
-	private List<Airline> getAirlines(Flight flight) {
+	private static List<Airline> getAirlines(Flight flight) {
 		List<Airline> airlines = flight.getAirlines();
 		if (airlines == null) {
 			airlines = new ArrayList<>();
@@ -127,7 +128,7 @@ public class GoogleFlightConverter {
 		return airlines;
 	}
 
-	private void extractFlightInfoFromLeg(Flight flight, Leg leg) {
+	private static void extractFlightInfoFromLeg(Flight flight, Leg leg) {
 		LocalDate date = flight.getDate();
 		List<Stop> stops = getStops(flight);
 		if (date == null) {
@@ -139,7 +140,7 @@ public class GoogleFlightConverter {
 		flight.setStops(stops);
 	}
 
-	private List<Stop> getStops(Flight flight) {
+	private static List<Stop> getStops(Flight flight) {
 		List<Stop> stops = flight.getStops();
 		if (stops == null) {
 			stops = new ArrayList<>();
@@ -147,7 +148,7 @@ public class GoogleFlightConverter {
 		return stops;
 	}
 
-	private void addDateAndFirstStops(Flight flight, Leg leg, List<Stop> stops) {
+	private static void addDateAndFirstStops(Flight flight, Leg leg, List<Stop> stops) {
 		LocalDate date;
 		date = getDate(leg);
 		flight.setDate(date);
@@ -157,7 +158,7 @@ public class GoogleFlightConverter {
 		stops.add(destination);
 	}
 
-	private LocalDate getDate(Leg leg) {
+	private static LocalDate getDate(Leg leg) {
 		String departureTime = leg.getDepartureTime();
 		if (departureTime != null && Pattern.matches(RegularExpressions.ISO_OFFSET_DATE_TIME, departureTime)) {
 			DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -166,7 +167,7 @@ public class GoogleFlightConverter {
 		return DEFAULT_DATE;
 	}
 	
-	private Stop createStop(Flight flight, String stopCode) {
+	private static Stop createStop(Flight flight, String stopCode) {
 		Stop stop = new Stop();
 		stop.setCode(stopCode);
 		stop.setFlight(flight);
