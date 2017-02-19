@@ -45,12 +45,10 @@ public class GoogleServiceIT {
 	private GoogleTask googleTask;
 	
 	private SearchInputData emptyInputData;
-//	private GoogleFlightConverter googleFlightConverter;
 
 	@Before
 	public void setUp() {
 		emptyInputData = new SearchInputData(null, null, null, new LocalDate[]{}, false);
-//		googleFlightConverter = mock(GoogleFlightConverter.class);
 		mockStatic(GoogleFlightConverter.class);
 	}
 	
