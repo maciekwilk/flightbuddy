@@ -1,12 +1,14 @@
 package com.flightbuddy.schedule;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.Trigger;
 import org.springframework.stereotype.Service;
 
+import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
 
 @Service
@@ -21,8 +23,11 @@ public class TriggerTasksService {
 	}
 
 	private void addTriggerTasksForGoogle(Map<Runnable, Trigger> triggerTasks) {
-		Runnable runnable = googleService.getTask();
+		List<SearchInputData> searchInputDataList = googleService.getSearchInputData();
         Trigger trigger = googleService.getTrigger();
-        triggerTasks.put(runnable, trigger);
+		for (SearchInputData searchInputData : searchInputDataList) {
+			Runnable runnable = googleService.getTask(searchInputData);
+	        triggerTasks.put(runnable, trigger);
+		}
 	}
 }

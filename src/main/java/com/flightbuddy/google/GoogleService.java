@@ -2,6 +2,7 @@ package com.flightbuddy.google;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -24,13 +25,21 @@ public class GoogleService {
 
 	Logger log = LoggerFactory.getLogger(GoogleService.class);
 	
-	@Autowired
-	private GoogleConnectionService googleConnectionService;
-	@Autowired
-	private GoogleFlightConverter googleFlightConverter;
-	
+	@Autowired GoogleConnectionService googleConnectionService;
+	@Autowired GoogleTask googleTask;
+
+	@Value("${flights.travel.to}")
+	private String travelTo;
+	@Value("${flights.travel.from}")
+	private String travelFrom;
+	@Value("${flights.travel.price}")
+	private String travelPrice;
+	@Value("${flights.travel.with.return}")
+	private boolean travelWithReturn;
 	@Value("${google.date.format}")
 	private String dateFormat;
+	@Value("${google.request.max}")
+	private int maxAmountOfRequests;
 	
 	public List<FoundTrip> getTrips(SearchInputData searchInputData) {
 		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
@@ -38,15 +47,28 @@ public class GoogleService {
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
 			handleResponseWithoutFlights(searchInputData);
 		}
-		return googleFlightConverter.convertResponseToTrips(response);
+		return GoogleFlightConverter.convertResponseToTrips(response);
 	}
 	
 	public Trigger getTrigger() {
-		return new GoogleTrigger();
+		return new GoogleTrigger(getSearchInputData().size(), maxAmountOfRequests);
 	}
 	
-	public Runnable getTask() {
-		return new GoogleTask();
+	public Runnable getTask(SearchInputData searchInputData) {
+		googleTask.setSearchInputData(searchInputData);
+		return googleTask;
+	}
+	
+	public List<SearchInputData> getSearchInputData() {
+		List<SearchInputData> searchInputDataList = new ArrayList<>(1);
+		LocalDate[] dates = new LocalDate[] {LocalDate.now().plusWeeks(2), LocalDate.now().plusWeeks(2).plusDays(2)};
+		SearchInputData searchInputData = new SearchInputData(travelFrom, travelTo, travelPrice, dates, travelWithReturn);
+		searchInputDataList.add(searchInputData);
+		return searchInputDataList;
+	}
+	
+	public int getMaxAmountOfRequests() {
+		return maxAmountOfRequests;
 	}
 
 	private void handleResponseWithoutFlights(SearchInputData searchInputData) {

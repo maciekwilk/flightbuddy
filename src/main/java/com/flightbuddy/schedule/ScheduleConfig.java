@@ -22,7 +22,7 @@ public class ScheduleConfig implements SchedulingConfigurer {
 
 	Logger log = Logger.getLogger(ScheduleConfig.class);
 	
-	@Autowired TriggerTasksService triggerTasksCreator;
+	@Autowired TriggerTasksService triggerTasksService;
 	
 	private final static int NUMBER_OF_THREADS = 1;
 	
@@ -40,7 +40,7 @@ public class ScheduleConfig implements SchedulingConfigurer {
     	taskRegistrar.setScheduler(taskExecutor());
     	if (scheduleEnabled) {
     		log.info(Messages.get("schedule.enabled"));
-        	Map<Runnable, Trigger> triggerTasks = triggerTasksCreator.createTriggerTasks();
+        	Map<Runnable, Trigger> triggerTasks = triggerTasksService.createTriggerTasks();
             taskRegistrar.setTriggerTasks(triggerTasks);
     	} 
     }
