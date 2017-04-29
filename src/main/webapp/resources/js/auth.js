@@ -3,10 +3,6 @@ angular.module('auth', [])
 
 	var auth = {
 		authenticated : false,
-		
-		loginPath : '/login',
-        logoutPath : '/logout',
-        homePath : '/home',
 
         authenticate : function(credentials, callback) {
 	
