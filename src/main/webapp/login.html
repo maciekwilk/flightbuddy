@@ -1,20 +1,20 @@
 <div class="col-md-1"></div>
 <div class="col-md-10">
-	<div class="alert alert-danger" ng-show="navigation.error">
+	<div class="alert alert-danger" ng-show="nav.error">
 	    There was a problem logging in. Please try again.
 	</div>
-	<form role="form" ng-submit="navigation.login()">
+	<form role="form" ng-submit="nav.login()">
 		<div class="row">
 		    <div class="form-group col-md-4">
 		        <label for="username">Username:</label> <input type="text"
-		            class="form-control" id="username" name="username" ng-model="navigation.credentials.username"/>
+		            class="form-control" id="username" name="username" ng-model="nav.credentials.username"/>
 		    </div>
 	    	<div class="col-md-8"></div>
     	</div>
     	<div class="row">
 		    <div class="form-group col-md-4">
 		        <label for="password">Password:</label> <input type="password"
-		            class="form-control" id="password" name="password" ng-model="navigation.credentials.password"/>
+		            class="form-control" id="password" name="password" ng-model="nav.credentials.password"/>
 		    </div>
 	    	<div class="col-md-8"></div>
 	    </div>
