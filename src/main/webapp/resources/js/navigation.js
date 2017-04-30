@@ -1,5 +1,5 @@
 angular.module('navigation', ['auth'])
-.controller('navigation', function ($rootScope, $location, auth) {
+.controller('navigation', function (auth) {
 
 	  var self = this;
 	  

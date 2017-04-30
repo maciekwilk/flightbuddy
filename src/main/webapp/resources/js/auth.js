@@ -12,7 +12,7 @@ angular.module('auth', [])
 		
 		    $http.get('user', {headers : headers}).then(
     		function(response) {
-		    	if (response.data.name) {
+		    	if (response.data.username) {
 		    		auth.authenticated = true;
 		    	} else {
 		    		auth.authenticated = false;
