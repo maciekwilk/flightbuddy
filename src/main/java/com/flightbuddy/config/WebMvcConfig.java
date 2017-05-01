@@ -1,4 +1,4 @@
-package com.flightbuddy;
+package com.flightbuddy.config;
 
 import java.util.ArrayList;
 import java.util.List;

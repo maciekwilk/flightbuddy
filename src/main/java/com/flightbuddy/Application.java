@@ -13,6 +13,7 @@ public class Application {
     public static void main(String[] args) {
     	Properties properties = new Properties();
     	properties.setProperty("logging.level.com.flightbuddy.interceptors.LoggingRestInterceptor", "DEBUG");
+    	properties.setProperty("spring.aop.proxy-target-class", "true");
     	new SpringApplicationBuilder(Application.class).properties(properties).run(args);
     }
 }
