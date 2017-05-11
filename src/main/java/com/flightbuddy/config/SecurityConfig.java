@@ -5,14 +5,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import com.flightbuddy.user.CustomUserDetailsService;
+import com.flightbuddy.user.UserRole;
 
 @Configuration
 @EnableWebSecurity
@@ -26,17 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	      .httpBasic()
 	    .and()
 	      .authorizeRequests()
-	        .antMatchers("/index.html", "/home.html", "/login.html", "/", "/home", "/login").permitAll()
-	        .anyRequest().authenticated().and()
+	      	.antMatchers("/register.html", "/register", "/user/register").hasAuthority(UserRole.ADMIN.name())
+	      	.antMatchers("/**").permitAll()
+	    .and()
 	        .csrf()
 	        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
-	}
-	
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-	    web
-	       .ignoring()
-	       .antMatchers("/resources/**");
 	}
 	
 	@Override
@@ -48,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationProvider authenticationProvider() throws Exception{
     	DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     	provider.setUserDetailsService(customUserDetailsService);
-//    	provider.setPasswordEncoder(new ShaPasswordEncoder());
+    	provider.setPasswordEncoder(new ShaPasswordEncoder());
     	provider.afterPropertiesSet();
     	return provider;
     }

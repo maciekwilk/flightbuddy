@@ -13,71 +13,71 @@ USE `flightbuddy`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `AIRLINE`
+-- Table structure for table `airline`
 --
 
-DROP TABLE IF EXISTS `AIRLINE`;
+DROP TABLE IF EXISTS `airline`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `AIRLINE` (
-  `ID` varchar(255) NOT NULL,
-  `NAME` varchar(255) DEFAULT NULL,
-  `FLIGHT_ID` varchar(255) DEFAULT NULL,
-  `CREATED` date NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `FK_AIRLINE_FLIGHT_ID` (`FLIGHT_ID`),
-  CONSTRAINT `FK_AIRLINE_FLIGHT_ID` FOREIGN KEY (`FLIGHT_ID`) REFERENCES `FLIGHT` (`ID`)
+CREATE TABLE `airline` (
+  `id` varchar(255) NOT NULL,
+  `created` datetime NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `flight_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKmad29459aspufavht8rcvvqt2` (`flight_id`),
+  CONSTRAINT `FKmad29459aspufavht8rcvvqt2` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `FLIGHT`
+-- Table structure for table `flight`
 --
 
-DROP TABLE IF EXISTS `FLIGHT`;
+DROP TABLE IF EXISTS `flight`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `FLIGHT` (
-  `ID` varchar(255) NOT NULL,
-  `DATE` date DEFAULT NULL,
-  `FOUNDTRIP_ID` varchar(255) DEFAULT NULL,
-  `CREATED` date NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `FK_FLIGHT_FOUNDTRIP_ID` (`FOUNDTRIP_ID`),
-  CONSTRAINT `FK_FLIGHT_FOUNDTRIP_ID` FOREIGN KEY (`FOUNDTRIP_ID`) REFERENCES `FOUNDTRIP` (`ID`)
+CREATE TABLE `flight` (
+  `id` varchar(255) NOT NULL,
+  `created` datetime NOT NULL,
+  `date` date DEFAULT NULL,
+  `foundTrip_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKhuygkprqapsyqmwg2h524srw3` (`foundTrip_id`),
+  CONSTRAINT `FKhuygkprqapsyqmwg2h524srw3` FOREIGN KEY (`foundTrip_id`) REFERENCES `foundtrip` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `FOUNDTRIP`
+-- Table structure for table `foundtrip`
 --
 
-DROP TABLE IF EXISTS `FOUNDTRIP`;
+DROP TABLE IF EXISTS `foundtrip`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `FOUNDTRIP` (
-  `ID` varchar(255) NOT NULL,
-  `PRICE` decimal DEFAULT NULL,
-  `CREATED` date NOT NULL,
-  PRIMARY KEY (`ID`)
+CREATE TABLE `foundtrip` (
+  `id` varchar(255) NOT NULL,
+  `created` datetime NOT NULL,
+  `price` decimal(19,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `STOP`
+-- Table structure for table `stop`
 --
 
-DROP TABLE IF EXISTS `STOP`;
+DROP TABLE IF EXISTS `stop`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `STOP` (
-  `ID` varchar(255) NOT NULL,
-  `CODE` varchar(255) DEFAULT NULL,
-  `FLIGHT_ID` varchar(255) DEFAULT NULL,
-  `CREATED` date NOT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `FK_STOP_FLIGHT_ID` (`FLIGHT_ID`),
-  CONSTRAINT `FK_STOP_FLIGHT_ID` FOREIGN KEY (`FLIGHT_ID`) REFERENCES `FLIGHT` (`ID`)
+CREATE TABLE `stop` (
+  `id` varchar(255) NOT NULL,
+  `created` datetime NOT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `flight_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK97ikrx2k0r0iilabf5dqbbkr1` (`flight_id`),
+  CONSTRAINT `FK97ikrx2k0r0iilabf5dqbbkr1` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

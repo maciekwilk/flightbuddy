@@ -10,7 +10,7 @@ angular.module('auth', [])
 		    	authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
 		    } : {};
 		
-		    $http.get('user', {headers : headers}).then(
+		    $http.get('/user/authenticate', {headers : headers}).then(
     		function(response) {
 		    	if (response.data.username) {
 		    		auth.authenticated = true;
@@ -28,15 +28,14 @@ angular.module('auth', [])
         
         clear : function() {
         	  auth.authenticated = false;
-        	  $location.path(auth.loginPath);
+        	  $location.path(auth.homePath);
         	  $http.post(auth.logoutPath, {});
     	},
 
-        init : function(homePath, loginPath, logoutPath) {
+        init : function(homePath, logoutPath) {
         	  auth.homePath = homePath;
-        	  auth.loginPath = loginPath;
         	  auth.logoutPath = logoutPath;
-    	},
+    	}
 	};
 	
 	return auth;

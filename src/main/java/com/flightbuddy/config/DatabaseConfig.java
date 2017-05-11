@@ -1,4 +1,4 @@
-package com.flightbuddy.db;
+package com.flightbuddy.config;
 
 import java.beans.PropertyVetoException;
 import java.sql.SQLException;

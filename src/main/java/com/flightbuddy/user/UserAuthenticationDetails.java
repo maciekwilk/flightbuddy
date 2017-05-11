@@ -13,7 +13,7 @@ public class UserAuthenticationDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	private String id;
-	private Set<Role> roles;
+	private Set<UserRole> roles;
 	private String username;
 	private String password;
 	private boolean enabled;
@@ -38,11 +38,11 @@ public class UserAuthenticationDetails implements UserDetails {
 		this.id = id;
 	}
 	
-	public Set<Role> getRoles() {
+	public Set<UserRole> getRoles() {
 		return roles;
 	}
 	
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<UserRole> roles) {
 		this.roles = roles;
 	}
 
@@ -65,8 +65,8 @@ public class UserAuthenticationDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-        for(Role role : roles) {
-            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.getRole());
+        for(UserRole role : roles) {
+            GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.name());
             authorities.add(grantedAuthority);
         }
 		return authorities;

@@ -16,9 +16,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//		if (SystemAuthenticationToken.SYSTEM_USERNAME.equals(username)) {
-//        	return new SystemAuthenticationToken();
-//        }
+		if (SystemAuthenticationToken.SYSTEM_USERNAME.equals(username)) {
+        	return new SystemAuthenticationToken();
+        }
 		User user = userDao.findByUsername(username);
 		if (user == null) {
         	throw new UsernameNotFoundException("user account is not in database");

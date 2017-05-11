@@ -18,6 +18,7 @@
 		<script src="resources/js/auth.js" type="text/javascript"></script>
 		<script src="resources/js/home.js" type="text/javascript"></script>
 		<script src="resources/js/navigation.js" type="text/javascript"></script>
+		<script src="resources/js/registration.js" type="text/javascript"></script>
 		<script src="resources/js/app.js" type="text/javascript"></script>
 	</head>
 	
@@ -31,7 +32,8 @@
 	
 	                <ul class="nav navbar-nav navbar-right">
 					      <li><a href="/home" >Home</a></li>
-					      <li><a href="/login" >Login</a></li>
+					      <li ng-show="!nav.authenticated()"><a href="/login" >Login</a></li>
+					      <li ng-show="nav.authenticated()"><a href="/register" >Register</a></li>
 					      <li ng-show="nav.authenticated()"><a href="" ng-click="nav.logout()">Logout</a></li>
 	                </ul>
 	            </div>

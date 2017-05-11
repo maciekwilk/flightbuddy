@@ -1,4 +1,4 @@
-angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation'])
+angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation', 'registration'])
 .config( function($routeProvider, $httpProvider, $locationProvider) {
     $routeProvider
     	.when('/home', {
@@ -11,6 +11,11 @@ angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation'])
             controller  : 'navigation',
             controllerAs : 'nav'
         })
+        .when('/register', {
+        	templateUrl : 'register.html',
+            controller  : 'registration',
+            controllerAs : 'reg'
+        })
         .otherwise({
     		redirectTo : '/home'
         });
@@ -18,5 +23,5 @@ angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation'])
     $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';	
     $locationProvider.html5Mode(true);
 }).run(function(auth) {
-	auth.init('/home', '/login', '/logout');
+	auth.init('/home', '/logout');
 });

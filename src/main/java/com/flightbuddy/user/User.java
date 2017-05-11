@@ -3,14 +3,15 @@ package com.flightbuddy.user;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
 import com.flightbuddy.db.MutableEntity;
@@ -30,9 +31,11 @@ public class User extends MutableEntity {
 
     private boolean enabled;
 
-    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    @JoinTable(joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    @ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name="role", joinColumns=@JoinColumn(name="id"))
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Set<UserRole> roles;
 
 	public User() {
 		String uuid = UUID.randomUUID().toString();
@@ -71,11 +74,11 @@ public class User extends MutableEntity {
 		this.enabled = enabled;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<UserRole> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<UserRole> roles) {
 		this.roles = roles;
 	}
 }
