@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	      .httpBasic()
 	    .and()
 	      .authorizeRequests()
-	      	.antMatchers("/register.html", "/register", "/user/register").hasAuthority(UserRole.ADMIN.name())
+	      	.antMatchers("/register.html", "/register", "/user/register").hasAuthority(UserRole.ROLE_ADMIN.name())
 	      	.antMatchers("/**").permitAll()
 	    .and()
 	        .csrf()

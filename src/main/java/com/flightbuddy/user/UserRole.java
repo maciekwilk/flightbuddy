@@ -1,5 +1,5 @@
 package com.flightbuddy.user;
 
 public enum UserRole {	
-	USER, ADMIN, SYSTEM;
+	ROLE_USER, ROLE_ADMIN, ROLE_SYSTEM;
 }

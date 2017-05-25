@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,8 +28,7 @@ public class MainController {
 	@RequestMapping("/user/register")
 	public Map<String, String> register(@RequestBody RegistrationFormData formData) {
 		try {
-			String password = new ShaPasswordEncoder().encodePassword(formData.getPassword(), null);
-			userService.createUser(formData.getUsername(), password);
+			userService.createUser(formData.getUsername(), formData.getPassword());
 		} catch (Exception e) {
 			return Collections.singletonMap("message", e.getMessage());
 		}

@@ -16,7 +16,7 @@ public class SystemAuthenticationToken extends UserAuthenticationDetails {
 	private static final long serialVersionUID = 4663607279383413936L;	
 	
 	static{
-		SYSTEM_AUTHORITIES = Arrays.asList( (GrantedAuthority)new SimpleGrantedAuthority(UserRole.SYSTEM.name()));
+		SYSTEM_AUTHORITIES = Arrays.asList( (GrantedAuthority)new SimpleGrantedAuthority(UserRole.ROLE_SYSTEM.name()));
 	}
 	
 	@Override
