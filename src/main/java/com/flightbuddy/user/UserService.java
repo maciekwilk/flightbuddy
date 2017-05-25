@@ -14,8 +14,8 @@ public class UserService {
 	@Autowired UserDao userDao;
 	
 	@Transactional
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-	public void createUser(String username, String password) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public User createUser(String username, String password) {
 		if (findByUsername(username) != null) {
 			throw new RuntimeException("User with username " + username + "already exists");
 		}
@@ -26,9 +26,10 @@ public class UserService {
 		user.setRoles(Collections.singleton(UserRole.ROLE_USER));
 		user.setEnabled(true);
 		userDao.persist(user);
+		return user;
 	}
 	
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User findByUsername(String username) {
 		return userDao.findByUsername(username);
 	}
