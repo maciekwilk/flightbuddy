@@ -34,7 +34,7 @@ import com.flightbuddy.results.FoundTrip;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest
 @PrepareForTest(GoogleFlightConverter.class)
-public class GoogleServiceIT {
+public class GoogleServiceTest {
 	
 	@Autowired
 	private GoogleService googleService;

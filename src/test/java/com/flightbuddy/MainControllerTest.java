@@ -36,8 +36,8 @@ import com.flightbuddy.user.UserRole;
 import com.flightbuddy.user.UserService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc()
+@SpringBootTest
+@AutoConfigureMockMvc
 public class MainControllerTest {
 
     @Autowired MockMvc mvc;
@@ -82,7 +82,7 @@ public class MainControllerTest {
     }
     
 	@Test
-	@WithMockUser(authorities={"ROLE_ADMIN"})
+	@WithMockUser(authorities = {"ROLE_ADMIN"})
     public void registerUserAsAdmin() throws Exception {
     	RegistrationFormData formData = createRegistrationFormData();
     	ObjectMapper objectMapper = new ObjectMapper();
@@ -96,7 +96,7 @@ public class MainControllerTest {
     }
 	
 	@Test
-	@WithMockUser(authorities={"ROLE_USER"})
+	@WithMockUser(authorities = {"ROLE_USER"})
     public void registerUserAsUser() throws Exception {
     	RegistrationFormData formData = createRegistrationFormData();
     	ObjectMapper objectMapper = new ObjectMapper();
