@@ -11,15 +11,19 @@ angular.module('navigation', ['auth'])
 	  
 	  self.login = function() {
 	      auth.authenticate(self.credentials, function(authenticated) {
-	        if (authenticated) {
-	        	self.error = false;
-	        } else {
-	        	self.error = true;
-	        }
+	    	  self.setErrorIfNotAuthenticated(authenticated);
 	      });
 	  };
 	  
 	  self.logout = function() {
 		  auth.clear();
+	  };
+	  
+	  self.setErrorIfNotAuthenticated = function(authenticated) {
+		  if (authenticated) {
+			  self.error = false;
+		  } else {
+			  self.error = true;
+		  } 
 	  };
 });

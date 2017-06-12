@@ -17,7 +17,7 @@ public class UserService {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public User createUser(String username, String password) {
 		if (findByUsername(username) != null) {
-			throw new RuntimeException("User with username " + username + "already exists");
+			throw new RuntimeException("User with username " + username + " already exists");
 		}
 		String encodedPassword = new ShaPasswordEncoder().encodePassword(password, null);
 		User user = new User();

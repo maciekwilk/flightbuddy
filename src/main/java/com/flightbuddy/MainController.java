@@ -30,7 +30,7 @@ public class MainController {
 		try {
 			userService.createUser(formData.getUsername(), formData.getPassword());
 		} catch (Exception e) {
-			return Collections.singletonMap("message", e.getMessage());
+			return Collections.singletonMap("error", e.getMessage());
 		}
 		return Collections.singletonMap("message", Messages.get("user.registered"));
 	}
