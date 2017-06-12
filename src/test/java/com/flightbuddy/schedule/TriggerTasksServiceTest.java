@@ -20,11 +20,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.scheduling.Trigger;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.flightbuddy.Application;
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 public class TriggerTasksServiceTest {
 	
 	@Autowired TriggerTasksService triggerTasksService;

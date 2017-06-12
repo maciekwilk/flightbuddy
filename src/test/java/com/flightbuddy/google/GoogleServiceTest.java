@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.flightbuddy.Application;
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
@@ -32,7 +33,7 @@ import com.flightbuddy.results.FoundTrip;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 @PrepareForTest(GoogleFlightConverter.class)
 public class GoogleServiceTest {
 	

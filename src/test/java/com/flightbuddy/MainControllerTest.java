@@ -36,7 +36,7 @@ import com.flightbuddy.user.UserRole;
 import com.flightbuddy.user.UserService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class MainControllerTest {
 

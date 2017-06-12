@@ -18,11 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.flightbuddy.Application;
 import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.google.schedule.GoogleTrigger;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 public class GoogleTriggerTest {
 	
 	private static final int TWENTY_FOUR_HOURS_IN_SECONDS = 24*60*60;

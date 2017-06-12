@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.flightbuddy.Application;
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.google.schedule.GoogleTask;
@@ -26,7 +27,7 @@ import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 public class GoogleTaskTest {
 	
 	@Autowired GoogleTask googleTask;
