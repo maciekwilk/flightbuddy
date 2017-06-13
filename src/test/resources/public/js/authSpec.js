@@ -51,27 +51,29 @@ describe("auth", function() {
 				expect(success).toEqual(true);
 			})
 			
-			describe('Given response has username', function() {
-				it("authenticated variable and callableParam are true, path is homePath", function() {
+			describe('Given response has username and authorities', function() {
+				it("authenticated variable and callableParam are true, path is homePath and roles is 'roles'", function() {
 					var credentials = {};
 					var callableParam;
 					$httpBackend.expect('GET', '/user/authenticate', undefined, function(headers) {
 					      return true;
 				    }).respond(200, {
-				    	username : 'username'
+				    	name : 'username',
+				    	authorities : 'roles'
 				    });
 					$factory.authenticate(credentials, function(param) {
 				        callableParam = param;
 				    });
 					$httpBackend.flush();
 					expect($factory.authenticated).toEqual(true);
+					expect($factory.roles).toEqual('roles');
 					expect(callableParam).toEqual(true);
 					expect($location.path()).toBe(homePath);
 				})
 			})
 			
 			describe('Given response has no username', function() {
-				it("authenticated variable and callableParam are false, path is homePath", function() {
+				it("authenticated and callableParam are false, roles undefined, path is homePath", function() {
 					var credentials = {};
 					var callableParam;
 					$httpBackend.expect('GET', '/user/authenticate', undefined, function(headers) {
@@ -82,6 +84,7 @@ describe("auth", function() {
 				    });
 					$httpBackend.flush();
 					expect($factory.authenticated).toEqual(false);
+					expect($factory.roles).toBeUndefined();
 					expect(callableParam).toEqual(false);
 					expect($location.path()).toBe(homePath);
 				})
@@ -89,7 +92,7 @@ describe("auth", function() {
 		})
 		
 		describe('Given authentication request fails', function() {
-			it("authenticated variable and callableParam should be false", function() {
+			it("authenticated and callableParam should be false and roles undefined", function() {
 				var credentials = {};
 				var callableParam;
 				$httpBackend.expect('GET', '/user/authenticate', undefined, function(headers) {
@@ -100,16 +103,18 @@ describe("auth", function() {
 			    });
 				$httpBackend.flush();
 				expect($factory.authenticated).toEqual(false);
+				expect($factory.roles).toBeUndefined();
 				expect(callableParam).toEqual(false);
 			})
 		})
 		
 		describe('Given clear function was called', function() {
-			it("authenticated variable is false and path is set to homePath", function() {		
+			it("authenticated variable is false, roles undefined and path is set to homePath", function() {		
 				$httpBackend.expectPOST(logoutPath, {}).respond(200, {});
 				$factory.clear();
 				$httpBackend.flush();
 				expect($factory.authenticated).toEqual(false);
+				expect($factory.roles).toBeUndefined();
 				expect($location.path()).toBe(homePath);
 			})
 		})

@@ -1,5 +1,8 @@
 package com.flightbuddy;
 
+import static com.flightbuddy.user.UserRole.ROLE_ADMIN;
+import static com.flightbuddy.user.UserRole.ROLE_USER;
+import static org.hamcrest.core.StringContains.containsString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -14,6 +17,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +54,11 @@ public class MainControllerTest {
     
     @Test
     public void authenticateWithoutAuthHeader() throws Exception {
-    	given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser());
+    	given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser(ROLE_USER));
         HttpHeaders headers = new HttpHeaders();
     	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
     	.andExpect(status().isOk())
-    	.andExpect(content().string("{}"));
+    	.andExpect(content().string(""));
     }
     
     @Test
@@ -68,17 +72,27 @@ public class MainControllerTest {
     }
     
     @Test
-    public void authenticate() throws Exception {
-    	given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser());
+    public void authenticateUser() throws Exception {
+		given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser(ROLE_USER));
         HttpHeaders headers = new HttpHeaders();
         byte[] authorizationString = (USERNAME + ":" + PASSWORD).getBytes();
         headers.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.encodeBase64String(authorizationString));
-    	ObjectMapper objectMapper = new ObjectMapper();
-    	Map<String, String> returnMessage = Collections.singletonMap("username", USERNAME);
-		String expectedResponse = objectMapper.writeValueAsString(returnMessage);
     	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
     	.andExpect(status().isOk())
-    	.andExpect(content().string(expectedResponse));
+    	.andExpect(content().string(containsUsername(USERNAME)))
+    	.andExpect(content().string(containsRole(ROLE_USER)));
+    }
+    
+    @Test
+    public void authenticateAdmin() throws Exception {
+    	given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser(ROLE_ADMIN));
+        HttpHeaders headers = new HttpHeaders();
+        byte[] authorizationString = (USERNAME + ":" + PASSWORD).getBytes();
+        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.encodeBase64String(authorizationString));
+    	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
+    	.andExpect(status().isOk())
+    	.andExpect(content().string(containsUsername(USERNAME)))
+    	.andExpect(content().string(containsRole(ROLE_ADMIN)));
     }
     
 	@Test
@@ -123,13 +137,21 @@ public class MainControllerTest {
 		return formData;
 	}
 	
-	private User createUser() {
+	private User createUser(UserRole role) {
 		String encodedPassword = new ShaPasswordEncoder().encodePassword(PASSWORD, null);
 		User user = new User();
 		user.setUsername(USERNAME);
 		user.setPassword(encodedPassword);
-		user.setRoles(Collections.singleton(UserRole.ROLE_USER));
+		user.setRoles(Collections.singleton(role));
 		user.setEnabled(true);
 		return user;
+	}
+
+	private Matcher<String> containsRole(UserRole role) {
+		return containsString("\"authorities\":[{\"authority\":\"" + role + "\"}]");
+	}
+
+	private Matcher<String> containsUsername(String username) {
+		return containsString("\"username\":\"" + username + "\"");
 	}
 }

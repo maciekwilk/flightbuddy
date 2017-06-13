@@ -11,9 +11,11 @@ angular.module('navigation', ['auth'])
 	  
 	  self.isAdmin = function() {
 		  var roles = auth.roles;
-		  for (var i = 0; i < roles.length; i++) {
-			  if (roles[i].authority === 'ROLE_ADMIN')
-				  return true;
+		  if (roles) {
+			  for (var i = 0; i < roles.length; i++) {
+				  if (roles[i].authority === 'ROLE_ADMIN')
+					  return true;
+			  }
 		  }
 		  return false;
 	  }

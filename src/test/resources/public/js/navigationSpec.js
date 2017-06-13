@@ -82,5 +82,106 @@ describe("navigation", function() {
 			expect($controller.authenticated()).toEqual(false);
 		});
 	});
-
+	
+	describe("Given user has no roles", function() {
+		var $controller;
+	    beforeEach(module(function($provide) {
+			$provide.value('auth', {
+				roles : undefined
+			});
+		}));
+	    
+	    var $controller, auth;
+		beforeEach(inject(function(_$controller_) {
+			$controller = _$controller_('navigation', {});
+		}));
+		
+		it("isAdmin should return false", function() {
+			expect($controller.isAdmin()).toEqual(false);
+		});
+	})
+	
+	describe("Given user has ROLE_USER role", function() {
+		var $controller;
+	    beforeEach(module(function($provide) {
+			$provide.value('auth', {
+				roles : [{
+					authority : 'ROLE_USER'
+				}]
+			});
+		}));
+	    
+	    var $controller, auth;
+		beforeEach(inject(function(_$controller_) {
+			$controller = _$controller_('navigation', {});
+		}));
+		
+		it("isAdmin should return false", function() {
+			expect($controller.isAdmin()).toEqual(false);
+		});
+	})
+	
+	describe("Given user has ROLE_ADMIN role", function() {
+		var $controller;
+	    beforeEach(module(function($provide) {
+			$provide.value('auth', {
+				roles : [{
+					authority : 'ROLE_ADMIN'
+				}]
+			});
+		}));
+	    
+	    var $controller, auth;
+		beforeEach(inject(function(_$controller_) {
+			$controller = _$controller_('navigation', {});
+		}));
+		
+		it("isAdmin should return true", function() {
+			expect($controller.isAdmin()).toEqual(true);
+		});
+	})
+	
+	describe("Given user has two ROLE_USER roles", function() {
+		var $controller;
+	    beforeEach(module(function($provide) {
+			$provide.value('auth', {
+				roles : [{
+					authority : 'ROLE_USER'
+				}, {
+					authority : 'ROLE_USER'
+				}]
+			});
+		}));
+	    
+	    var $controller, auth;
+		beforeEach(inject(function(_$controller_) {
+			$controller = _$controller_('navigation', {});
+		}));
+		
+		it("isAdmin should return false", function() {
+			expect($controller.isAdmin()).toEqual(false);
+		});
+	})
+	
+	describe("Given user has ROLE_USER and ROLE_ADMIN role", function() {
+		var $controller;
+	    beforeEach(module(function($provide) {
+			$provide.value('auth', {
+				roles : [{
+					authority : 'ROLE_USER'
+				}, {
+					authority : 'ROLE_ADMIN'
+				}]
+			});
+		}));
+	    
+	    var $controller, auth;
+		beforeEach(inject(function(_$controller_) {
+			$controller = _$controller_('navigation', {});
+		}));
+		
+		it("isAdmin should return true", function() {
+			expect($controller.isAdmin()).toEqual(true);
+		});
+	})
 });
