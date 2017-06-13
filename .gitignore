@@ -5,3 +5,5 @@
 *.setting
 *.class
 *.prefs
+/src/main/resources/environment.properties
+/src/test/resources/environment.properties
