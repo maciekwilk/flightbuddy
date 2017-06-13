@@ -12,8 +12,9 @@ angular.module('auth', [])
 		
 		    $http.get('/user/authenticate', {headers : headers}).then(
     		function(response) {
-		    	if (response.data.username) {
+		    	if (response.data.name) {
 		    		auth.authenticated = true;
+		    		auth.roles = response.data.authorities;
 		    	} else {
 		    		auth.authenticated = false;
 		    	}
@@ -28,6 +29,7 @@ angular.module('auth', [])
         
         clear : function() {
         	  auth.authenticated = false;
+        	  auth.roles = undefined;
         	  $location.path(auth.homePath);
         	  $http.post(auth.logoutPath, {});
     	},

@@ -9,6 +9,15 @@ angular.module('navigation', ['auth'])
           return auth.authenticated;
       }
 	  
+	  self.isAdmin = function() {
+		  var roles = auth.roles;
+		  for (var i = 0; i < roles.length; i++) {
+			  if (roles[i].authority === 'ROLE_ADMIN')
+				  return true;
+		  }
+		  return false;
+	  }
+	  
 	  self.login = function() {
 	      auth.authenticate(self.credentials, function(authenticated) {
 	    	  self.setErrorIfNotAuthenticated(authenticated);

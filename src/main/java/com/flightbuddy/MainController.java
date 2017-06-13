@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,10 +20,8 @@ public class MainController {
 	@Autowired UserService userService;
 	
 	@RequestMapping("/user/authenticate")
-	public Map<String, String> user(Principal user) {
-		if (user == null)
-			return Collections.emptyMap();
-		return Collections.singletonMap("username", user.getName());
+	public Principal user(@AuthenticationPrincipal Principal user) {
+		return user;
 	}
 	
 	@RequestMapping("/user/register")

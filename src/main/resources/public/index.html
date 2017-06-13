@@ -33,7 +33,7 @@
 	                <ul class="nav navbar-nav navbar-right">
 					      <li><a href="/home" >Home</a></li>
 					      <li ng-show="!nav.authenticated()"><a href="/login" >Login</a></li>
-					      <li ng-show="nav.authenticated()"><a href="/register" >Register</a></li>
+					      <li ng-show="nav.authenticated() && nav.isAdmin()"><a href="/register" >Register</a></li>
 					      <li ng-show="nav.authenticated()"><a href="" ng-click="nav.logout()">Logout</a></li>
 	                </ul>
 	            </div>
