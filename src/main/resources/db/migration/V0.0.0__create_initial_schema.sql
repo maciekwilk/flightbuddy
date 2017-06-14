@@ -23,10 +23,10 @@ CREATE TABLE `airline` (
   `id` varchar(255) NOT NULL,
   `created` datetime NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `flight_id` varchar(255) DEFAULT NULL,
+  `flight` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKmad29459aspufavht8rcvvqt2` (`flight_id`),
-  CONSTRAINT `FKmad29459aspufavht8rcvvqt2` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`id`)
+  KEY `FKmad29459aspufavht8rcvvqt2` (`flight`),
+  CONSTRAINT `FKmad29459aspufavht8rcvvqt2` FOREIGN KEY (`flight`) REFERENCES `flight` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -41,10 +41,10 @@ CREATE TABLE `flight` (
   `id` varchar(255) NOT NULL,
   `created` datetime NOT NULL,
   `date` date DEFAULT NULL,
-  `foundTrip_id` varchar(255) DEFAULT NULL,
+  `foundTrip` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FKhuygkprqapsyqmwg2h524srw3` (`foundTrip_id`),
-  CONSTRAINT `FKhuygkprqapsyqmwg2h524srw3` FOREIGN KEY (`foundTrip_id`) REFERENCES `foundtrip` (`id`)
+  KEY `FKhuygkprqapsyqmwg2h524srw3` (`foundTrip`),
+  CONSTRAINT `FKhuygkprqapsyqmwg2h524srw3` FOREIGN KEY (`foundTrip`) REFERENCES `foundtrip` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -74,10 +74,10 @@ CREATE TABLE `stop` (
   `id` varchar(255) NOT NULL,
   `created` datetime NOT NULL,
   `code` varchar(255) DEFAULT NULL,
-  `flight_id` varchar(255) DEFAULT NULL,
+  `flight` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK97ikrx2k0r0iilabf5dqbbkr1` (`flight_id`),
-  CONSTRAINT `FK97ikrx2k0r0iilabf5dqbbkr1` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`id`)
+  KEY `FK97ikrx2k0r0iilabf5dqbbkr1` (`flight`),
+  CONSTRAINT `FK97ikrx2k0r0iilabf5dqbbkr1` FOREIGN KEY (`flight`) REFERENCES `flight` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

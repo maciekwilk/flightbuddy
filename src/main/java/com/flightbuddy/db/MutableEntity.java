@@ -1,13 +1,11 @@
 package com.flightbuddy.db;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 	
@@ -15,25 +13,23 @@ import javax.validation.constraints.NotNull;
 public abstract class MutableEntity{
 
 	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
 	@Column(updatable = false)
-	private Date created;
+	private LocalDateTime created;
 	
 	@Version
 	private int version;
 
 	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updated;
+	private LocalDateTime updated;
 	
 	@PreUpdate
 	private void onUpdate() {
-		updated = new Date();
+		updated = LocalDateTime.now();
 	}
 
 	@PrePersist
 	private void onPersist() {
-		final Date now = new Date();
+		final LocalDateTime now = LocalDateTime.now();
 		if (created == null) { // Tests could have modified it
 			created = now;
 		}
@@ -44,15 +40,15 @@ public abstract class MutableEntity{
 	 * This should only be used inside Tests
 	 */
 	@Deprecated
-	public void setCreated(Date created) {
+	public void setCreated(LocalDateTime created) {
 		this.created = created;
 	}
 
-	public Date getCreated() {
+	public LocalDateTime getCreated() {
 		return created;
 	}
 
-	public Date getUpdated() {
+	public LocalDateTime getUpdated() {
 		return updated;
 	}	
 }
