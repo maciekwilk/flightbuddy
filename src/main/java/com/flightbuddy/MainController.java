@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class MainController {
 	}
 	
 	@RequestMapping("/user/register")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Map<String, String> register(@RequestBody RegistrationFormData formData) {
 		try {
 			userService.createUser(formData.getUsername(), formData.getPassword());
