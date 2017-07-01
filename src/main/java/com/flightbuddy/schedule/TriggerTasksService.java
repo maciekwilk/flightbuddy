@@ -23,7 +23,7 @@ public class TriggerTasksService {
 	}
 
 	private void addTriggerTasksForGoogle(Map<Runnable, Trigger> triggerTasks) {
-		List<SearchInputData> searchInputDataList = googleService.getSearchInputData();
+		List<SearchInputData> searchInputDataList = googleService.getInputDataForScheduledSearch();
         Trigger trigger = googleService.getTrigger();
 		for (SearchInputData searchInputData : searchInputDataList) {
 			Runnable runnable = googleService.getTask(searchInputData);

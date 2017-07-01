@@ -26,7 +26,7 @@ public class UserService {
 		userDao.persist(user);
 		return user;
 	}
-	
+
 	public User findByUsername(String username) {
 		return userDao.findByUsername(username);
 	}

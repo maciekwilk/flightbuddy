@@ -36,7 +36,7 @@ public class TriggerTasksServiceTest {
 	@Test
 	public void checkGoogleTasksEmptyList() {
 		List<SearchInputData> searchInputDataList = new ArrayList<>(0);
-		when(googleService.getSearchInputData()).thenReturn(searchInputDataList);
+		when(googleService.getInputDataForScheduledSearch()).thenReturn(searchInputDataList);
 		Runnable googleRunnable = mock(Runnable.class);
 		when(googleService.getTask(any(SearchInputData.class))).thenReturn(googleRunnable);
         Trigger googleTrigger = mock(Trigger.class);
@@ -50,7 +50,7 @@ public class TriggerTasksServiceTest {
 	@Test
 	public void checkGoogleTasksOneSearchInputData() {
 		List<SearchInputData> searchInputDataList = createOneSearchInputDataList();
-		when(googleService.getSearchInputData()).thenReturn(searchInputDataList);
+		when(googleService.getInputDataForScheduledSearch()).thenReturn(searchInputDataList);
 		Runnable googleRunnable = mock(Runnable.class);
 		when(googleService.getTask(any(SearchInputData.class))).thenReturn(googleRunnable);
         Trigger googleTrigger = mock(Trigger.class);
@@ -66,7 +66,7 @@ public class TriggerTasksServiceTest {
 	@Test
 	public void checkGoogleTasksManySearchInputData() {
 		List<SearchInputData> searchInputDataList = createAndMockThreeSearchInputDataList();
-		when(googleService.getSearchInputData()).thenReturn(searchInputDataList);
+		when(googleService.getInputDataForScheduledSearch()).thenReturn(searchInputDataList);
         Trigger googleTrigger = mock(Trigger.class);
         when(googleService.getTrigger()).thenReturn(googleTrigger);
 		googleService = mock(GoogleService.class);

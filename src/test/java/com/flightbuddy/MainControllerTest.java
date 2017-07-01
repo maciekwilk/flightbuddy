@@ -3,6 +3,7 @@ package com.flightbuddy;
 import static com.flightbuddy.user.UserRole.ROLE_ADMIN;
 import static com.flightbuddy.user.UserRole.ROLE_USER;
 import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -13,13 +14,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,12 +32,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.flightbuddy.resources.Messages;
+import com.flightbuddy.schedule.ScheduledSearch;
+import com.flightbuddy.schedule.ScheduledSearchService;
 import com.flightbuddy.user.RegistrationFormData;
 import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserDao;
@@ -48,9 +57,11 @@ public class MainControllerTest {
     
     @MockBean UserService userService;
     @MockBean UserDao userDao;
+    @MockBean ScheduledSearchService scheduledSearchService;
 	
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
+    
     
     @Test
     public void authenticateWithoutAuthHeader() throws Exception {
@@ -129,6 +140,58 @@ public class MainControllerTest {
     	.andExpect(status().isUnauthorized());
 		verify(userService, times(0)).createUser(eq(USERNAME), any());
     }
+	
+	@Test
+	@WithMockUser
+	public void saveScheduledSearchWithoutSchedule() throws Exception {
+		byte[] requestBody = new byte[]{};
+		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+		.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	@WithMockUser(authorities = {"ROLE_USER"})
+	public void saveScheduledSearchAsUser() throws Exception {
+		ScheduledSearch search = new ScheduledSearch();
+		ObjectMapper objectMapper = new ObjectMapper();
+    	String requestBody = objectMapper.writeValueAsString(search);
+		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithMockUser(authorities = {"ROLE_ADMIN"})
+	public void saveScheduledSearchAsAdmin() throws Exception {
+		ScheduledSearch search = new ScheduledSearch();
+		ObjectMapper objectMapper = new ObjectMapper();
+    	String requestBody = objectMapper.writeValueAsString(search);
+		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+		.andExpect(status().isOk());
+	}
+	
+	@Test
+	@WithAnonymousUser
+	public void saveScheduledSearchAsAnonymous() throws Exception {
+		ScheduledSearch search = new ScheduledSearch();
+		ObjectMapper objectMapper = new ObjectMapper();
+    	String requestBody = objectMapper.writeValueAsString(search);
+		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+		.andExpect(status().isUnauthorized());
+	}
+	
+	@Test
+	@WithMockUser(authorities = {"ROLE_USER"})
+	public void saveScheduledSearchWithSchedule() throws Exception {
+		ScheduledSearch scheduledSearch = createScheduledSearch("from", "to", "10.00", true, Collections.singletonList(LocalDate.of(2017, 8, 21)));
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    	String requestBody = objectMapper.writeValueAsString(scheduledSearch);
+		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+		.andExpect(status().isOk());
+		ArgumentCaptor<ScheduledSearch> argument = ArgumentCaptor.forClass(ScheduledSearch.class);
+		verify(scheduledSearchService, times(1)).save(argument.capture());
+		assertEquals("from", argument.getValue().getFrom());
+	}
 
 	private RegistrationFormData createRegistrationFormData() {
 		RegistrationFormData formData = new RegistrationFormData();
@@ -153,5 +216,15 @@ public class MainControllerTest {
 
 	private Matcher<String> containsUsername(String username) {
 		return containsString("\"username\":\"" + username + "\"");
+	}
+
+	private ScheduledSearch createScheduledSearch(String from, String to, String price, boolean withReturn, List<LocalDate> dates) {
+		ScheduledSearch scheduledSearch = new ScheduledSearch();
+		scheduledSearch.setFrom(from);
+		scheduledSearch.setTo(to);
+		scheduledSearch.setPrice(new BigDecimal(price));
+		scheduledSearch.setWithReturn(withReturn);
+		scheduledSearch.setDates(dates);
+		return scheduledSearch;
 	}
 }

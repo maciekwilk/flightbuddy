@@ -19,6 +19,8 @@ import com.flightbuddy.google.schedule.GoogleTask;
 import com.flightbuddy.google.schedule.GoogleTrigger;
 import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.schedule.ScheduledSearch;
+import com.flightbuddy.schedule.ScheduledSearchService;
 
 @Service
 public class GoogleService {
@@ -27,15 +29,8 @@ public class GoogleService {
 	
 	@Autowired GoogleConnectionService googleConnectionService;
 	@Autowired GoogleTask googleTask;
+	@Autowired ScheduledSearchService scheduledSearchService;
 
-	@Value("${flights.travel.to}")
-	private String travelTo;
-	@Value("${flights.travel.from}")
-	private String travelFrom;
-	@Value("${flights.travel.price}")
-	private String travelPrice;
-	@Value("${flights.travel.with.return}")
-	private boolean travelWithReturn;
 	@Value("${google.date.format}")
 	private String dateFormat;
 	@Value("${google.request.max}")
@@ -51,7 +46,7 @@ public class GoogleService {
 	}
 	
 	public Trigger getTrigger() {
-		return new GoogleTrigger(getSearchInputData().size(), maxAmountOfRequests);
+		return new GoogleTrigger(getInputDataForScheduledSearch().size(), maxAmountOfRequests);
 	}
 	
 	public Runnable getTask(SearchInputData searchInputData) {
@@ -59,11 +54,13 @@ public class GoogleService {
 		return googleTask;
 	}
 	
-	public List<SearchInputData> getSearchInputData() {
-		List<SearchInputData> searchInputDataList = new ArrayList<>(1);
-		LocalDate[] dates = new LocalDate[] {LocalDate.now().plusWeeks(2), LocalDate.now().plusWeeks(2).plusDays(2)};
-		SearchInputData searchInputData = new SearchInputData(travelFrom, travelTo, travelPrice, dates, travelWithReturn);
-		searchInputDataList.add(searchInputData);
+	public List<SearchInputData> getInputDataForScheduledSearch() {
+		List<ScheduledSearch> scheduledSearches = scheduledSearchService.getAllScheduledSearches();
+		List<SearchInputData> searchInputDataList = new ArrayList<>(scheduledSearches.size());
+		for (ScheduledSearch scheduledSearch : scheduledSearches) {
+			SearchInputData searchInputData = convertToSearchInputData(scheduledSearch);
+			searchInputDataList.add(searchInputData);
+		}
 		return searchInputDataList;
 	}
 	
@@ -88,5 +85,15 @@ public class GoogleService {
 			return dates[1].format(formatter);
 		}
 		return "";
+	}
+
+	private SearchInputData convertToSearchInputData(ScheduledSearch scheduledSearch) {
+		String from = scheduledSearch.getFrom();
+		String to = scheduledSearch.getTo();
+		String price = String.valueOf(scheduledSearch.getPrice());
+		boolean withReturn = scheduledSearch.isWithReturn();
+		LocalDate[] dates = scheduledSearch.getDates().toArray(new LocalDate[]{});
+		SearchInputData searchInputData = new SearchInputData(from, to, price, dates, withReturn);
+		return searchInputData;
 	}
 }

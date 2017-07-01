@@ -14,6 +14,7 @@ public class Application {
     	Properties properties = new Properties();
     	properties.setProperty("logging.level.com.flightbuddy.interceptors.LoggingRestInterceptor", "DEBUG");
     	properties.setProperty("spring.aop.proxy-target-class", "true");
+    	properties.setProperty("spring.jackson.serialization.write_dates_as_timestamps", "false");
     	new SpringApplicationBuilder(Application.class).properties(properties).run(args);
     }
 }
