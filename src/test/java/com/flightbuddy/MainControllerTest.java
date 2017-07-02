@@ -189,7 +189,7 @@ public class MainControllerTest {
 		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isOk());
 		ArgumentCaptor<ScheduledSearch> argument = ArgumentCaptor.forClass(ScheduledSearch.class);
-		verify(scheduledSearchService, times(1)).save(argument.capture());
+		verify(scheduledSearchService, times(1)).save(argument.capture(), any());
 		assertEquals("from", argument.getValue().getFrom());
 	}
 
