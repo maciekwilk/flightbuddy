@@ -10,20 +10,25 @@ angular.module('schedule', [])
 			to : '',
 			price : '',
 			dates : [],
-			withReturn : ''
+			withReturn : false
 	};
 	
 	self.save = function() {
-		self.showMessage = true;
 		$http.post('/search/schedule/save', self.searchSchedule).then(
 			function(response) {
+				self.showMessage = true;
 				if (response.data.error) {
 					self.error = response.data.error;
 				} else {
 					self.message = response.data.message;
 				}
 			}, function(response) {
-				self.error = response.data.message;
+				self.showMessage = true;
+				if (response.data.message) {
+					self.error = response.data.message;
+				} else {
+					self.error = response.status + ' ' + response.statusText;
+				}
 			}
 		);
 	}
