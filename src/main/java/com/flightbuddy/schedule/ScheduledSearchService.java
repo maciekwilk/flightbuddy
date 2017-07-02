@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.flightbuddy.user.User;
+
 @Transactional
 @Service
 public class ScheduledSearchService {
@@ -16,7 +18,9 @@ public class ScheduledSearchService {
 		return scheduledSearchDao.findAll();
 	}
 
-	public void save(ScheduledSearch scheduledSearch) {
+	public void save(ScheduledSearch scheduledSearch, User currentUser) {
+		scheduledSearch.setUser(currentUser);
+		currentUser.setScheduledSearch(scheduledSearch);
 		scheduledSearchDao.persist(scheduledSearch);
 	}
 }

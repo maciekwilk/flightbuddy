@@ -12,9 +12,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import com.flightbuddy.db.MutableEntity;
+import com.flightbuddy.schedule.ScheduledSearch;
 
 @Entity
 public class User extends MutableEntity {
@@ -36,6 +38,9 @@ public class User extends MutableEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Set<UserRole> roles;
+    
+    @OneToOne(mappedBy = "user")
+    private ScheduledSearch scheduledSearch;
 
 	public User() {
 		String uuid = UUID.randomUUID().toString();
@@ -80,5 +85,13 @@ public class User extends MutableEntity {
 
 	public void setRoles(Set<UserRole> roles) {
 		this.roles = roles;
+	}
+
+	public ScheduledSearch getScheduledSearch() {
+		return scheduledSearch;
+	}
+
+	public void setScheduledSearch(ScheduledSearch scheduledSearch) {
+		this.scheduledSearch = scheduledSearch;
 	}
 }

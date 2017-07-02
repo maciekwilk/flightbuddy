@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,9 +29,11 @@ public class ScheduledSearch extends MutableEntity {
 	private String id;
 
 	@NotNull
+	@Column(name="`from`")
 	private String from;
 
 	@NotNull
+	@Column(name="`to`")
 	private String to;
 
 	@NotNull
@@ -43,8 +47,8 @@ public class ScheduledSearch extends MutableEntity {
 
 	private boolean withReturn;
 	
-	@JoinColumn(name = "id")
-	@OneToOne
+	@JoinColumn(name = "user", nullable = false)
+	@OneToOne(cascade = CascadeType.ALL)
 	private User user;
 
 	public ScheduledSearch() {
