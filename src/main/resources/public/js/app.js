@@ -1,4 +1,4 @@
-angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation', 'registration'])
+angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation', 'registration', 'schedule'])
 .config( function($routeProvider, $httpProvider, $locationProvider) {
     $routeProvider
     	.when('/home', {
@@ -15,6 +15,11 @@ angular.module('app', ['ngRoute', 'ui.bootstrap', 'auth', 'home', 'navigation', 
         	templateUrl : 'register.html',
             controller  : 'registration',
             controllerAs : 'reg'
+        })
+        .when('/schedule', {
+        	templateUrl : 'schedule.html',
+            controller  : 'schedule',
+            controllerAs : 'schedule'
         })
         .otherwise({
     		redirectTo : '/home'
