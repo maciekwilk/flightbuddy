@@ -32,6 +32,10 @@
 		        <input type="text" class="form-control" name="firstDate" ng-model="schedule.searchSchedule.dates[0]" placeholder="Date" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
 		    	<p ng-show="scheduleForm.firstDate.$invalid && !scheduleForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
 		    </div>
+		    <div ng-show="schedule.searchSchedule.withReturn" class="form-group" ng-class="{'has-error': scheduleForm.secondDate.$touched && scheduleForm.secondDate.$invalid }">
+		        <input type="text" class="form-control" name="secondDate" ng-model="schedule.searchSchedule.dates[1]" placeholder="Date return" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		    	<p ng-show="scheduleForm.secondDate.$invalid && !scheduleForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
 		    <br/>
 	    	<button type="submit" class="btn btn-primary" ng-disabled="scheduleForm.$invalid">Save schedule</button>
 	    </div>
