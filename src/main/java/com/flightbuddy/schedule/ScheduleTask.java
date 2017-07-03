@@ -1,4 +1,4 @@
-package com.flightbuddy.google.schedule;
+package com.flightbuddy.schedule;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripService;
 
 @Component
-public class GoogleTask implements Runnable {
+public class ScheduleTask implements Runnable {
 	
-	Logger log = Logger.getLogger(GoogleTask.class);
+	Logger log = Logger.getLogger(ScheduleTask.class);
 
 	@Autowired GoogleService googleService;
     @Autowired FoundTripService foundTripService;

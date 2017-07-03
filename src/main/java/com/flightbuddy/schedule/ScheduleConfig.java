@@ -1,5 +1,6 @@
 package com.flightbuddy.schedule;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -23,8 +24,10 @@ public class ScheduleConfig implements SchedulingConfigurer {
 	Logger log = Logger.getLogger(ScheduleConfig.class);
 	
 	@Autowired TriggerTasksService triggerTasksService;
+	@Autowired ScheduleTrigger scheduleTrigger;
+	@Autowired ScheduleTask scheduleTask;
 	
-	private final static int NUMBER_OF_THREADS = 1;
+	private final static int NUMBER_OF_THREADS = 10;
 	
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
@@ -40,7 +43,8 @@ public class ScheduleConfig implements SchedulingConfigurer {
     	taskRegistrar.setScheduler(taskExecutor());
     	if (scheduleEnabled) {
     		log.info(Messages.get("schedule.enabled"));
-        	Map<Runnable, Trigger> triggerTasks = triggerTasksService.createTriggerTasks();
+        	Map<Runnable, Trigger> triggerTasks = new HashMap<>();
+        	triggerTasks.put(scheduleTask, scheduleTrigger);
             taskRegistrar.setTriggerTasks(triggerTasks);
     	} 
     }

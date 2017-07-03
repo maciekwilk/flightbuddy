@@ -14,20 +14,20 @@ import com.flightbuddy.google.GoogleService;
 @Service
 public class TriggerTasksService {
 
-	@Autowired GoogleService googleService;
-	
-	public Map<Runnable, Trigger> createTriggerTasks() {
-		Map<Runnable, Trigger> triggerTasks = new HashMap<>();
-    	addTriggerTasksForGoogle(triggerTasks);
-		return triggerTasks;
-	}
-
-	private void addTriggerTasksForGoogle(Map<Runnable, Trigger> triggerTasks) {
-		List<SearchInputData> searchInputDataList = googleService.getInputDataForScheduledSearch();
-        Trigger trigger = googleService.getTrigger();
-		for (SearchInputData searchInputData : searchInputDataList) {
-			Runnable runnable = googleService.getTask(searchInputData);
-	        triggerTasks.put(runnable, trigger);
-		}
-	}
+//	@Autowired GoogleService googleService;
+//	
+//	public Map<Runnable, Trigger> createTriggerTasks() {
+//		Map<Runnable, Trigger> triggerTasks = new HashMap<>();
+//    	addTriggerTaskForGoogle(triggerTasks);
+//		return triggerTasks;
+//	}
+//
+//	private void addTriggerTaskForGoogle(Map<Runnable, Trigger> triggerTasks) {
+//		List<SearchInputData> searchInputDataList = googleService.getInputDataForScheduledSearch();
+//        Trigger trigger = googleService.getTrigger();
+//		for (SearchInputData searchInputData : searchInputDataList) {
+//			Runnable runnable = googleService.getTask(searchInputData);
+//	        triggerTasks.put(runnable, trigger);
+//		}
+//	}
 }

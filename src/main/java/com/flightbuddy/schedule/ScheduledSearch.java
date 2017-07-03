@@ -51,6 +51,9 @@ public class ScheduledSearch extends MutableEntity {
 	@OneToOne(cascade = CascadeType.ALL)
 	private User user;
 
+    @OneToOne(mappedBy = "scheduledSearch")
+    private ScheduledSearchTask scheduledSearchTask;
+
 	public ScheduledSearch() {
 		String uuid = UUID.randomUUID().toString();
 		id = uuid.replaceAll("-", "");
@@ -110,5 +113,13 @@ public class ScheduledSearch extends MutableEntity {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public ScheduledSearchTask getScheduledSearchTask() {
+		return scheduledSearchTask;
+	}
+
+	public void setScheduledSearchTask(ScheduledSearchTask scheduledSearchTask) {
+		this.scheduledSearchTask = scheduledSearchTask;
 	}
 }

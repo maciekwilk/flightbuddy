@@ -32,8 +32,8 @@ import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
 import com.flightbuddy.google.response.tripoption.TripOption;
-import com.flightbuddy.google.schedule.GoogleTask;
 import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.schedule.ScheduleTask;
 import com.flightbuddy.schedule.ScheduledSearch;
 import com.flightbuddy.schedule.ScheduledSearchService;
 
@@ -49,7 +49,7 @@ public class GoogleServiceTest {
 	@MockBean
 	private GoogleConnectionService googleConnectionService;
 	@MockBean
-	private GoogleTask googleTask;
+	private ScheduleTask googleTask;
 	@MockBean
 	private ScheduledSearchService scheduledSearchService;
 	

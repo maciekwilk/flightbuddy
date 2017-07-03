@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.flightbuddy.Application;
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
-import com.flightbuddy.google.schedule.GoogleTask;
 import com.flightbuddy.mails.MailService;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripService;
@@ -30,7 +29,7 @@ import com.flightbuddy.results.FoundTripService;
 @SpringBootTest(classes = Application.class)
 public class GoogleTaskTest {
 	
-	@Autowired GoogleTask googleTask;
+	@Autowired ScheduleTask googleTask;
 	
 	@MockBean
 	private GoogleService googleService;

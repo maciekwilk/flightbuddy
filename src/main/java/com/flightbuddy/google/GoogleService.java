@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
-import com.flightbuddy.google.schedule.GoogleTask;
-import com.flightbuddy.google.schedule.GoogleTrigger;
 import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.schedule.ScheduleTask;
+import com.flightbuddy.schedule.ScheduleTrigger;
 import com.flightbuddy.schedule.ScheduledSearch;
 import com.flightbuddy.schedule.ScheduledSearchService;
 
@@ -28,7 +28,6 @@ public class GoogleService {
 	Logger log = LoggerFactory.getLogger(GoogleService.class);
 	
 	@Autowired GoogleConnectionService googleConnectionService;
-	@Autowired GoogleTask googleTask;
 	@Autowired ScheduledSearchService scheduledSearchService;
 
 	@Value("${google.date.format}")
@@ -46,7 +45,7 @@ public class GoogleService {
 	}
 	
 	public Trigger getTrigger() {
-		return new GoogleTrigger(getInputDataForScheduledSearch().size(), maxAmountOfRequests);
+		return new ScheduleTrigger(getInputDataForScheduledSearch().size(), maxAmountOfRequests);
 	}
 	
 	public Runnable getTask(SearchInputData searchInputData) {
