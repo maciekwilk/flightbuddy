@@ -23,9 +23,8 @@ public class ScheduleConfig implements SchedulingConfigurer {
 
 	Logger log = Logger.getLogger(ScheduleConfig.class);
 	
-	@Autowired TriggerTasksService triggerTasksService;
 	@Autowired ScheduleTrigger scheduleTrigger;
-	@Autowired ScheduleTask scheduleTask;
+	@Autowired ScheduleRunnable scheduleTask;
 	
 	private final static int NUMBER_OF_THREADS = 10;
 	

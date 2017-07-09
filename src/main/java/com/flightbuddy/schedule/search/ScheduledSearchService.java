@@ -1,4 +1,4 @@
-package com.flightbuddy.schedule;
+package com.flightbuddy.schedule.search;
 
 import java.util.List;
 

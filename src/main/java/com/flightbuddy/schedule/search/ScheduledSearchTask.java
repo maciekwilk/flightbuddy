@@ -1,4 +1,4 @@
-package com.flightbuddy.schedule;
+package com.flightbuddy.schedule.search;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -83,7 +83,7 @@ public class ScheduledSearchTask extends ImmutableEntity {
 	}
 
 	public enum ScheduledSearchState {
-    	READY, SET, TRIGGERED
+    	READY, SET, STARTED, FINISHED
     }
     
     public enum RequestService {

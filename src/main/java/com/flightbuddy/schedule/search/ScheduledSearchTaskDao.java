@@ -1,4 +1,4 @@
-package com.flightbuddy.schedule;
+package com.flightbuddy.schedule.search;
 
 import java.util.UUID;
 
@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flightbuddy.db.AbstractDao;
-import com.flightbuddy.schedule.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.schedule.search.QScheduledSearchTask;
+import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
 import com.querydsl.core.types.EntityPath;
 
 @Transactional
@@ -23,6 +24,13 @@ public class ScheduledSearchTaskDao extends AbstractDao<ScheduledSearchTask, UUI
 	public ScheduledSearchTask findNextReadyTask() {
 		return from()
 				.where(SCHEDULED_SEARCH_TASK.state.eq(ScheduledSearchState.READY))
+				.orderBy(SCHEDULED_SEARCH_TASK.executionTime.asc())
+				.fetchFirst();
+	}
+
+	public ScheduledSearchTask findNextSetTask() {
+		return from()
+				.where(SCHEDULED_SEARCH_TASK.state.eq(ScheduledSearchState.SET))
 				.orderBy(SCHEDULED_SEARCH_TASK.executionTime.asc())
 				.fetchFirst();
 	}

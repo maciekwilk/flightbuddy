@@ -1,4 +1,4 @@
-package com.flightbuddy.schedule;
+package com.flightbuddy.schedule.search;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flightbuddy.db.AbstractDao;
+import com.flightbuddy.schedule.search.QScheduledSearch;
 import com.flightbuddy.user.User;
 import com.querydsl.core.types.EntityPath;
 

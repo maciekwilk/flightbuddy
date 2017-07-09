@@ -23,6 +23,9 @@ import org.springframework.scheduling.TriggerContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flightbuddy.Application;
+import com.flightbuddy.schedule.search.ScheduledSearch;
+import com.flightbuddy.schedule.search.ScheduledSearchTask;
+import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
@@ -70,6 +73,7 @@ public class ScheduleTriggerTest {
 	private ScheduledSearchTask createScheduledSearchTask(LocalDateTime nextExecution, String searchTaskId) {
 		ScheduledSearchTask readySearchTask = new ScheduledSearchTask();
 		readySearchTask.setId(searchTaskId);
+		readySearchTask.setScheduledSearch(new ScheduledSearch());
 		readySearchTask.setExecutionTime(nextExecution);
 		return readySearchTask;
 	}

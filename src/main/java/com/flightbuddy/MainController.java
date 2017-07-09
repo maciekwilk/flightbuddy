@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flightbuddy.resources.Messages;
-import com.flightbuddy.schedule.ScheduledSearch;
-import com.flightbuddy.schedule.ScheduledSearchService;
+import com.flightbuddy.schedule.search.ScheduledSearch;
+import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.user.RegistrationFormData;
 import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserService;

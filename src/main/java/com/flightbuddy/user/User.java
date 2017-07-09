@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import com.flightbuddy.db.MutableEntity;
-import com.flightbuddy.schedule.ScheduledSearch;
+import com.flightbuddy.schedule.search.ScheduledSearch;
 
 @Entity
 public class User extends MutableEntity {
