@@ -28,13 +28,9 @@ public class ScheduleTrigger implements Trigger {
 	@Transactional
 	public Date nextExecutionTime(TriggerContext triggerContext) {
 		log.info("setting next execution time started");
-        Date lastActualExecutionTime = triggerContext.lastActualExecutionTime();
-        if (lastActualExecutionTime == null) {
-        	lastActualExecutionTime = new Date();
-        }
 		Date nextExecutionTime = getNextExecutionTime();
 		log.info("setting next execution time finished, next execution time = " + nextExecutionTime); 
-		return nextExecutionTime != null ? nextExecutionTime : lastActualExecutionTime;
+		return nextExecutionTime;
 	}
 
 	private Date getNextExecutionTime() {
@@ -43,7 +39,7 @@ public class ScheduleTrigger implements Trigger {
 			return getNextExecutionTime(readySearchTask);
 		} else {
 			log.info("no scheduled search task found with status READY");
-			return null;
+			return getFiveMinutesFromNow();
 		}
 	}
 
@@ -61,10 +57,14 @@ public class ScheduleTrigger implements Trigger {
 		log.info("READY search task changed state to SET, id = " + readySearchTask.getId());
 	}
 
+	private Date getFiveMinutesFromNow() {
+		LocalDateTime nowPlusFiveMinutes = LocalDateTime.now().plusMinutes(5);
+		return toDate(nowPlusFiveMinutes);
+	}
+
 	private Date toDate(LocalDateTime localDateTime) {
 		ZoneId zone = ZoneId.systemDefault();
 		Instant instant = localDateTime.atZone(zone).toInstant();
 		return Date.from(instant);
 	}
-
 }
