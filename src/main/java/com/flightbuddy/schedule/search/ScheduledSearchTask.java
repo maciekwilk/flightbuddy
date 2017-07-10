@@ -3,7 +3,6 @@ package com.flightbuddy.schedule.search;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -22,7 +21,7 @@ public class ScheduledSearchTask extends ImmutableEntity {
 	private String id;
 	
 	@JoinColumn(name = "scheduledSearch", nullable = false)
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	private ScheduledSearch scheduledSearch;
 	
 	@NotNull
