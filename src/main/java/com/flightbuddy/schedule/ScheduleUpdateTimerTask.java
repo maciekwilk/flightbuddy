@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,23 +21,38 @@ import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
 
 @Component
 public class ScheduleUpdateTimerTask {
+	
+	Logger log = LoggerFactory.getLogger(ScheduleUpdateTimerTask.class);
 
 	@Autowired GoogleService googleService;
 	@Autowired ScheduledSearchService scheduledSearchService;
 	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
+	@Value("${schedule.enable}")
+	private boolean scheduleEnabled;
 	
 	private static final int TWENTY_FOUR_HOURS_IN_SECONDS = 24*60*60;
 	
-	@Scheduled(cron = "0 0 18 * * *")
+	@Scheduled(cron = "0 52 23 * * *")
 	public void run() {
-		List<ScheduledSearch> scheduledSearches = scheduledSearchService.getAllScheduledSearches();
-		if (!scheduledSearches.isEmpty()) {
-			List<LocalDateTime> executionTimes = calculateExecutionTimes(scheduledSearches.size());
-			for (ScheduledSearch scheduledSearch : scheduledSearches) {
-				for (LocalDateTime executionTime : executionTimes) {
-					ScheduledSearchTask scheduledSearchTask = createReadyScheduledSearchTask(scheduledSearch, executionTime);
-					scheduledSearchTaskService.create(scheduledSearchTask);
-				}
+		if (scheduleEnabled) {
+			log.info("updating schedule started");
+			List<ScheduledSearch> scheduledSearches = scheduledSearchService.getAllScheduledSearches();
+			if (!scheduledSearches.isEmpty()) {
+				createScheduleSearchTasks(scheduledSearches);
+			} else {
+				log.info("no scheduled searches found");
+			}
+			log.info("updating schedule ended, created tasks for " + scheduledSearches.size() + " scheduled searches");
+		}
+	}
+
+	private void createScheduleSearchTasks(List<ScheduledSearch> scheduledSearches) {
+		List<LocalDateTime> executionTimes = calculateExecutionTimes(scheduledSearches.size());
+		log.info("creating " + executionTimes.size() + " tasks for every scheduled search");
+		for (ScheduledSearch scheduledSearch : scheduledSearches) {
+			for (LocalDateTime executionTime : executionTimes) {
+				ScheduledSearchTask scheduledSearchTask = createReadyScheduledSearchTask(scheduledSearch, executionTime);
+				scheduledSearchTaskService.create(scheduledSearchTask);
 			}
 		}
 	}
