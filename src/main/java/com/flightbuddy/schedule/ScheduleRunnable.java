@@ -1,5 +1,9 @@
 package com.flightbuddy.schedule;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -34,11 +38,26 @@ public class ScheduleRunnable implements Runnable {
 			return;
 		}
 		log(scheduledSearchTask, scheduledSearchTask.getScheduledSearch(), "scheduled search task found");
+		waitForExecutionTime(scheduledSearchTask);
 		changeStateToStarted(scheduledSearchTask);
 		List<FoundTrip> foundTrips = performSearch(scheduledSearchTask);
 		handleFoundTrips(scheduledSearchTask, foundTrips);
 		changeStateToFinished(scheduledSearchTask);
 		log.info("running scheduled search ended");
+	}
+
+	private void waitForExecutionTime(ScheduledSearchTask scheduledSearchTask) {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime executionTime = scheduledSearchTask.getExecutionTime();
+		if (now.isBefore(executionTime)) {
+			long timeToWait = toMillis(executionTime) - toMillis(now);
+			try {
+				Thread.sleep(timeToWait);
+			} catch (InterruptedException e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+		
 	}
 
 	private void changeStateToStarted(ScheduledSearchTask scheduledSearchTask) {
@@ -78,5 +97,11 @@ public class ScheduleRunnable implements Runnable {
 	private void log(ScheduledSearchTask scheduledSearchTask, ScheduledSearch scheduledSearch, String message) {
 		log.info(message + ", id = " + scheduledSearchTask.getId() + ", service = " 
 				+ scheduledSearchTask.getService() + ", search = " + scheduledSearch.getId());
+	}
+
+	private long toMillis(LocalDateTime localDateTime) {
+		ZoneId zone = ZoneId.systemDefault();
+		Instant instant = localDateTime.atZone(zone).toInstant();
+		return Date.from(instant).getTime();
 	}
 }
