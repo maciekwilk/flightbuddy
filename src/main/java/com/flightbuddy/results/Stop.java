@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,6 +20,7 @@ public class Stop extends ImmutableEntity {
 
 	@JsonIgnore
 	@ManyToOne
+	@JoinColumn(name = "flight")
 	private Flight flight;
 
 	public Stop() {
