@@ -8,6 +8,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
 import org.springframework.stereotype.Component;
@@ -22,19 +23,29 @@ public class ScheduleTrigger implements Trigger {
 	
 	Logger log = LoggerFactory.getLogger(ScheduleTrigger.class);
 
-	@Autowired ScheduledSearchTaskService scheduledSearchServiceTask;
+	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
+	@Value("${schedule.enable}")
+	private boolean scheduleEnabled;
 	
 	@Override 
 	@Transactional
 	public Date nextExecutionTime(TriggerContext triggerContext) {
-		log.info("setting next execution time started");
-		Date nextExecutionTime = getNextExecutionTime();
-		log.info("setting next execution time finished, next execution time = " + nextExecutionTime); 
+		Date nextExecutionTime = toDate(LocalDateTime.now().plusHours(24));
+		if (scheduleEnabled) {
+			log.info("setting next execution time started");
+			try {
+				nextExecutionTime = getNextExecutionTime();
+			} catch (Exception ex) {
+				log.error(ex.getMessage(), ex);
+				nextExecutionTime = getFiveMinutesFromNow();
+			}
+			log.info("setting next execution time finished, next execution time = " + nextExecutionTime); 
+		}
 		return nextExecutionTime;
 	}
 
 	private Date getNextExecutionTime() {
-		ScheduledSearchTask readySearchTask = scheduledSearchServiceTask.findNextReadyTask();
+		ScheduledSearchTask readySearchTask = scheduledSearchTaskService.findNextReadyTask();
 		if (readySearchTask != null && readySearchTask.getExecutionTime() != null) {
 			return getNextExecutionTime(readySearchTask);
 		} else {
@@ -53,7 +64,7 @@ public class ScheduleTrigger implements Trigger {
 	}
 
 	private void changeStateToSet(ScheduledSearchTask readySearchTask) {
-		scheduledSearchServiceTask.changeTaskStateToSet(readySearchTask.getId());
+		scheduledSearchTaskService.changeTaskStateToSet(readySearchTask.getId());
 		log.info("READY search task changed state to SET, id = " + readySearchTask.getId());
 	}
 

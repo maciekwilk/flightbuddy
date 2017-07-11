@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.flightbuddy.SearchInputData;
@@ -28,13 +29,26 @@ public class ScheduleRunnable implements Runnable {
 	@Autowired GoogleService googleService;
     @Autowired FoundTripService foundTripService;
     @Autowired MailService mailService;
-    
+	@Value("${schedule.enable}")
+	private boolean scheduleEnabled;
+	
 	@Override
 	public void run() {
-		log.info("running scheduled search started");
+		if(scheduleEnabled) {
+			log.info("running scheduled search started");
+			try {
+				runNextSetTask();
+			} catch (Exception ex) {
+				log.error(ex.getMessage(), ex);
+			}
+			log.info("running scheduled search ended");
+		}
+	}
+
+	private void runNextSetTask() {
 		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskService.findNextSetTask();
 		if (scheduledSearchTask == null || scheduledSearchTask.getScheduledSearch() == null) {
-			log.error("no scheduled search task found with status SET");
+			log.info("no scheduled search task found with status SET");
 			return;
 		}
 		log(scheduledSearchTask, scheduledSearchTask.getScheduledSearch(), "scheduled search task found");
@@ -43,7 +57,6 @@ public class ScheduleRunnable implements Runnable {
 		List<FoundTrip> foundTrips = performSearch(scheduledSearchTask);
 		handleFoundTrips(scheduledSearchTask, foundTrips);
 		changeStateToFinished(scheduledSearchTask);
-		log.info("running scheduled search ended");
 	}
 
 	private void waitForExecutionTime(ScheduledSearchTask scheduledSearchTask) {

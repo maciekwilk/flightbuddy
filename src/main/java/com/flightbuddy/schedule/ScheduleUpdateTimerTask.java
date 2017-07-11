@@ -32,7 +32,7 @@ public class ScheduleUpdateTimerTask {
 	
 	private static final int TWENTY_FOUR_HOURS_IN_SECONDS = 24*60*60;
 	
-	@Scheduled(cron = "0 52 23 * * *")
+	@Scheduled(cron = "0 01 20 * * *")
 	public void run() {
 		if (scheduleEnabled) {
 			log.info("updating schedule started");
