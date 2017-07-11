@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
 
 @Service
+@PreAuthorize("hasRole('SYSTEM')")
 public class MailService {
 
 	Logger log = LoggerFactory.getLogger(MailService.class);

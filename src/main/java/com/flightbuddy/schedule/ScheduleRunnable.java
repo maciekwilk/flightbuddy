@@ -19,6 +19,7 @@ import com.flightbuddy.results.FoundTripService;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
+import com.flightbuddy.user.AuthenticationService;
 
 @Component
 public class ScheduleRunnable implements Runnable {
@@ -29,12 +30,14 @@ public class ScheduleRunnable implements Runnable {
 	@Autowired GoogleService googleService;
     @Autowired FoundTripService foundTripService;
     @Autowired MailService mailService;
+	@Autowired AuthenticationService authenticationService;
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
 	
 	@Override
 	public void run() {
 		if(scheduleEnabled) {
+			authenticationService.loginAsSystem();
 			log.info("running scheduled search started");
 			try {
 				runNextSetTask();
@@ -42,6 +45,7 @@ public class ScheduleRunnable implements Runnable {
 				log.error(ex.getMessage(), ex);
 			}
 			log.info("running scheduled search ended");
+			authenticationService.logoutUsers();
 		}
 	}
 

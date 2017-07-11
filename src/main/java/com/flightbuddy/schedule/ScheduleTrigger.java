@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
+import com.flightbuddy.user.AuthenticationService;
 
 @Component
 public class ScheduleTrigger implements Trigger {
@@ -24,6 +25,7 @@ public class ScheduleTrigger implements Trigger {
 	Logger log = LoggerFactory.getLogger(ScheduleTrigger.class);
 
 	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
+	@Autowired AuthenticationService authenticationService;
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
 	
@@ -32,6 +34,7 @@ public class ScheduleTrigger implements Trigger {
 	public Date nextExecutionTime(TriggerContext triggerContext) {
 		Date nextExecutionTime = toDate(LocalDateTime.now().plusHours(24));
 		if (scheduleEnabled) {
+			authenticationService.loginAsSystem();
 			log.info("setting next execution time started");
 			try {
 				nextExecutionTime = getNextExecutionTime();
@@ -39,7 +42,8 @@ public class ScheduleTrigger implements Trigger {
 				log.error(ex.getMessage(), ex);
 				nextExecutionTime = getFiveMinutesFromNow();
 			}
-			log.info("setting next execution time finished, next execution time = " + nextExecutionTime); 
+			log.info("setting next execution time finished, next execution time = " + nextExecutionTime);
+			authenticationService.logoutUsers();
 		}
 		return nextExecutionTime;
 	}

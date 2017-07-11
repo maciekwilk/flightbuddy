@@ -10,6 +10,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -40,7 +41,7 @@ public class ScheduledSearch extends MutableEntity {
 	@NotNull
 	private BigDecimal price;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@JsonSerialize(contentUsing = LocalDateSerializer.class)
 	@JsonDeserialize(contentUsing = LocalDateDeserializer.class)
 	@CollectionTable(name = "scheduledsearch_dates", joinColumns = @JoinColumn(name = "id"))

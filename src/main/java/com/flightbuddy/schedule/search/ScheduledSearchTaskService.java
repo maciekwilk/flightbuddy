@@ -1,6 +1,7 @@
 package com.flightbuddy.schedule.search;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -8,6 +9,7 @@ import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
 
 @Transactional
 @Service
+@PreAuthorize("hasRole('SYSTEM')")
 public class ScheduledSearchTaskService {
 	
 	@Autowired ScheduledSearchTaskDao scheduledSearchTaskDao;

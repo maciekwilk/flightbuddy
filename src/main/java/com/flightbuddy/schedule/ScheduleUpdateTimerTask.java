@@ -15,9 +15,10 @@ import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
-import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.RequestService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
+import com.flightbuddy.user.AuthenticationService;
 
 @Component
 public class ScheduleUpdateTimerTask {
@@ -27,6 +28,7 @@ public class ScheduleUpdateTimerTask {
 	@Autowired GoogleService googleService;
 	@Autowired ScheduledSearchService scheduledSearchService;
 	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
+	@Autowired AuthenticationService authenticationService;
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
 	
@@ -35,6 +37,7 @@ public class ScheduleUpdateTimerTask {
 	@Scheduled(cron = "0 01 20 * * *")
 	public void run() {
 		if (scheduleEnabled) {
+			authenticationService.loginAsSystem();
 			log.info("updating schedule started");
 			List<ScheduledSearch> scheduledSearches = scheduledSearchService.getAllScheduledSearches();
 			if (!scheduledSearches.isEmpty()) {
@@ -43,6 +46,7 @@ public class ScheduleUpdateTimerTask {
 				log.info("no scheduled searches found");
 			}
 			log.info("updating schedule ended, created tasks for " + scheduledSearches.size() + " scheduled searches");
+			authenticationService.logoutUsers();
 		}
 	}
 
