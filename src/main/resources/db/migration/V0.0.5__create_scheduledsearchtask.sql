@@ -1,6 +1,8 @@
 CREATE TABLE `scheduledsearchtask` (
   `id` varchar(255) NOT NULL,
   `created` datetime NOT NULL,
+  `updated` datetime NOT NULL,
+  `version` int(11) NOT NULL,
   `executionTime` datetime NOT NULL,
   `state` varchar(255) NOT NULL,
   `service` varchar(255) NOT NULL,

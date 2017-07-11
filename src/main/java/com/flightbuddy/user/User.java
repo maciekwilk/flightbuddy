@@ -3,6 +3,7 @@ package com.flightbuddy.user;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -39,7 +40,7 @@ public class User extends MutableEntity {
     @Enumerated(EnumType.STRING)
     private Set<UserRole> roles;
     
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ScheduledSearch scheduledSearch;
 
 	public User() {

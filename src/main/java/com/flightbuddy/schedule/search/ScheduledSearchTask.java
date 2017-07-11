@@ -9,19 +9,19 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import com.flightbuddy.db.ImmutableEntity;
+import com.flightbuddy.db.MutableEntity;
 
 @Entity
-public class ScheduledSearchTask extends ImmutableEntity {
+public class ScheduledSearchTask extends MutableEntity {
 	
 	@Id
 	private String id;
 	
 	@JoinColumn(name = "scheduledSearch", nullable = false)
-	@OneToOne
+	@ManyToOne
 	private ScheduledSearch scheduledSearch;
 	
 	@NotNull

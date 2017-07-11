@@ -12,6 +12,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
@@ -48,11 +49,11 @@ public class ScheduledSearch extends MutableEntity {
 	private boolean withReturn;
 	
 	@JoinColumn(name = "user", nullable = false)
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	private User user;
 
-    @OneToOne(mappedBy = "scheduledSearch")
-    private ScheduledSearchTask scheduledSearchTask;
+    @OneToMany(mappedBy = "scheduledSearch", cascade = CascadeType.ALL)
+    private List<ScheduledSearchTask> scheduledSearchTasks;
 
 	public ScheduledSearch() {
 		String uuid = UUID.randomUUID().toString();
@@ -115,11 +116,11 @@ public class ScheduledSearch extends MutableEntity {
 		this.user = user;
 	}
 
-	public ScheduledSearchTask getScheduledSearchTask() {
-		return scheduledSearchTask;
+	public List<ScheduledSearchTask> getScheduledSearchTasks() {
+		return scheduledSearchTasks;
 	}
 
-	public void setScheduledSearchTask(ScheduledSearchTask scheduledSearchTask) {
-		this.scheduledSearchTask = scheduledSearchTask;
+	public void setScheduledSearchTasks(List<ScheduledSearchTask> scheduledSearchTasks) {
+		this.scheduledSearchTasks = scheduledSearchTasks;
 	}
 }
