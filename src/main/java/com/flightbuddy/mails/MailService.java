@@ -47,9 +47,9 @@ public class MailService {
 	private void send(SimpleMailMessage mailMessage) {
 		try {
             javaMailSender.send(mailMessage);
-            log.info(Messages.get("mail.success", mailMessage.getFrom(), mailMessage.getTo(), mailMessage.getSubject()));
+            log.info(Messages.get("mail.success", mailMessage.getFrom(), mailMessage.getTo()[0], mailMessage.getSubject()));
         } catch (MailException ex) {
-            log.error(Messages.get("error.mail.sending", mailMessage.getFrom(), mailMessage.getTo(), mailMessage.getSubject()), ex);
+            log.error(Messages.get("error.mail.sending", mailMessage.getFrom(), mailMessage.getTo()[0], mailMessage.getSubject()), ex);
         }
 	}
 
