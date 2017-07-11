@@ -1,7 +1,5 @@
 package com.flightbuddy.schedule.search;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,7 @@ public class ScheduledSearchTaskService {
 	}
 
 	public void changeTaskStateToSet(String id) {
-		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskDao.findById(UUID.fromString(id));
+		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskDao.findById(id);
 		scheduledSearchTask.setState(ScheduledSearchState.SET);
 		scheduledSearchTaskDao.merge(scheduledSearchTask);
 	}
@@ -34,13 +32,13 @@ public class ScheduledSearchTaskService {
 	
 
 	public void changeTaskStateToStarted(String id) {
-		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskDao.findById(UUID.fromString(id));
+		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskDao.findById(id);
 		scheduledSearchTask.setState(ScheduledSearchState.STARTED);
 		scheduledSearchTaskDao.merge(scheduledSearchTask);
 	}
 	
 	public void changeTaskStateToFinished(String id) {
-		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskDao.findById(UUID.fromString(id));
+		ScheduledSearchTask scheduledSearchTask = scheduledSearchTaskDao.findById(id);
 		scheduledSearchTask.setState(ScheduledSearchState.FINISHED);
 		scheduledSearchTaskDao.merge(scheduledSearchTask);
 	}
