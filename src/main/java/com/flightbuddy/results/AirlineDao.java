@@ -1,7 +1,5 @@
 package com.flightbuddy.results;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +8,7 @@ import com.querydsl.core.types.EntityPath;
 
 @Transactional
 @Repository
-public class AirlineDao extends AbstractDao<Airline, UUID> {
+public class AirlineDao extends AbstractDao<Airline, String> {
 
 	private static final QAirline AIRLINE = QAirline.airline;
 

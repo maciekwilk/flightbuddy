@@ -1,7 +1,5 @@
 package com.flightbuddy.user;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +8,7 @@ import com.querydsl.core.types.EntityPath;
 
 @Transactional
 @Repository
-public class UserDao extends AbstractDao<User, UUID> {
+public class UserDao extends AbstractDao<User, String> {
 
 	private static final QUser USER = QUser.user;
 

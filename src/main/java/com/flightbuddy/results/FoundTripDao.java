@@ -1,7 +1,5 @@
 package com.flightbuddy.results;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +8,7 @@ import com.querydsl.core.types.EntityPath;
 
 @Transactional
 @Repository
-public class FoundTripDao extends AbstractDao<FoundTrip, UUID> {
+public class FoundTripDao extends AbstractDao<FoundTrip, String> {
 
 	private static final QFoundTrip FOUND_TRIP = QFoundTrip.foundTrip;
 	

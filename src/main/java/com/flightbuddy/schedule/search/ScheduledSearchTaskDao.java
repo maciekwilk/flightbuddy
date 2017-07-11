@@ -1,18 +1,15 @@
 package com.flightbuddy.schedule.search;
 
-import java.util.UUID;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.flightbuddy.db.AbstractDao;
-import com.flightbuddy.schedule.search.QScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
 import com.querydsl.core.types.EntityPath;
 
 @Transactional
 @Repository
-public class ScheduledSearchTaskDao extends AbstractDao<ScheduledSearchTask, UUID>{
+public class ScheduledSearchTaskDao extends AbstractDao<ScheduledSearchTask, String>{
 
 	private static final QScheduledSearchTask SCHEDULED_SEARCH_TASK = QScheduledSearchTask.scheduledSearchTask;
 	
