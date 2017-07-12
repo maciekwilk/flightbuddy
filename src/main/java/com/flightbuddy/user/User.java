@@ -14,12 +14,14 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.flightbuddy.db.MutableEntity;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 
 @Entity
+@Table(name="user")
 public class User extends MutableEntity {
 
     @Id

@@ -10,11 +10,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.flightbuddy.db.MutableEntity;
 
 @Entity
+@Table(name="scheduledsearchtask")
 public class ScheduledSearchTask extends MutableEntity {
 	
 	@Id

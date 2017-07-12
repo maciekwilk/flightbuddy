@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -25,6 +26,7 @@ import com.flightbuddy.db.MutableEntity;
 import com.flightbuddy.user.User;
 
 @Entity
+@Table(name="scheduledsearch")
 public class ScheduledSearch extends MutableEntity {
 	
 	@Id

@@ -10,11 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.flightbuddy.db.ImmutableEntity;
 
 @Entity
+@Table(name="flight")
 public class Flight extends ImmutableEntity {
 
 	@Id
