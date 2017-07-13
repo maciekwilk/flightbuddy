@@ -1,11 +1,50 @@
 <div class="col-md-1"></div>
 <div class="col-md-10">
-	<h1>Greeting</h1>
-	<div ng-show="home.authenticated()">
-	    <p>Welcome {{home.user}}</p>
+	<div class="alert alert-success" ng-show="schedule.showMessage && !schedule.error"> {{schedule.message}} </div>
+	<div class="alert alert-danger" ng-show="schedule.showMessage && schedule.error"> {{schedule.error}} </div>
+	<div class="row">
+	<form name="scheduleForm" role="form" ng-submit="schedule.save()" novalidate>
+    	<div class="col-md-4"></div>
+    	<div class="col-md-4">
+		    <div class="form-group" ng-class="{'has-error': scheduleForm.from.$touched && scheduleForm.from.$invalid }">
+		        <input type="text" class="form-control" name="from" ng-model="schedule.searchSchedule.from" placeholder="From where?" ng-minlength="3" ng-maxlength="3" required/>
+		    	<p ng-show="scheduleForm.from.$error.minlength || scheduleForm.from.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="scheduleForm.from.$invalid && !scheduleForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': scheduleForm.to.$touched && scheduleForm.to.$invalid }">
+		        <input type="text" class="form-control" name="to" ng-model="schedule.searchSchedule.to" placeholder="To where?" ng-minlength="3" ng-maxlength="3" required/>
+		    	<p ng-show="scheduleForm.to.$error.minlength || scheduleForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="scheduleForm.to.$invalid && !scheduleForm.to.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': scheduleForm.price.$touched && scheduleForm.price.$invalid }">
+		        <div class="form-inline">
+		        	<input type="number" class="form-control" name="price" ng-model="schedule.searchSchedule.price" placeholder="Price limit" ng-pattern="/^\d*\.\d{2}$/" required/>
+		    		&euro;
+		    	</div>
+		    	<p ng-show="scheduleForm.price.$invalid && !scheduleForm.price.$pristine" class="help-block">Enter a price with two decimal places.</p>
+		    </div>
+		    <div class="form-group">
+		    	<label class="form-check-label">
+			        <input type="checkbox" class="form-check-input" ng-model="schedule.searchSchedule.withReturn">
+			        Round-trip
+    			</label>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': scheduleForm.firstDate.$touched && scheduleForm.firstDate.$invalid }">
+		        <input type="text" class="form-control" name="firstDate" ng-model="schedule.searchSchedule.dates[0]" placeholder="Date" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		    	<p ng-show="scheduleForm.firstDate.$invalid && !scheduleForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <div ng-show="schedule.searchSchedule.withReturn" class="form-group" ng-class="{'has-error': scheduleForm.secondDate.$touched && scheduleForm.secondDate.$invalid }">
+		        <input type="text" class="form-control" name="secondDate" ng-model="schedule.searchSchedule.dates[1]" placeholder="Date return" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		    	<p ng-show="scheduleForm.secondDate.$invalid && !scheduleForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <br/>
+	    	<button type="submit" class="btn btn-primary" ng-disabled="scheduleForm.$invalid">Search</button>
+	    </div>
+    	<div class="col-md-4"></div>
+	</form>
 	</div>
-	<div ng-show="!home.authenticated()">
-	    <p>Login to see your greeting</p>
+	<div class="row">
+		Flights will be here
 	</div>
 </div>
 <div class="col-md-1"></div>
