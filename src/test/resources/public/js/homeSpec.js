@@ -2,37 +2,82 @@ describe("home", function() {
 
 	beforeEach(module('home'));
 
-	describe("Given user is authenticated", function() {
-		beforeEach(module(function($provide) {
-			$provide.value('auth', {
-				authenticated : true
-			});
-		}));
-		
-	    var $controller;
-		beforeEach(inject(function(_$controller_) {
-			$controller = _$controller_('home', {});
-		}));
-		
-		it("authenticated variable should be true", function() {
-			expect($controller.authenticated()).toEqual(true);
-		});
-	});
+	var $controller, $httpBackend;
+    
+	beforeEach(inject(function(_$controller_, _$httpBackend_) {
+		$controller = _$controller_('home', {});
+		$httpBackend = _$httpBackend_;
+	}));
 	
-	describe("Given user is not authenticated", function() {
-		beforeEach(module(function($provide) {
-			$provide.value('auth', {
-				authenticated : false
-			});
-		}));
+	afterEach(function() {
+	    $httpBackend.verifyNoOutstandingExpectation();
+	    $httpBackend.verifyNoOutstandingRequest();
+    });
+	
+	it("showMessage variable should be false", function() {
+		expect($controller.showMessage).toEqual(false);
+	})
+	
+	describe('Given save function was called', function() {
 		
-	    var $controller;
-		beforeEach(inject(function(_$controller_) {
-			$controller = _$controller_('home', {});
-		}));
+		describe('when response fails with error message', function() {
+			it("error variable should have the message", function() {
+				var errorMessage = 'error message';
+				var searchData = {
+						from : '',
+						to : '',
+						price : '',
+						dates : [],
+						withReturn : ''
+				};
+				$httpBackend.expect('POST', '/search/perform', searchData).respond(401, {
+			    	message : errorMessage
+			    });
+				$controller.save();
+				$httpBackend.flush();
+				expect($controller.showMessage).toEqual(true);
+				expect($controller.error).toEqual(errorMessage);
+			})
+		});
 		
-		it("authenticated variable should be false", function() {
-			expect($controller.authenticated()).toEqual(false);
+		describe('when response is successful with error message', function() {
+			it("error variable should have the message", function() {
+				var errorMessage = 'error message';
+				var searchData = {
+						from : '',
+						to : '',
+						price : '',
+						dates : [],
+						withReturn : false
+				};
+				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
+			    	error : errorMessage
+			    });
+				$controller.save();
+				$httpBackend.flush();
+				expect($controller.showMessage).toEqual(true);
+				expect($controller.error).toEqual(errorMessage);
+			})
+		});
+		
+		describe('when response is successful with no error message', function() {
+			it("error variable should have the message", function() {
+				var message = 'success message';
+				var searchData = {
+						from : '',
+						to : '',
+						price : '',
+						dates : [],
+						withReturn : ''
+				};
+				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
+			    	message : message
+			    });
+				$controller.save();
+				$httpBackend.flush();
+				expect($controller.showMessage).toEqual(true);
+				expect($controller.message).toEqual(message);
+			})
 		});
 	});
 });

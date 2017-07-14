@@ -2,7 +2,12 @@ angular.module('home', [])
 .controller('home', function($http, auth) {
     var self = this;
     
-    self.authenticated = function() {
-        return auth.authenticated;
-    }
+    self.foundTrips = [{
+    	price : '230',
+		hours : '11:14 - 21:35',
+		duration : '3h54m',
+		trip : 'BSL-KRK',
+		stops : '1'
+    }];
+    
 });
