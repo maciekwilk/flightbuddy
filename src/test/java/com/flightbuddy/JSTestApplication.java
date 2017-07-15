@@ -1,5 +1,7 @@
 package com.flightbuddy;
 
+import java.util.Properties;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.stereotype.Controller;
@@ -15,8 +17,12 @@ public class JSTestApplication {
 	}
 
 	public static void main(String[] args) {
+		Properties properties = new Properties();
+    	properties.setProperty("spring.aop.proxy-target-class", "true");
+    	properties.setProperty("server.port", "9999");
+    	properties.setProperty("security.basic.enabled", "false");
 		new SpringApplicationBuilder(JSTestApplication.class)
-			.properties("server.port=9999", "security.basic.enabled=false").run(args);
+			.properties(properties).run(args);
 	}
 
 }
