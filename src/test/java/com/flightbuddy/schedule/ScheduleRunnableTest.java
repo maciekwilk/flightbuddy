@@ -24,7 +24,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flightbuddy.Application;
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.mails.MailService;
 import com.flightbuddy.results.FoundTrip;
@@ -33,6 +32,8 @@ import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.SearchInputDataConverter;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -51,13 +52,13 @@ public class ScheduleRunnableTest {
     @MockBean
     private ScheduledSearchTaskService scheduledSearchTaskService;
 	
-    private SearchInputData emptyInputData;
+    private ImmutableSearchInputData emptyInputData;
     
     @Before
 	public void setUp() {
-		emptyInputData = new SearchInputData(null, null, null, new LocalDate[]{}, false);
+		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
 		mockStatic(SearchInputDataConverter.class);
-		when(SearchInputDataConverter.convert(any())).thenReturn(emptyInputData);
+		when(SearchInputDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
 	}
     
 	@Test
