@@ -11,24 +11,41 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.schedule.search.ScheduledSearch;
+import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.SearchInputData;
+import com.flightbuddy.search.SearchInputDataConverter;
 
 public class SearchInputDataConverterTest {
 		
 	@Test
-	public void getInputDataForScheduledSearchWithOneScheduledSearchWithOneDate() {
+	public void convertToImmutableForScheduledSearchWithOneScheduledSearchWithOneDate() {
 		LocalDate date = LocalDate.of(2017, 12, 2);
 		ScheduledSearch scheduledSearch = createScheduledSearch("from", "to", "10.00", true, Collections.singletonList(date));
-		SearchInputData result = SearchInputDataConverter.convert(scheduledSearch);
+		ImmutableSearchInputData result = SearchInputDataConverter.convertToImmutable(scheduledSearch);
 		assertEqualFields(result, scheduledSearch);
 	}
 	
 	@Test
-	public void getInputDataForScheduledSearchWithOneScheduledSearchWithThreeDates() {
+	public void convertToImmutableForScheduledSearchWithOneScheduledSearchWithThreeDates() {
 		ScheduledSearch scheduledSearch = createScheduledSearchWithThreeDates("from", "to", "10.00", true);
-		SearchInputData result = SearchInputDataConverter.convert(scheduledSearch);
+		ImmutableSearchInputData result = SearchInputDataConverter.convertToImmutable(scheduledSearch);
 		assertEqualFields(result, scheduledSearch);
+	}
+	
+	@Test
+	public void convertToImmutableForSearchInputDataWithOneScheduledSearchWithOneDate() {
+		LocalDate date = LocalDate.of(2017, 12, 2);
+		SearchInputData searchInputData = createSearchInputData("from", "to", "10.00", true, new LocalDate[] {date});
+		ImmutableSearchInputData result = SearchInputDataConverter.convertToImmutable(searchInputData);
+		assertEqualFields(result, searchInputData);
+	}
+
+	@Test
+	public void convertToImmutableForSearchInputDataWithOneScheduledSearchWithThreeDates() {
+		SearchInputData searchInputData = createSearchInputDataWithThreeDates("from", "to", "10.00", true);
+		ImmutableSearchInputData result = SearchInputDataConverter.convertToImmutable(searchInputData);
+		assertEqualFields(result, searchInputData);
 	}
 
 	private ScheduledSearch createScheduledSearchWithThreeDates(String from, String to, String price, boolean withReturn) {
@@ -46,14 +63,38 @@ public class SearchInputDataConverterTest {
 		scheduledSearch.setDates(dates);
 		return scheduledSearch;
 	}
+	
+	private SearchInputData createSearchInputDataWithThreeDates(String from, String to, String price, boolean withReturn) {
+		LocalDate[] dates = new LocalDate[] {LocalDate.of(2017, 8, 5), LocalDate.of(2017, 9, 12), LocalDate.of(2018, 3, 2)};
+		SearchInputData searchInputData = createSearchInputData(from, to, price, withReturn, dates);
+		return searchInputData;
+	}
 
-	private void assertEqualFields(SearchInputData searchInputData, ScheduledSearch scheduledSearch) {
-		assertThat(searchInputData.getFrom(), equalTo(scheduledSearch.getFrom()));
-		assertThat(searchInputData.getTo(), equalTo(scheduledSearch.getTo()));
+	private SearchInputData createSearchInputData(String from, String to, String price, boolean withReturn, LocalDate[] dates) {
+		SearchInputData searchInputData = new SearchInputData();
+		searchInputData.setFrom(from);
+		searchInputData.setTo(to);
+		searchInputData.setPrice(price);
+		searchInputData.setWithReturn(withReturn);
+		searchInputData.setDates(dates);
+		return searchInputData;
+	}
+
+	private void assertEqualFields(ImmutableSearchInputData immutableSearchInputData, ScheduledSearch scheduledSearch) {
+		assertThat(immutableSearchInputData.getFrom(), equalTo(scheduledSearch.getFrom()));
+		assertThat(immutableSearchInputData.getTo(), equalTo(scheduledSearch.getTo()));
 		BigDecimal price = scheduledSearch.getPrice();
-		assertThat(searchInputData.getPrice(), equalTo(price.toString()));
-		assertThat(searchInputData.isWithReturn(), equalTo(scheduledSearch.isWithReturn()));
+		assertThat(immutableSearchInputData.getPrice(), equalTo(price.toString()));
+		assertThat(immutableSearchInputData.isWithReturn(), equalTo(scheduledSearch.isWithReturn()));
 		List<LocalDate> dates = scheduledSearch.getDates();
-		assertThat(searchInputData.getDates(), equalTo(dates.toArray()));
+		assertThat(immutableSearchInputData.getDates(), equalTo(dates.toArray()));
+	}
+	
+	private void assertEqualFields(ImmutableSearchInputData immutableSearchInputData, SearchInputData searchInputData) {
+		assertThat(immutableSearchInputData.getFrom(), equalTo(searchInputData.getFrom()));
+		assertThat(immutableSearchInputData.getTo(), equalTo(searchInputData.getTo()));
+		assertThat(immutableSearchInputData.getPrice(), equalTo(searchInputData.getPrice()));
+		assertThat(immutableSearchInputData.isWithReturn(), equalTo(searchInputData.isWithReturn()));
+		assertThat(immutableSearchInputData.getDates(), equalTo(searchInputData.getDates()));
 	}
 }
