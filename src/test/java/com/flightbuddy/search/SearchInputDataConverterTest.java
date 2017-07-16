@@ -1,4 +1,4 @@
-package com.flightbuddy.schedule;
+package com.flightbuddy.search;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
