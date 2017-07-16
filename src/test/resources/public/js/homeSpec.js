@@ -21,7 +21,7 @@ describe("home", function() {
 	describe('Given save function was called', function() {
 		
 		describe('when response fails with error message', function() {
-			it("error variable should have the message and found trips undefined", function() {
+			it("error variable should have the message and search results undefined", function() {
 				var errorMessage = 'error message';
 				var searchData = {
 						from : '',
@@ -37,12 +37,12 @@ describe("home", function() {
 				$httpBackend.flush();
 				expect($controller.showMessage).toEqual(true);
 				expect($controller.error).toEqual(errorMessage);
-				expect($controller.foundTrips).toBeUndefined();
+				expect($controller.searchResults).toBeUndefined();
 			})
 		});
 		
 		describe('when response is successful with error message', function() {
-			it("error variable should have the message and found trips undefined", function() {
+			it("error variable should have the message and search results undefined", function() {
 				var errorMessage = 'error message';
 				var searchData = {
 						from : '',
@@ -58,14 +58,14 @@ describe("home", function() {
 				$httpBackend.flush();
 				expect($controller.showMessage).toEqual(true);
 				expect($controller.error).toEqual(errorMessage);
-				expect($controller.foundTrips).toBeUndefined();
+				expect($controller.searchResults).toBeUndefined();
 			})
 		});
 		
-		describe('when response is successful with message and no found trips', function() {
-			it("error variable should have the message and found trips array empty", function() {
+		describe('when response is successful with message and no search results', function() {
+			it("error variable should have the message and search results array empty", function() {
 				var message = 'success message';
-				var foundTrips = [];
+				var searchResults = [];
 				var searchData = {
 						from : '',
 						to : '',
@@ -75,20 +75,20 @@ describe("home", function() {
 				};
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
 			    	message : message,
-			    	foundTrips : foundTrips
+			    	searchResults : searchResults
 			    });
 				$controller.search();
 				$httpBackend.flush();
 				expect($controller.showMessage).toEqual(true);
 				expect($controller.message).toEqual(message);
-				expect($controller.foundTrips).toEqual(foundTrips);
+				expect($controller.searchResults).toEqual(searchResults);
 			})
 		});
 		
-		describe('when response is successful with message and found trips', function() {
-			it("error variable should have the message and found trips", function() {
+		describe('when response is successful with message and search results', function() {
+			it("error variable should have the message and search results", function() {
 				var message = 'success message';
-				var foundTrips = [{
+				var searchResults = [{
 			    	price : '230',
 					hours : '11:14 - 21:35',
 					duration : '3h54m',
@@ -110,13 +110,13 @@ describe("home", function() {
 				};
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
 			    	message : message,
-			    	foundTrips : foundTrips
+			    	searchResults :  searchResults
 			    });
 				$controller.search();
 				$httpBackend.flush();
 				expect($controller.showMessage).toEqual(true);
 				expect($controller.message).toEqual(message);
-				expect($controller.foundTrips).toEqual(foundTrips);
+				expect($controller.searchResults).toEqual(searchResults);
 			})
 		});
 	});

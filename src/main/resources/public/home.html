@@ -56,12 +56,12 @@
 		      </tr>
 		    </thead>
 		    <tbody>
-		      <tr ng-repeat="foundTrip in home.foundTrips | orderBy : 'price'">
-    			<td>&euro;{{ foundTrip.price }}</td>
-    			<td>{{ foundTrip.hours }}</td>
-    			<td>{{ foundTrip.duration }}</td>
-    			<td>{{ foundTrip.trip }}</td>
-    			<td>{{ foundTrip.stops }}</td>
+		      <tr ng-repeat="searchResult in home.searchResults | orderBy : 'price'">
+    			<td>&euro;{{ searchResult.price }}</td>
+    			<td>{{ searchResult.hours }}</td>
+    			<td>{{ searchResult.duration }}</td>
+    			<td>{{ searchResult.trip }}</td>
+    			<td>{{ searchResult.stops }}</td>
   			  </tr>
 	      	</tbody>
 		 </table>

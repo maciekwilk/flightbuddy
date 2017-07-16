@@ -20,7 +20,7 @@ angular.module('home', [])
 					self.error = response.data.error;
 				} else {
 					self.message = response.data.message;
-					self.foundTrips = response.data.foundTrips;
+					self.searchResults = response.data.searchResults;
 				}
 			}, function(response) {
 				self.showMessage = true;
