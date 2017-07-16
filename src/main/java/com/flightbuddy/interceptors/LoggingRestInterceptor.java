@@ -26,7 +26,7 @@ public class LoggingRestInterceptor implements ClientHttpRequestInterceptor {
     }
 
     private void traceRequest(HttpRequest request, byte[] body, ClientHttpResponse response) throws IOException {
-        log.debug("===========================request begin==============================================");
+        log.debug("===========================request begin=============================");
         log.debug("URI         : {}", request.getURI());
         log.debug("Method      : {}", request.getMethod());
         HttpStatus responseStatus = response.getStatusCode();
@@ -34,7 +34,7 @@ public class LoggingRestInterceptor implements ClientHttpRequestInterceptor {
         	log.error("Headers     : {}", request.getHeaders() );
         	log.error("Request body: {}", new String(body, "UTF-8"));
         }
-        log.debug("==========================request end===============================================");
+        log.debug("==========================request end==============================");
     }
 
     private void traceResponse(ClientHttpResponse response) throws IOException {
