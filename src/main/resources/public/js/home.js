@@ -1,13 +1,35 @@
 angular.module('home', [])
-.controller('home', function($http, auth) {
+.controller('home', function($http) {
     var self = this;
     
-    self.foundTrips = [{
-    	price : '230',
-		hours : '11:14 - 21:35',
-		duration : '3h54m',
-		trip : 'BSL-KRK',
-		stops : '1'
-    }];
+    self.showMessage = false;
+    
+    self.searchData = {
+			from : '',
+			to : '',
+			price : '',
+			dates : [],
+			withReturn : false
+	};
+    
+    self.search = function() {
+    	$http.post('/search/perform', self.searchData).then(
+			function(response) {
+				self.showMessage = true;
+				if (response.data.error) {
+					self.error = response.data.error;
+				} else {
+					self.message = response.data.message;
+					self.foundTrips = response.data.foundTrips;
+				}
+			}, function(response) {
+				self.showMessage = true;
+				if (response.data.message) {
+					self.error = response.data.message;
+				} else {
+					self.error = response.status + ' ' + response.statusText;
+				}
+			}
+    )};
     
 });

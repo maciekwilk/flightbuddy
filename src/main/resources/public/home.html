@@ -3,7 +3,7 @@
 	<div class="alert alert-success" ng-show="home.showMessage && !home.error"> {{home.message}} </div>
 	<div class="alert alert-danger" ng-show="home.showMessage && home.error"> {{home.error}} </div>
 	<div class="row">
-	<form name="homeForm" role="form" ng-submit="home.save()" novalidate>
+	<form name="homeForm" role="form" ng-submit="home.search()" novalidate>
     	<div class="col-md-4"></div>
     	<div class="col-md-4">
 		    <div class="form-group" ng-class="{'has-error': homeForm.from.$touched && homeForm.from.$invalid }">
@@ -56,7 +56,7 @@
 		      </tr>
 		    </thead>
 		    <tbody>
-		      <tr ng-repeat="foundTrip in home.foundTrips">
+		      <tr ng-repeat="foundTrip in home.foundTrips | orderBy : 'price'">
     			<td>&euro;{{ foundTrip.price }}</td>
     			<td>{{ foundTrip.hours }}</td>
     			<td>{{ foundTrip.duration }}</td>
