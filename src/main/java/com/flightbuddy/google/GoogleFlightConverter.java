@@ -79,6 +79,7 @@ public class GoogleFlightConverter {
 	private static Flight createFlight(FoundTrip foundTrip, Slice slice, TripData tripData) {
 		Flight flight = new Flight();
 		flight.setFoundTrip(foundTrip);
+		flight.setDuration(slice.getDuration());
 		Arrays.stream(slice.getSegment()).forEach((segment) -> {
 			extractFlightInfoFromSegment(flight, segment, tripData);
 		});

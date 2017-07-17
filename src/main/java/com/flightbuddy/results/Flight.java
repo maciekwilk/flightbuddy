@@ -34,6 +34,8 @@ public class Flight extends ImmutableEntity {
 	@ManyToOne
 	@JoinColumn(name = "foundTrip")
 	private FoundTrip foundTrip;
+	
+	private int duration;
 
 	public Flight() {
 		String uuid = UUID.randomUUID().toString();
@@ -78,5 +80,13 @@ public class Flight extends ImmutableEntity {
 
 	public void setFoundTrip(FoundTrip foundTrip) {
 		this.foundTrip = foundTrip;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 }
