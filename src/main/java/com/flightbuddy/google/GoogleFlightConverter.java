@@ -1,7 +1,7 @@
 package com.flightbuddy.google;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +25,7 @@ import com.flightbuddy.utils.RegularExpressions;
 
 public class GoogleFlightConverter {
 
-	private static final LocalDate DEFAULT_DATE = LocalDate.of(2000, 1, 1);
+	private static final LocalDateTime DEFAULT_DATE = LocalDateTime.of(2000, 1, 1, 12, 30);
 
 	public static List<FoundTrip> convertResponseToTrips(GoogleResponse googleResponse) {
 		Trips trips = googleResponse.getTrips();
@@ -130,7 +130,7 @@ public class GoogleFlightConverter {
 	}
 
 	private static void extractFlightInfoFromLeg(Flight flight, Leg leg) {
-		LocalDate date = flight.getDate();
+		LocalDateTime date = flight.getDate();
 		List<Stop> stops = getStops(flight);
 		if (date == null) {
 			addDateAndFirstStops(flight, leg, stops);
@@ -150,8 +150,7 @@ public class GoogleFlightConverter {
 	}
 
 	private static void addDateAndFirstStops(Flight flight, Leg leg, List<Stop> stops) {
-		LocalDate date;
-		date = getDate(leg);
+		LocalDateTime date = getDate(leg);
 		flight.setDate(date);
 		Stop origin = createStop(flight, leg.getOrigin());
 		stops.add(origin);
@@ -159,11 +158,11 @@ public class GoogleFlightConverter {
 		stops.add(destination);
 	}
 
-	private static LocalDate getDate(Leg leg) {
+	private static LocalDateTime getDate(Leg leg) {
 		String departureTime = leg.getDepartureTime();
 		if (departureTime != null && Pattern.matches(RegularExpressions.ISO_OFFSET_DATE_TIME, departureTime)) {
 			DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-			return LocalDate.parse(departureTime, formatter);
+			return LocalDateTime.parse(departureTime, formatter);
 		}
 		return DEFAULT_DATE;
 	}

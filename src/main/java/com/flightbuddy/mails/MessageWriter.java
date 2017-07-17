@@ -1,6 +1,6 @@
 package com.flightbuddy.mails;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ import com.flightbuddy.results.Stop;
 @Component
 public class MessageWriter {
 	
-	private String dateFormat = "uuuu-MM-dd";
+	private String dateFormat = "uuuu-MM-dd HH:mm";
 
 	public String prepareMessage(List<FoundTrip> foundTrips) {
         String message = foundTrips.stream().map( 
@@ -61,7 +61,7 @@ public class MessageWriter {
 		return airlinesInfo;
 	}
 
-	private String parseDate(LocalDate date) {
+	private String parseDate(LocalDateTime date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
 		return formatter.format(date) + ", " + date.getDayOfWeek().toString();
 	}

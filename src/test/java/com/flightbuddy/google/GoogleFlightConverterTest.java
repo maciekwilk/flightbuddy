@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +28,7 @@ import com.flightbuddy.results.Stop;
 
 public class GoogleFlightConverterTest {
 	
-	private static final LocalDate DEFAULT_DATE = LocalDate.of(2000, 1, 1);
+	private static final LocalDateTime DEFAULT_DATE = LocalDateTime.of(2000, 1, 1, 12, 30);
 	
 	private DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 	
@@ -374,17 +374,17 @@ public class GoogleFlightConverterTest {
 		assertThat(flight.getStops(), equalTo(null));
 	}
 	
-	private void assertPriceAndDateAndStopsAndDurationEqualTo(FoundTrip trip, double price, LocalDate date, String[] stopCodes, int duration) {
+	private void assertPriceAndDateAndStopsAndDurationEqualTo(FoundTrip trip, double price, LocalDateTime date, String[] stopCodes, int duration) {
 		assertThat(trip.getPrice(), equalTo(new BigDecimal(price)));
 		assertDateAndStopsAndDurationEqualTo(trip, date, stopCodes, duration);
 	}
 
-	private void assertDateAndStopsAndDurationEqualTo(FoundTrip trip, LocalDate date, String[] stopCodes, int duration) {
+	private void assertDateAndStopsAndDurationEqualTo(FoundTrip trip, LocalDateTime date, String[] stopCodes, int duration) {
 		List<Flight> flights = trip.getFlights();
 		assertDateAndStopsAndDurationEqualTo(flights.get(0), date, stopCodes, duration);
 	}
 	
-	private void assertDateAndStopsAndDurationEqualTo(Flight flight, LocalDate date, String[] stopCodes, int duration) {
+	private void assertDateAndStopsAndDurationEqualTo(Flight flight, LocalDateTime date, String[] stopCodes, int duration) {
 		assertThat(flight.getDuration(), equalTo(duration));
 		assertThat(flight.getDate(), equalTo(date));
 		List<Stop> stops = flight.getStops();
@@ -403,8 +403,8 @@ public class GoogleFlightConverterTest {
 		}
 	}
 
-	private LocalDate parseLocalDate(String date) {
-		return LocalDate.parse(date, formatter);
+	private LocalDateTime parseLocalDate(String date) {
+		return LocalDateTime.parse(date, formatter);
 	}
 
 	private BigDecimal createBigDecimal(double price) {
