@@ -58,10 +58,10 @@
 		    <tbody>
 		      <tr ng-repeat="searchResult in home.searchResults | orderBy : 'price'">
     			<td>&euro;{{ searchResult.price }}</td>
-    			<td>{{ searchResult.hours }}</td>
-    			<td>{{ searchResult.duration }}</td>
-    			<td>{{ searchResult.trip }}</td>
-    			<td>{{ searchResult.stops }}</td>
+    			<td>{{ searchResult.hours[0] }}</td>
+    			<td>{{ searchResult.durations[0] }}</td>
+    			<td>{{ searchResult.trips[0] }}</td>
+    			<td>{{ searchResult.stops[0] }}</td>
   			  </tr>
 	      	</tbody>
 		 </table>
