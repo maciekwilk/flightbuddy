@@ -19,7 +19,7 @@ import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.search.ImmutableSearchInputData;
-import com.flightbuddy.search.SearchInputDataConverter;
+import com.flightbuddy.search.SearchDataConverter;
 import com.flightbuddy.user.AuthenticationService;
 
 @Component
@@ -86,7 +86,7 @@ public class ScheduleRunnable implements Runnable {
 
 	private List<FoundTrip> performSearch(ScheduledSearchTask scheduledSearchTask) {
 		ScheduledSearch scheduledSearch = scheduledSearchTask.getScheduledSearch();
-		ImmutableSearchInputData searchInputData = SearchInputDataConverter.convertToImmutable(scheduledSearch);
+		ImmutableSearchInputData searchInputData = SearchDataConverter.convertToImmutable(scheduledSearch);
 		List<FoundTrip> foundTrips = googleService.getTrips(searchInputData);
 		return foundTrips;
 	}

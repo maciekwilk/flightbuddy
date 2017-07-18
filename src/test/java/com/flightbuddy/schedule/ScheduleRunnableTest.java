@@ -33,12 +33,12 @@ import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
 import com.flightbuddy.search.ImmutableSearchInputData;
-import com.flightbuddy.search.SearchInputDataConverter;
+import com.flightbuddy.search.SearchDataConverter;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-@PrepareForTest(SearchInputDataConverter.class)
+@PrepareForTest(SearchDataConverter.class)
 public class ScheduleRunnableTest {
 	
 	@Autowired ScheduleRunnable scheduleRunnable;
@@ -57,8 +57,8 @@ public class ScheduleRunnableTest {
     @Before
 	public void setUp() {
 		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
-		mockStatic(SearchInputDataConverter.class);
-		when(SearchInputDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
+		mockStatic(SearchDataConverter.class);
+		when(SearchDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
 	}
     
 	@Test
