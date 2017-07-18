@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.results.FoundTripService;
 
 @Service
 public class SearchService {
 	
 	@Autowired GoogleService googleService;
+	@Autowired FoundTripService foundTripService;
 
 	public List<SearchResult> performSearch(SearchInputData searchData) {
 		if (searchData == null) {
@@ -24,19 +26,14 @@ public class SearchService {
 		if (foundTrips.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<SearchResult> results = convertToSearchResults(foundTrips);
-		return results;
+    	foundTripService.saveFoundTrips(foundTrips);
+		return convertToSearchResults(foundTrips);
 	}
 
 	private List<SearchResult> convertToSearchResults(List<FoundTrip> foundTrips) {
-		List<SearchResult> results = foundTrips.stream()
-													.map(foundTrip -> SearchDataConverter.convertToSearchResult(foundTrip))
-													.collect(Collectors.toList());
-//		foundTrips.forEach(foundTrip -> {;
-//			SearchResult searchResult = SearchDataConverter.convertToSearchResult(foundTrip);
-//			results.add(searchResult);
-//		});
-		return results;
+		return foundTrips.stream()
+				.map(foundTrip -> SearchDataConverter.convertToSearchResult(foundTrip))
+				.collect(Collectors.toList());
 	}
 
 }

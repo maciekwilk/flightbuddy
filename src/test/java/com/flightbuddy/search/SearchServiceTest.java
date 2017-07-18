@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static java.util.Collections.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,8 +46,10 @@ public class SearchServiceTest {
     @Before
 	public void setUp() {
 		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
+		SearchResult emptyConvertedSearchResult = new SearchResult("", emptyList(), emptyList(), emptyList(), emptyList());
 		mockStatic(SearchDataConverter.class);
 		when(SearchDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
+		when(SearchDataConverter.convertToSearchResult(any())).thenReturn(emptyConvertedSearchResult);
 	}
     
 	@Test
@@ -69,20 +72,38 @@ public class SearchServiceTest {
 	
 
 	@Test
-	public void performSearchWithInputDataAndFoundTrips() {
+	public void performSearchWithInputDataAndFoundTrip() {
 		SearchInputData searchData = new SearchInputData();
 		List<FoundTrip> trips = createFoundTripsWithOneTrip();
-		when(googleService.getTrips(eq(emptyInputData))).thenReturn(trips);
+		when(googleService.getTrips(any())).thenReturn(trips);
 		List<SearchResult> results = searchService.performSearch(searchData);
 		assertEquals(results.size(), 1);
+		verify(googleService, times(1)).getTrips(any());
+		verify(foundTripService, times(1)).saveFoundTrips(any());
+	}
+	
+	@Test
+	public void performSearchWithInputDataAndFewFoundTrips() {
+		SearchInputData searchData = new SearchInputData();
+		List<FoundTrip> trips = createFoundTripsWithThreeTrips();
+		when(googleService.getTrips(any())).thenReturn(trips);
+		List<SearchResult> results = searchService.performSearch(searchData);
+		assertEquals(results.size(), 3);
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(1)).saveFoundTrips(any());
 	}
 
 	private List<FoundTrip> createFoundTripsWithOneTrip() {
 		List<FoundTrip> trips = new ArrayList<>(1);
-		FoundTrip trip = new FoundTrip();
-		trips.add(trip);
+		trips.add(new FoundTrip());
+		return trips;
+	}
+
+	private List<FoundTrip> createFoundTripsWithThreeTrips() {
+		List<FoundTrip> trips = new ArrayList<>(3);
+		trips.add(new FoundTrip());
+		trips.add(new FoundTrip());
+		trips.add(new FoundTrip());
 		return trips;
 	}
 }
