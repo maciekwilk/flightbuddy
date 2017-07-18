@@ -15,20 +15,24 @@ public class ScheduledSearchService {
 	
 	@Autowired ScheduledSearchDao scheduledSearchDao;
 	
+	private static final String GUEST_USERNAME = "guest";
+	
 	@PreAuthorize("hasRole('SYSTEM')")
 	public List<ScheduledSearch> getAllScheduledSearches() {
 		return scheduledSearchDao.findAll();
 	}
 
 	public void save(ScheduledSearch newScheduledSearch, User currentUser) {
-		ScheduledSearch alreadySavedOne = scheduledSearchDao.findForUser(currentUser);
-		if (alreadySavedOne != null) {
-			updateSavedSchedule(alreadySavedOne, newScheduledSearch);
-			scheduledSearchDao.merge(alreadySavedOne);
-		} else {
-			newScheduledSearch.setUser(currentUser);
-			currentUser.setScheduledSearch(newScheduledSearch);
-			scheduledSearchDao.persist(newScheduledSearch);
+		if (!currentUser.getUsername().equals(GUEST_USERNAME)) {
+			ScheduledSearch alreadySavedOne = scheduledSearchDao.findForUser(currentUser);
+			if (alreadySavedOne != null) {
+				updateSavedSchedule(alreadySavedOne, newScheduledSearch);
+				scheduledSearchDao.merge(alreadySavedOne);
+			} else {
+				newScheduledSearch.setUser(currentUser);
+				currentUser.setScheduledSearch(newScheduledSearch);
+				scheduledSearchDao.persist(newScheduledSearch);
+			}
 		}
 	}
 
