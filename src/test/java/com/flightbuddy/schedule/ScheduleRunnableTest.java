@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,7 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flightbuddy.Application;
@@ -39,6 +41,7 @@ import com.flightbuddy.search.SearchDataConverter;
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @PrepareForTest(SearchDataConverter.class)
+@TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleRunnableTest {
 	
 	@Autowired ScheduleRunnable scheduleRunnable;
@@ -131,6 +134,7 @@ public class ScheduleRunnableTest {
 		scheduledSearchTask.setState(ScheduledSearchState.SET);
 		scheduledSearchTask.setId(id);
 		scheduledSearchTask.setScheduledSearch(scheduledSearch);
+		scheduledSearchTask.setExecutionTime(LocalDateTime.now());
 		return scheduledSearchTask;
 	}
 
