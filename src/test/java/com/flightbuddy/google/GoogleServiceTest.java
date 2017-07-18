@@ -24,13 +24,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flightbuddy.Application;
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
 import com.flightbuddy.google.response.tripoption.TripOption;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.schedule.ScheduleRunnable;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
+import com.flightbuddy.search.ImmutableSearchInputData;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -48,11 +48,11 @@ public class GoogleServiceTest {
 	@MockBean
 	private ScheduledSearchService scheduledSearchService;
 	
-	private SearchInputData emptyInputData;
+	private ImmutableSearchInputData emptyInputData;
 
 	@Before
 	public void setUp() {
-		emptyInputData = new SearchInputData(null, null, null, new LocalDate[]{}, false);
+		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
 		mockStatic(GoogleFlightConverter.class);
 	}
 	

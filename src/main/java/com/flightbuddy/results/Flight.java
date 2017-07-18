@@ -1,6 +1,6 @@
 package com.flightbuddy.results;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,12 +28,14 @@ public class Flight extends ImmutableEntity {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "flight")
 	private List<Airline> airlines;
 
-	private LocalDate date;
+	private LocalDateTime date;
 	
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "foundTrip")
 	private FoundTrip foundTrip;
+	
+	private int duration;
 
 	public Flight() {
 		String uuid = UUID.randomUUID().toString();
@@ -64,11 +66,11 @@ public class Flight extends ImmutableEntity {
 		this.airlines = airlines;
 	}
 
-	public LocalDate getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 
@@ -78,5 +80,13 @@ public class Flight extends ImmutableEntity {
 
 	public void setFoundTrip(FoundTrip foundTrip) {
 		this.foundTrip = foundTrip;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 }

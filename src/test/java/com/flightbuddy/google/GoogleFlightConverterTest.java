@@ -5,7 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
@@ -28,7 +28,7 @@ import com.flightbuddy.results.Stop;
 
 public class GoogleFlightConverterTest {
 	
-	private static final LocalDate DEFAULT_DATE = LocalDate.of(2000, 1, 1);
+	private static final LocalDateTime DEFAULT_DATE = LocalDateTime.of(2000, 1, 1, 12, 30);
 	
 	private DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 	
@@ -114,11 +114,11 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Segment[] segments = new Segment[0];
 		Slice[] slices = new Slice[1];
-		slices[0] = createSlice(segments);
+		slices[0] = createSlice(segments, 0);
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};;
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
-		assertDateAndStopsAreNull(result);
+		assertDateAndStopsAndDurationAreNull(result);
 	}
 	
 	@Test
@@ -126,22 +126,22 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[0];
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};;
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
-		assertDateAndStopsAreNull(result);
+		assertDateAndStopsAndDurationAreNull(result);
 	}
 	
 	@Test
 	public void checkConvertResponseToTripsWithoutTripData() {
 		Leg[] legs = new Leg[0];
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};;
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, null);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
-		assertDateAndStopsAreNull(result);
+		assertDateAndStopsAndDurationAreNull(result);
 	}
 	
 	@Test
@@ -149,12 +149,12 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg(null, null, null)};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};;
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsEqualTo(trip, DEFAULT_DATE, new String[]{null, null});
+		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{null, null}, 120);
 	}
 	
 	@Test
@@ -164,7 +164,7 @@ public class GoogleFlightConverterTest {
 		tripData.setCarrier(carriers);
 		Leg[] legs = new Leg[] {createLeg(null, null, null)};
 		Segment[] segments = new Segment[] {createSegment(legs, "KL")};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};;
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
@@ -178,7 +178,7 @@ public class GoogleFlightConverterTest {
 		tripData.setCarrier(carriers);
 		Leg[] legs = new Leg[] {createLeg(null, null, null)};
 		Segment[] segments = new Segment[] {createSegment(legs, "KL")};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
@@ -192,7 +192,7 @@ public class GoogleFlightConverterTest {
 		tripData.setCarrier(carriers);
 		Leg[] legs = new Leg[] {createLeg(null, null, null)};
 		Segment[] segments = new Segment[] {createSegment(legs, "KL"), createSegment(legs, "EJ")};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
@@ -204,7 +204,7 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg(null, null, "2011-12-03")};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
@@ -219,7 +219,7 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg(null, null, "2011-12-03T10:15+01:00")};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 0)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
@@ -234,12 +234,12 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg("BASEL", null, null)};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsEqualTo(trip, DEFAULT_DATE, new String[]{"BASEL", null});
+		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{"BASEL", null}, 120);
 	}
 	
 	@Test
@@ -247,12 +247,12 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg(null, "CRACOW", null)};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsEqualTo(trip, DEFAULT_DATE, new String[]{null, "CRACOW"});
+		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{null, "CRACOW"}, 120);
 	}
 	
 	@Test
@@ -260,12 +260,12 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg("BASEL", "CRACOW", null)};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsEqualTo(trip, DEFAULT_DATE, new String[]{"BASEL", "CRACOW"});
+		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{"BASEL", "CRACOW"}, 120);
 	}
 	
 	@Test
@@ -273,12 +273,12 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] legs = new Leg[] {createLeg("BASEL", "CRACOW", "2011-12-03T10:15+01:00"), createLeg("CRACOW", "LONDON", "2013-01-12T08:15+05:00")};
 		Segment[] segments = new Segment[] {createSegment(legs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsEqualTo(trip, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
+		assertDateAndStopsAndDurationEqualTo(trip, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"}, 120);
 	}
 	
 	@Test
@@ -288,14 +288,14 @@ public class GoogleFlightConverterTest {
 		Leg[] secondLegs = new Leg[] {createLeg("LONDON", "AMSTERDAM", "2011-12-05T10:15+01:00"), createLeg("AMSTERDAM", "BASEL", "2011-12-05T12:15+01:00")};
 		Segment[] segments = new Segment[] {createSegment(firstLegs, null)};
 		Segment[] secondSegments = new Segment[] {createSegment(secondLegs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments), createSlice(secondSegments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120), createSlice(secondSegments, 60)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption(null, slices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
 		FoundTrip trip = result.get(0);
 		List<Flight> flights = trip.getFlights();
-		assertDateAndStopsEqualTo(flights.get(0), parseLocalDate("2011-12-03T10:15+01:00"), new String[] {"BASEL", "CRACOW", "LONDON"});
-		assertDateAndStopsEqualTo(flights.get(1), parseLocalDate("2011-12-05T10:15+01:00"), new String[] {"LONDON", "AMSTERDAM", "BASEL"});
+		assertDateAndStopsAndDurationEqualTo(flights.get(0), parseLocalDate("2011-12-03T10:15+01:00"), new String[] {"BASEL", "CRACOW", "LONDON"}, 120);
+		assertDateAndStopsAndDurationEqualTo(flights.get(1), parseLocalDate("2011-12-05T10:15+01:00"), new String[] {"LONDON", "AMSTERDAM", "BASEL"}, 60);
 	}
 	
 	@Test
@@ -303,15 +303,15 @@ public class GoogleFlightConverterTest {
 		TripData tripData = new TripData();
 		Leg[] firstLegs = new Leg[] {createLeg("BASEL", "CRACOW", "2011-12-03T10:15+01:00"), createLeg("CRACOW", "LONDON", "2011-12-03T15:15+01:00")};
 		Segment[] segments = new Segment[] {createSegment(firstLegs, null)};
-		Slice[] slices = new Slice[] {createSlice(segments)};
+		Slice[] slices = new Slice[] {createSlice(segments, 120)};
 		Leg[] secondLegs = new Leg[] {createLeg("BASEL", "CRACOW", "2011-12-03T10:15+01:00"), createLeg("CRACOW", "LONDON", "2011-12-04T15:15+01:00")};
 		Segment[] secondSegments = new Segment[] {createSegment(secondLegs, null)};
-		Slice[] secondSlices = new Slice[] {createSlice(secondSegments)};
+		Slice[] secondSlices = new Slice[] {createSlice(secondSegments, 60)};
 		TripOption[] tripOptions = new TripOption[] {createTripOption("EUR540", slices), createTripOption("EUR240", secondSlices)};
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse);
-		assertPriceAndDateAndStopsEqualTo(result.get(0), 540, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
-		assertPriceAndDateAndStopsEqualTo(result.get(1), 240, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"});
+		assertPriceAndDateAndStopsAndDurationEqualTo(result.get(0), 540, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"}, 120);
+		assertPriceAndDateAndStopsAndDurationEqualTo(result.get(1), 240, parseLocalDate("2011-12-03T10:15+01:00"), new String[]{"BASEL", "CRACOW", "LONDON"}, 60);
 	}
 	
 	private GoogleResponse createEmptyGoogleResponse() {
@@ -334,8 +334,9 @@ public class GoogleFlightConverterTest {
 		return tripOption;
 	}
 	
-	private Slice createSlice(Segment[] segments) {
+	private Slice createSlice(Segment[] segments, int duration) {
 		Slice slice = new Slice();
+		slice.setDuration(duration);
 		slice.setSegment(segments);
 		return slice;
 	}
@@ -364,25 +365,27 @@ public class GoogleFlightConverterTest {
 		return carrier;
 	}
 
-	private void assertDateAndStopsAreNull(List<FoundTrip> result) {
+	private void assertDateAndStopsAndDurationAreNull(List<FoundTrip> result) {
 		FoundTrip trip = result.get(0);
 		List<Flight> flights = trip.getFlights();
 		Flight flight = flights.get(0);
+		assertThat(flight.getDuration(), equalTo(0));
 		assertThat(flight.getDate(), equalTo(null));
 		assertThat(flight.getStops(), equalTo(null));
 	}
 	
-	private void assertPriceAndDateAndStopsEqualTo(FoundTrip trip, double price, LocalDate date, String[] stopCodes) {
+	private void assertPriceAndDateAndStopsAndDurationEqualTo(FoundTrip trip, double price, LocalDateTime date, String[] stopCodes, int duration) {
 		assertThat(trip.getPrice(), equalTo(new BigDecimal(price)));
-		assertDateAndStopsEqualTo(trip, date, stopCodes);
+		assertDateAndStopsAndDurationEqualTo(trip, date, stopCodes, duration);
 	}
 
-	private void assertDateAndStopsEqualTo(FoundTrip trip, LocalDate date, String[] stopCodes) {
+	private void assertDateAndStopsAndDurationEqualTo(FoundTrip trip, LocalDateTime date, String[] stopCodes, int duration) {
 		List<Flight> flights = trip.getFlights();
-		assertDateAndStopsEqualTo(flights.get(0), date, stopCodes);
+		assertDateAndStopsAndDurationEqualTo(flights.get(0), date, stopCodes, duration);
 	}
 	
-	private void assertDateAndStopsEqualTo(Flight flight, LocalDate date, String[] stopCodes) {
+	private void assertDateAndStopsAndDurationEqualTo(Flight flight, LocalDateTime date, String[] stopCodes, int duration) {
+		assertThat(flight.getDuration(), equalTo(duration));
 		assertThat(flight.getDate(), equalTo(date));
 		List<Stop> stops = flight.getStops();
 		for (int i = 0; i < stopCodes.length - 1; i++) {
@@ -400,8 +403,8 @@ public class GoogleFlightConverterTest {
 		}
 	}
 
-	private LocalDate parseLocalDate(String date) {
-		return LocalDate.parse(date, formatter);
+	private LocalDateTime parseLocalDate(String date) {
+		return LocalDateTime.parse(date, formatter);
 	}
 
 	private BigDecimal createBigDecimal(double price) {

@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flightbuddy.Application;
@@ -25,12 +26,13 @@ import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
-import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.RequestService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
+@TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleUpdateTimerTaskTest {
 
 	@Autowired ScheduleUpdateTimerTask task;
@@ -89,7 +91,7 @@ public class ScheduleUpdateTimerTaskTest {
 
 	private List<LocalDateTime> createExecutionTimesList() {
 		List<LocalDateTime> executionTimes = new ArrayList<>(12);
-		LocalDateTime firstTime = LocalDateTime.now().withHour(2).withMinute(0).withSecond(0);
+		LocalDateTime firstTime = LocalDateTime.now().withHour(2).withMinute(0).withSecond(0).withNano(0);
 		executionTimes.add(firstTime);
 		LocalDateTime nextTime = firstTime;
 		for (int i = 0; i < 11; i++) {

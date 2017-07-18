@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
 import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
+import com.flightbuddy.search.ImmutableSearchInputData;
 
 @Service
 public class GoogleService {
@@ -30,7 +30,7 @@ public class GoogleService {
 	@Value("${google.request.max}")
 	private int maxAmountOfRequests;
 	
-	public List<FoundTrip> getTrips(SearchInputData searchInputData) {
+	public List<FoundTrip> getTrips(ImmutableSearchInputData searchInputData) {
 		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
 		Trips trips = response.getTrips();
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
@@ -43,7 +43,7 @@ public class GoogleService {
 		return maxAmountOfRequests;
 	}
 
-	private void handleResponseWithoutFlights(SearchInputData searchInputData) {
+	private void handleResponseWithoutFlights(ImmutableSearchInputData searchInputData) {
 		LocalDate[] dates = searchInputData.getDates();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
 		String fromDate = "", returnDate = "";

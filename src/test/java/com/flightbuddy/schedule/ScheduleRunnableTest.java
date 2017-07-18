@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +22,10 @@ import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.flightbuddy.Application;
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.mails.MailService;
 import com.flightbuddy.results.FoundTrip;
@@ -33,11 +34,14 @@ import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.SearchDataConverter;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-@PrepareForTest(SearchInputDataConverter.class)
+@PrepareForTest(SearchDataConverter.class)
+@TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleRunnableTest {
 	
 	@Autowired ScheduleRunnable scheduleRunnable;
@@ -51,13 +55,13 @@ public class ScheduleRunnableTest {
     @MockBean
     private ScheduledSearchTaskService scheduledSearchTaskService;
 	
-    private SearchInputData emptyInputData;
+    private ImmutableSearchInputData emptyInputData;
     
     @Before
 	public void setUp() {
-		emptyInputData = new SearchInputData(null, null, null, new LocalDate[]{}, false);
-		mockStatic(SearchInputDataConverter.class);
-		when(SearchInputDataConverter.convert(any())).thenReturn(emptyInputData);
+		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
+		mockStatic(SearchDataConverter.class);
+		when(SearchDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
 	}
     
 	@Test
@@ -130,6 +134,7 @@ public class ScheduleRunnableTest {
 		scheduledSearchTask.setState(ScheduledSearchState.SET);
 		scheduledSearchTask.setId(id);
 		scheduledSearchTask.setScheduledSearch(scheduledSearch);
+		scheduledSearchTask.setExecutionTime(LocalDateTime.now());
 		return scheduledSearchTask;
 	}
 

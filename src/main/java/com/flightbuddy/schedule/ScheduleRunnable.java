@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.GoogleService;
 import com.flightbuddy.mails.MailService;
 import com.flightbuddy.results.FoundTrip;
@@ -19,6 +18,8 @@ import com.flightbuddy.results.FoundTripService;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
+import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.SearchDataConverter;
 import com.flightbuddy.user.AuthenticationService;
 
 @Component
@@ -85,7 +86,7 @@ public class ScheduleRunnable implements Runnable {
 
 	private List<FoundTrip> performSearch(ScheduledSearchTask scheduledSearchTask) {
 		ScheduledSearch scheduledSearch = scheduledSearchTask.getScheduledSearch();
-		SearchInputData searchInputData = SearchInputDataConverter.convert(scheduledSearch);
+		ImmutableSearchInputData searchInputData = SearchDataConverter.convertToImmutable(scheduledSearch);
 		List<FoundTrip> foundTrips = googleService.getTrips(searchInputData);
 		return foundTrips;
 	}

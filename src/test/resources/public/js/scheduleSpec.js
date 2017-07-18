@@ -28,7 +28,7 @@ describe("schedule", function() {
 						to : '',
 						price : '',
 						dates : [],
-						withReturn : ''
+						withReturn : false
 				};
 				$httpBackend.expect('POST', '/search/schedule/save', searchSchedule).respond(401, {
 			    	message : errorMessage
@@ -68,7 +68,7 @@ describe("schedule", function() {
 						to : '',
 						price : '',
 						dates : [],
-						withReturn : ''
+						withReturn : false
 				};
 				$httpBackend.expect('POST', '/search/schedule/save', searchSchedule).respond(200, {
 			    	message : message

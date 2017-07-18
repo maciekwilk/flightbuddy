@@ -1,8 +1,8 @@
-package com.flightbuddy;
+package com.flightbuddy.search;
 
 import java.time.LocalDate;
 
-public final class SearchInputData {
+public final class ImmutableSearchInputData {
 	
 	private final String from;
 	private final String to;
@@ -10,7 +10,7 @@ public final class SearchInputData {
 	private final LocalDate[] dates;
 	private final boolean withReturn;
 	
-	public SearchInputData(String from, String to, String price, LocalDate[] dates, boolean withReturn) {
+	public ImmutableSearchInputData(String from, String to, String price, LocalDate[] dates, boolean withReturn) {
 		this.from = from;
 		this.to = to;
 		this.price = price;

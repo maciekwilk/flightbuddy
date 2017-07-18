@@ -1,11 +1,70 @@
 <div class="col-md-1"></div>
 <div class="col-md-10">
-	<h1>Greeting</h1>
-	<div ng-show="home.authenticated()">
-	    <p>Welcome {{home.user}}</p>
+	<div class="alert alert-success" ng-show="home.showMessage && !home.error"> {{home.message}} </div>
+	<div class="alert alert-danger" ng-show="home.showMessage && home.error"> {{home.error}} </div>
+	<div class="row">
+	<form name="homeForm" role="form" ng-submit="home.search()" novalidate>
+    	<div class="col-md-4"></div>
+    	<div class="col-md-4">
+		    <div class="form-group" ng-class="{'has-error': homeForm.from.$touched && homeForm.from.$invalid }">
+		        <input type="text" class="form-control" name="from" ng-model="home.searchData.from" placeholder="From where?" ng-minlength="3" ng-maxlength="3" required/>
+		    	<p ng-show="homeForm.from.$error.minlength || homeForm.from.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="homeForm.from.$invalid && !homeForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': homeForm.to.$touched && homeForm.to.$invalid }">
+		        <input type="text" class="form-control" name="to" ng-model="home.searchData.to" placeholder="To where?" ng-minlength="3" ng-maxlength="3" required/>
+		    	<p ng-show="homeForm.to.$error.minlength || homeForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="homeForm.to.$invalid && !homeForm.to.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': homeForm.price.$touched && homeForm.price.$invalid }">
+		        <div class="form-inline">
+		        	<input type="number" class="form-control" name="price" ng-model="home.searchData.price" placeholder="Price limit" ng-pattern="/^\d*\.\d{2}$/" required/>
+		    		&euro;
+		    	</div>
+		    	<p ng-show="homeForm.price.$invalid && !homeForm.price.$pristine" class="help-block">Enter a price with two decimal places.</p>
+		    </div>
+		    <div class="form-group">
+		    	<label class="form-check-label">
+			        <input type="checkbox" class="form-check-input" ng-model="home.searchData.withReturn">
+			        Round-trip
+    			</label>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': homeForm.firstDate.$touched && homeForm.firstDate.$invalid }">
+		        <input type="text" class="form-control" name="firstDate" ng-model="home.searchData.dates[0]" placeholder="Date" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		    	<p ng-show="homeForm.firstDate.$invalid && !homeForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <div ng-show="home.searchData.withReturn" class="form-group" ng-class="{'has-error': homeForm.secondDate.$touched && homeForm.secondDate.$invalid }">
+		        <input type="text" class="form-control" name="secondDate" ng-model="home.searchData.dates[1]" placeholder="Date return" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		    	<p ng-show="homeForm.secondDate.$invalid && !homeForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <br/>
+	    	<button type="submit" class="btn btn-primary" ng-disabled="homeForm.$invalid">Search</button>
+	    </div>
+    	<div class="col-md-4"></div>
+	</form>
 	</div>
-	<div ng-show="!home.authenticated()">
-	    <p>Login to see your greeting</p>
+	<br/>
+	<div class="row">
+		 <table class="table table-bordered">
+		 	<thead>
+		      <tr>
+		        <th>Price</th>
+		        <th>Hours</th>
+		        <th>Duration</th>
+		        <th>Trip</th>
+		        <th>Stops</th>
+		      </tr>
+		    </thead>
+		    <tbody>
+		      <tr ng-repeat="searchResult in home.searchResults | orderBy : 'price'">
+    			<td>&euro;{{ searchResult.price }}</td>
+    			<td>{{ searchResult.hours[0] }}</td>
+    			<td>{{ searchResult.durations[0] }}</td>
+    			<td>{{ searchResult.trips[0] }}</td>
+    			<td>{{ searchResult.stops[0] }}</td>
+  			  </tr>
+	      	</tbody>
+		 </table>
 	</div>
 </div>
 <div class="col-md-1"></div>

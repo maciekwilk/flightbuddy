@@ -70,7 +70,7 @@ public class ScheduleUpdateTimerTask {
 
 	private List<LocalDateTime> calculateExecutionTimes(int requestsPerScheduledSearch, long requestInterval) {
 		List<LocalDateTime> executionTimes = new ArrayList<>(requestsPerScheduledSearch);
-		LocalDateTime midnight = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
+		LocalDateTime midnight = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
 		LocalDateTime nextTime = midnight;
 		for (int i = 0; i < requestsPerScheduledSearch; i++) {
 			nextTime = nextTime.plusSeconds(requestInterval);

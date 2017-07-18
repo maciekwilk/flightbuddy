@@ -17,7 +17,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.flightbuddy.SearchInputData;
 import com.flightbuddy.google.request.GoogleRequest;
 import com.flightbuddy.google.request.Passengers;
 import com.flightbuddy.google.request.Request;
@@ -25,6 +24,7 @@ import com.flightbuddy.google.request.Slice;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.error.Error;
 import com.flightbuddy.resources.Messages;
+import com.flightbuddy.search.ImmutableSearchInputData;
 
 @Service
 public class GoogleConnectionService {
@@ -42,7 +42,7 @@ public class GoogleConnectionService {
 	@Value("${google.request.url}")
 	private String requestUrl;
 	
-	public GoogleResponse askGoogleForTheTrips(SearchInputData searchInputData) {
+	public GoogleResponse askGoogleForTheTrips(ImmutableSearchInputData searchInputData) {
 		try {
 			RequestEntity<GoogleRequest> requestEntity = prepareRequestEntity(searchInputData);
 			ResponseEntity<GoogleResponse> response = restTemplate.exchange(requestEntity, GoogleResponse.class);
@@ -54,7 +54,7 @@ public class GoogleConnectionService {
 		return new GoogleResponse();
 	}
 
-	private RequestEntity<GoogleRequest> prepareRequestEntity(SearchInputData searchInputData) throws URISyntaxException {
+	private RequestEntity<GoogleRequest> prepareRequestEntity(ImmutableSearchInputData searchInputData) throws URISyntaxException {
 		GoogleRequest googleRequest = createGoogleRequest(searchInputData);
 		MultiValueMap<String, String> headers = createHeaders();
 		URI uri = new URI(requestUrl + "?key=" + googleApiKey);
@@ -62,7 +62,7 @@ public class GoogleConnectionService {
 		return requestEntity;
 	}
 
-	private GoogleRequest createGoogleRequest(SearchInputData searchInputData) {
+	private GoogleRequest createGoogleRequest(ImmutableSearchInputData searchInputData) {
 		Request request = new Request();
 		request.setPassengers(new Passengers());
 		request.setMaxPrice(currency + searchInputData.getPrice());
