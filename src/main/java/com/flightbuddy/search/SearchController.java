@@ -46,13 +46,21 @@ public class SearchController {
 	public Map<String, Object> performSearch(@RequestBody SearchInputData searchData) {
 		Map<String, Object> results = new HashMap<>();
 		try {
-			List<SearchResult> searchResults = searchService.performSearch(searchData);
-			results.put("searchResults", searchResults);
-			results.put("message", Messages.get("search.successful"));
+			performSearch(searchData, results);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Collections.singletonMap("error", e.getMessage());
 		}
 		return results;
+	}
+
+	private void performSearch(SearchInputData searchData, Map<String, Object> results) {
+		List<SearchResult> searchResults = searchService.performSearch(searchData);
+		if (searchResults.isEmpty()) {
+			results.put("message", Messages.get("search.empty"));
+		} else {
+			results.put("searchResults", searchResults);
+			results.put("message", Messages.get("search.successful"));
+		}
 	}
 }

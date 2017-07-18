@@ -1,38 +1,42 @@
 package com.flightbuddy.search;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public final class SearchResult {
 
 	private final String price;
-	private final String[] hours;
-	private final String duration;
-	private final String trip;
-	private final int stops;
+	private final List<String> hours;
+	private final List<String> durations;
+	private final List<String> trips;
+	private final List<Integer> stops;
 	
-	public SearchResult(String price, String[] hours, String duration, String trip, int stops) {
+	public SearchResult(String price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops) {
 		this.price = price;
-		this.hours = hours;
-		this.duration = duration;
-		this.trip = trip;
-		this.stops = stops;
+		this.hours = Collections.unmodifiableList(new ArrayList<String>(hours));
+		this.durations = Collections.unmodifiableList(new ArrayList<String>(durations));
+		this.trips = Collections.unmodifiableList(new ArrayList<String>(trips));
+		this.stops = Collections.unmodifiableList(new ArrayList<Integer>(stops));
 	}
 
 	public String getPrice() {
 		return price;
 	}
 
-	public String[] getHours() {
+	public List<String> getHours() {
 		return hours;
 	}
 
-	public String getDuration() {
-		return duration;
+	public List<String> getDurations() {
+		return durations;
 	}
 
-	public String getTrip() {
-		return trip;
+	public List<String> getTrips() {
+		return trips;
 	}
 
-	public int getStops() {
+	public List<Integer> getStops() {
 		return stops;
 	}
 }

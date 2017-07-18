@@ -107,17 +107,37 @@ public class SearchControllerTest {
 	}
 	
 	@Test
+	public void performSearchWithSearchDataWithoutSearchResults() throws Exception {
+		SearchInputData searchData = createSearchInputData("from", "to", "10.00", false, new LocalDate[] {LocalDate.of(2017, 8, 21)});
+		String requestBody = convertToJson(searchData);
+    	when(searchService.performSearch(any())).thenReturn(Collections.emptyList());
+		MvcResult mvcResult = mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+		.andExpect(status().isOk()).andReturn();
+		Map<String, Object> result = getResult(mvcResult);
+		assertEquals(false, result.containsKey("searchResults"));
+		assertEquals(true, result.containsKey("message"));
+	}
+	
+	@Test
 	public void performSearchWithSearchData() throws Exception {
 		SearchInputData searchData = createSearchInputData("from", "to", "10.00", false, new LocalDate[] {LocalDate.of(2017, 8, 21)});
 		String requestBody = convertToJson(searchData);
-    	SearchResult searchResult = new SearchResult("9.00", new String[]{}, "", "KRK-BSL", 1);
+    	SearchResult searchResult = createSearchResult();
     	when(searchService.performSearch(any())).thenReturn(Collections.singletonList(searchResult));
 		MvcResult mvcResult = mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isOk()).andReturn();
 		Map<String, Object> result = getResult(mvcResult);
-		Object searchResultBody = convertToJson(result.get("searchResults"));
+		String searchResultBody = convertToJson(result.get("searchResults"));
 		String expectedSearchResultBody = convertToJson(searchResult);
 		assertEquals("[" + expectedSearchResultBody + "]", searchResultBody);
+		assertEquals(true, result.containsKey("message"));
+	}
+
+	private SearchResult createSearchResult() {
+		List<String> trips = Collections.singletonList("KRK-BSL"); 
+		List<Integer> stops = Collections.singletonList(1);
+		SearchResult searchResult = new SearchResult("9.00", Collections.emptyList(), Collections.emptyList(), trips, stops);
+		return searchResult;
 	}
 
 	private ScheduledSearch createScheduledSearch(String from, String to, String price, boolean withReturn, List<LocalDate> dates) {
