@@ -110,30 +110,30 @@ public class SearchDataConverterTest {
 
 	private Flight createFlight(LocalDateTime date, int duration, String[] airlineName, String[] stopCode) {
 		Flight flight = new Flight();
+		flight.setAirlines(new ArrayList<>());
+		flight.setStops(new ArrayList<>());
 		flight.setDate(date);
 		flight.setDuration(duration);
-		flight.setAirlines(createAirlines(airlineName[0]));
-		flight.setAirlines(createAirlines(airlineName[1]));
-		flight.setStops(createStops(stopCode[0]));
-		flight.setStops(createStops(stopCode[1]));
-		flight.setStops(createStops(stopCode[2]));
+		addAirline(airlineName[0], flight);
+		addAirline(airlineName[1], flight);
+		addStop(stopCode[0], flight);
+		addStop(stopCode[1], flight);
+		addStop(stopCode[2], flight);
 		return flight;
 	}
 
-	private List<Airline> createAirlines(String airlineName) {
-		List<Airline> airlines = new ArrayList<>();
+	private void addAirline(String airlineName, Flight flight) {
+		List<Airline> airlines = flight.getAirlines();
 		Airline airline = new Airline();
 		airline.setName(airlineName);
 		airlines.add(airline);
-		return airlines;
 	}
 
-	private List<Stop> createStops(String code) {
-		List<Stop> stops = new ArrayList<>();
+	private void addStop(String code, Flight flight) {
+		List<Stop> stops = flight.getStops();
 		Stop stop = new Stop();
 		stop.setCode(code);
 		stops.add(stop);
-		return stops;
 	}
 
 	private void assertEqualFields(ImmutableSearchInputData immutableSearchInputData, ScheduledSearch scheduledSearch) {
@@ -158,7 +158,7 @@ public class SearchDataConverterTest {
 		assertThat(result.getPrice(), equalTo(foundTrip.getPrice().toString()));
 		assertThat(result.getDurations(), equalTo(Arrays.asList(new String[] {"2h", "1h 05m"})));
 		assertThat(result.getHours(), equalTo(Arrays.asList(new String[] {"12:30-14:30", "14:30-15:35"})));
-		assertThat(result.getStops(), equalTo(Arrays.asList(new int[] {1, 1})));
-		assertThat(result.getTrips(), equalTo(Arrays.asList(new String[] {"BSL->AMS->KRK", "KRK->LND->BSL"})));
+		assertThat(result.getStops().toArray(), equalTo(new int[] {1, 1}));
+		assertThat(result.getTrips(), equalTo(Arrays.asList(new String[] {"BSL -> AMS -> KRK", "KRK -> LND -> BSL"})));
 	}
 }
