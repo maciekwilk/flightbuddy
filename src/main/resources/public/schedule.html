@@ -29,12 +29,26 @@
     			</label>
 		    </div>
 		    <div class="form-group" ng-class="{'has-error': scheduleForm.firstDate.$touched && scheduleForm.firstDate.$invalid }">
-		        <input type="text" class="form-control" name="firstDate" ng-model="schedule.searchSchedule.dates[0]" placeholder="Date" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
-		    	<p ng-show="scheduleForm.firstDate.$invalid && !scheduleForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="schedule.searchSchedule.dates[0]" is-open="schedule.firstDatePopup.opened" 
+		          		datepicker-options="schedule.firstDateOptions" name="firstDate" ng-required="true" placeholder="Date" 
+		          		ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="schedule.openFirstDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="scheduleForm.firstDate.$invalid && !scheduleForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
 		    </div>
 		    <div ng-show="schedule.searchSchedule.withReturn" class="form-group" ng-class="{'has-error': scheduleForm.secondDate.$touched && scheduleForm.secondDate.$invalid }">
-		        <input type="text" class="form-control" name="secondDate" ng-model="schedule.searchSchedule.dates[1]" placeholder="Date return" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
-		    	<p ng-show="scheduleForm.secondDate.$invalid && !scheduleForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="schedule.searchSchedule.dates[1]" is-open="schedule.secondDatePopup.opened" 
+		          		datepicker-options="schedule.secondDateOptions" name="secondDate" ng-required="schedule.searchSchedule.withReturn" placeholder="Return date" 
+		          		ng-disabled="scheduleForm.firstDate.$invalid" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="schedule.openSecondDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="scheduleForm.secondDate.$invalid && !scheduleForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
 		    </div>
 		    <br/>
 	    	<button type="submit" class="btn btn-primary" ng-disabled="scheduleForm.$invalid">Save schedule</button>

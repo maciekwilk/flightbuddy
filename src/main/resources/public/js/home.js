@@ -31,5 +31,33 @@ angular.module('home', [])
 				}
 			}
     )};
+
+    self.firstDateOptions = {
+	    minDate: new Date(),
+	    startingDay: 1,
+	    showWeeks: false
+    };
     
+    self.secondDateOptions = {
+	    minDate: new Date(),
+	    startingDay: 1,
+	    showWeeks: false
+    };
+    
+    self.openFirstDatePopup = function() {
+        self.firstDatePopup.opened = true;
+    };
+    
+    self.firstDatePopup = {
+	    opened: false
+    };
+    
+    self.openSecondDatePopup = function() {
+    	self.secondDateOptions.minDate = self.searchData.dates[0] ? self.searchData.dates[0] : new Date();
+        self.secondDatePopup.opened = true;
+    };
+    
+    self.secondDatePopup = {
+	    opened: false
+    };
 });

@@ -29,13 +29,27 @@
 			        Round-trip
     			</label>
 		    </div>
-		    <div class="form-group" ng-class="{'has-error': homeForm.firstDate.$touched && homeForm.firstDate.$invalid }">
-		        <input type="text" class="form-control" name="firstDate" ng-model="home.searchData.dates[0]" placeholder="Date" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
-		    	<p ng-show="homeForm.firstDate.$invalid && !homeForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+			<div class="form-group" ng-class="{'has-error': homeForm.firstDate.$touched && homeForm.firstDate.$invalid }">
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="home.searchData.dates[0]" is-open="home.firstDatePopup.opened" 
+		          		datepicker-options="home.firstDateOptions" name="firstDate" ng-required="true" placeholder="Date" 
+		          		ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="home.openFirstDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="homeForm.firstDate.$invalid && !homeForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
 		    </div>
 		    <div ng-show="home.searchData.withReturn" class="form-group" ng-class="{'has-error': homeForm.secondDate.$touched && homeForm.secondDate.$invalid }">
-		        <input type="text" class="form-control" name="secondDate" ng-model="home.searchData.dates[1]" placeholder="Date return" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
-		    	<p ng-show="homeForm.secondDate.$invalid && !homeForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="home.searchData.dates[1]" is-open="home.secondDatePopup.opened" 
+		          		datepicker-options="home.secondDateOptions" name="secondDate" ng-required="home.searchData.withReturn" placeholder="Return date" 
+		          		ng-disabled="homeForm.firstDate.$invalid" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="home.openSecondDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="homeForm.secondDate.$invalid && !homeForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
 		    </div>
 		    <br/>
 	    	<button type="submit" class="btn btn-primary" ng-disabled="homeForm.$invalid">Search</button>
