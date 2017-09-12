@@ -40,7 +40,8 @@ public class ScheduledSearchService {
 		oldScheduledSearch.setFrom(newScheduledSearch.getFrom());
 		oldScheduledSearch.setTo(newScheduledSearch.getTo());
 		oldScheduledSearch.setDates(newScheduledSearch.getDates());
-		oldScheduledSearch.setPrice(newScheduledSearch.getPrice());
+		oldScheduledSearch.setMinPrice(newScheduledSearch.getMinPrice());
+		oldScheduledSearch.setMaxPrice(newScheduledSearch.getMaxPrice());
 		oldScheduledSearch.setWithReturn(newScheduledSearch.isWithReturn());
 	}
 }

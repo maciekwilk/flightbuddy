@@ -16,19 +16,21 @@ public class SearchDataConverter {
 	public static ImmutableSearchInputData convertToImmutable(ScheduledSearch scheduledSearch) {
 		String from = scheduledSearch.getFrom();
 		String to = scheduledSearch.getTo();
-		String price = String.valueOf(scheduledSearch.getPrice());
+		int minPrice = scheduledSearch.getMinPrice();
+		int maxPrice = scheduledSearch.getMaxPrice();
 		boolean withReturn = scheduledSearch.isWithReturn();
 		LocalDate[] dates = scheduledSearch.getDates().toArray(new LocalDate[]{});
-		return new ImmutableSearchInputData(from, to, price, dates, withReturn);
+		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn);
 	}
 	
 	public static ImmutableSearchInputData convertToImmutable(SearchInputData searchInputData) {
 		String from = searchInputData.getFrom();
 		String to = searchInputData.getTo();
-		String price = searchInputData.getPrice();
+		int minPrice = searchInputData.getMinPrice();
+		int maxPrice = searchInputData.getMaxPrice();
 		boolean withReturn = searchInputData.isWithReturn();
 		LocalDate[] dates = searchInputData.getDates();
-		return new ImmutableSearchInputData(from, to, price, dates, withReturn);
+		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn);
 	}
 	
 	public static SearchResult convertToSearchResult(FoundTrip foundTrip) {

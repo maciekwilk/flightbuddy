@@ -1,6 +1,5 @@
 package com.flightbuddy.schedule.search;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +40,10 @@ public class ScheduledSearch extends MutableEntity {
 	private String to;
 
 	@NotNull
-	private BigDecimal price;
+	private int minPrice;
+	
+	@NotNull
+	private int maxPrice;
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@JsonSerialize(contentUsing = LocalDateSerializer.class)
@@ -87,12 +89,20 @@ public class ScheduledSearch extends MutableEntity {
 		this.to = to;
 	}
 
-	public BigDecimal getPrice() {
-		return price;
+	public int getMinPrice() {
+		return minPrice;
 	}
 
-	public void setPrice(BigDecimal price) {
-		this.price = price;
+	public void setMinPrice(int minPrice) {
+		this.minPrice = minPrice;
+	}
+
+	public int getMaxPrice() {
+		return maxPrice;
+	}
+
+	public void setMaxPrice(int maxPrice) {
+		this.maxPrice = maxPrice;
 	}
 
 	public List<LocalDate> getDates() {

@@ -11,7 +11,8 @@ public class SearchInputData {
 	
 	private String from;
 	private String to;
-	private String price;
+	private int minPrice;
+	private int maxPrice;
 	@JsonSerialize(contentUsing = LocalDateSerializer.class)
 	@JsonDeserialize(contentUsing = LocalDateDeserializer.class)
 	private LocalDate[] dates;
@@ -25,8 +26,12 @@ public class SearchInputData {
 		return to;
 	}
 
-	public String getPrice() {
-		return price;
+	public int getMinPrice() {
+		return minPrice;
+	}
+
+	public int getMaxPrice() {
+		return maxPrice;
 	}
 
 	public LocalDate[] getDates() {
@@ -45,8 +50,12 @@ public class SearchInputData {
 		this.to = to;
 	}
 
-	public void setPrice(String price) {
-		this.price = price;
+	public void setMinPrice(int minPrice) {
+		this.minPrice = minPrice;
+	}
+
+	public void setMaxPrice(int maxPrice) {
+		this.maxPrice = maxPrice;
 	}
 
 	public void setDates(LocalDate[] dates) {

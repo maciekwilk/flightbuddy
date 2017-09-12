@@ -36,7 +36,7 @@ public class GoogleService {
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
 			handleResponseWithoutFlights(searchInputData);
 		}
-		return GoogleFlightConverter.convertResponseToTrips(response);
+		return GoogleFlightConverter.convertResponseToTrips(response, searchInputData.getMinPrice());
 	}
 	
 	public int getMaxAmountOfRequests() {
@@ -51,7 +51,7 @@ public class GoogleService {
 			fromDate = dates[0].format(formatter);
 			returnDate = formatReturnDate(dates, formatter);
 		}
-		log.error(Messages.get("error.google.flights.no", new Object[]{searchInputData.getPrice(), fromDate, returnDate,
+		log.error(Messages.get("error.google.flights.no", new Object[]{searchInputData.getMaxPrice(), fromDate, returnDate,
 				searchInputData.getFrom(), searchInputData.getTo()}));
 	}
 

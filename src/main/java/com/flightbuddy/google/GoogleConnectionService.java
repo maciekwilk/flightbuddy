@@ -65,7 +65,7 @@ public class GoogleConnectionService {
 	private GoogleRequest createGoogleRequest(ImmutableSearchInputData searchInputData) {
 		Request request = new Request();
 		request.setPassengers(new Passengers());
-		request.setMaxPrice(currency + searchInputData.getPrice());
+		request.setMaxPrice(currency + searchInputData.getMaxPrice() + ".00");
 		Slice[] slices = new Slice[2];
 		slices[0] = createSlice(searchInputData.getFrom(), searchInputData.getTo(), searchInputData.getDates()[0]);
 		if (searchInputData.isWithReturn()) {

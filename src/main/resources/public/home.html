@@ -16,13 +16,10 @@
 		    	<p ng-show="homeForm.to.$error.minlength || homeForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
 		    	<p ng-show="homeForm.to.$invalid && !homeForm.to.$pristine" class="help-block">Enter a valid airport acronym.</p>
 		    </div>
-		    <div class="form-group" ng-class="{'has-error': homeForm.price.$touched && homeForm.price.$invalid }">
-		        <div class="form-inline">
-		        	<input type="number" class="form-control" name="price" ng-model="home.searchData.price" placeholder="Price limit" ng-pattern="/^\d*\.\d{2}$/" required/>
-		    		&euro;
-		    	</div>
-		    	<p ng-show="homeForm.price.$invalid && !homeForm.price.$pristine" class="help-block">Enter a price with two decimal places.</p>
-		    </div>
+		    <div class="form-group">
+				<rzslider rz-slider-model="home.searchData.minPrice" rz-slider-high="home.searchData.maxPrice"
+	          					rz-slider-options="home.slider.options"></rzslider>
+			</div>
 		    <div class="form-group">
 		    	<label class="form-check-label">
 			        <input type="checkbox" class="form-check-input" ng-model="home.searchData.withReturn">

@@ -27,22 +27,23 @@ public class GoogleFlightConverter {
 
 	private static final LocalDateTime DEFAULT_DATE = LocalDateTime.of(2000, 1, 1, 12, 30);
 
-	public static List<FoundTrip> convertResponseToTrips(GoogleResponse googleResponse) {
+	public static List<FoundTrip> convertResponseToTrips(GoogleResponse googleResponse, int minPrice) {
 		Trips trips = googleResponse.getTrips();
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
 			return Collections.emptyList();
 		}
 		TripData tripData = trips.getData();
 		TripOption[] tripOptions = trips.getTripOption();
-		return getFoundTrips(tripOptions, tripData);
+		return getFoundTrips(tripOptions, tripData, minPrice);
 	}
 
-	private static List<FoundTrip> getFoundTrips(TripOption[] tripOptions, TripData tripData) {
+	private static List<FoundTrip> getFoundTrips(TripOption[] tripOptions, TripData tripData, int minPrice) {
 		List<FoundTrip> trips = new ArrayList<>(tripOptions.length);
-		Arrays.stream(tripOptions).forEach((tripOption) -> {
-			FoundTrip trip = getFoundTrip(tripOption, tripData);
-			trips.add(trip);
-		});
+		Arrays.stream(tripOptions).filter((tripOption) -> getPrice(tripOption).compareTo(new BigDecimal(minPrice)) >= 0)
+					.forEach((tripOption) -> {
+						FoundTrip trip = getFoundTrip(tripOption, tripData);
+						trips.add(trip);
+					});
 		return trips;
 	}
 
