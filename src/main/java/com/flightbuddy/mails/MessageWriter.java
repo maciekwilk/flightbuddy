@@ -1,21 +1,16 @@
 package com.flightbuddy.mails;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import com.flightbuddy.results.Airline;
-import com.flightbuddy.results.Flight;
 import com.flightbuddy.results.FoundTrip;
-import com.flightbuddy.results.Stop;
+import com.flightbuddy.search.SearchDataConverter;
+import com.flightbuddy.search.SearchResult;
 
 @Component
 public class MessageWriter {
-	
-	private String dateFormat = "uuuu-MM-dd HH:mm";
 
 	public String prepareMessage(List<FoundTrip> foundTrips) {
         String message = foundTrips.stream().map( 
@@ -25,44 +20,24 @@ public class MessageWriter {
 	}
 	
 	private String getMessagePartFrom(FoundTrip foundTrip) {
-		String flightsInfo = extractFlightsInfo(foundTrip);
-		return "{id: " + foundTrip.getId() + ", price: " + String.valueOf(foundTrip.getPrice()) + 
-				",\nflights: [\n" + flightsInfo + "]}\n";
-	}
-
-	private String extractFlightsInfo(FoundTrip foundTrip) {
-		List<Flight> flights = foundTrip.getFlights();
-		String flightsInfo = flights.stream().map( 
-        		flight -> getMessagePartFrom(flight)
-        		).collect(Collectors.joining());
-		return flightsInfo;
+		SearchResult searchResult = SearchDataConverter.convertToSearchResult(foundTrip);
+		return "Flight code: " + foundTrip.getId() + "\n" +
+				"Price: " + String.valueOf(foundTrip.getPrice()) + "\n" + 
+				"Hours:\n" + extractInfo(searchResult.getHours()) + "\n" +
+				"Durations:\n" + extractInfo(searchResult.getDurations()) + "\n" +
+				"Trip:\n" + extractInfo(searchResult.getTrips()) + "\n" +
+				"Stops:\n" + extractStopsInfo(searchResult.getStops()) + "\n";
 	}
 	
-	private String getMessagePartFrom(Flight flight) {
-		String stopsInfo = extractStopsInfo(flight);
-		String airlinesInfo = extractAirlinesInfo(flight);
-		String date = parseDate(flight.getDate());
-		return "{stops: " + stopsInfo + ", airlines: " + airlinesInfo + ", date: " + date + "}\n";
+	private String extractInfo(List<String> infos) {
+		return infos.stream()
+				.map(info -> "\t" + info)
+				.collect(Collectors.joining("\n"));
 	}
-
-	private String extractStopsInfo(Flight flight) {
-		List<Stop> stops = flight.getStops();
-		String stopsInfo = stops.stream()
-				.map(stop -> stop.getCode())
-				.collect(Collectors.joining(" -> "));
-		return stopsInfo;
-	}
-
-	private String extractAirlinesInfo(Flight flight) {
-		List<Airline> airlines = flight.getAirlines();
-		String airlinesInfo = airlines.stream()
-				.map(airline -> airline.getName())
-				.collect(Collectors.joining(" -> "));
-		return airlinesInfo;
-	}
-
-	private String parseDate(LocalDateTime date) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-		return formatter.format(date) + ", " + date.getDayOfWeek().toString();
+	
+	private String extractStopsInfo(List<Integer> stops) {
+		return stops.stream()
+				.map(stop -> "\t" + stop)
+				.collect(Collectors.joining("\n"));
 	}
 }
