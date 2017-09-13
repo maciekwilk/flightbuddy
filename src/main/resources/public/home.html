@@ -56,6 +56,7 @@
 	</div>
 	<br/>
 	<div class="row" ng-show="home.searchResults != null">
+		 Results found: {{home.searchResults.length}} <br/>
 		 <table class="table table-bordered">
 		 	<thead>
 		      <tr>
@@ -69,10 +70,10 @@
 		    <tbody>
 		      <tr ng-repeat="searchResult in home.searchResults | orderBy : 'price'">
     			<td>&euro;{{ searchResult.price }}</td>
-    			<td>{{ searchResult.hours[0] }}</td>
-    			<td>{{ searchResult.durations[0] }}</td>
-    			<td>{{ searchResult.trips[0] }}</td>
-    			<td>{{ searchResult.stops[0] }}</td>
+    			<td>{{ searchResult.hours[0] }}<span ng-show="searchResult.hours[1]"><br/>{{ searchResult.hours[1] }}</span></td>
+    			<td>{{ searchResult.durations[0] }}<span ng-show="searchResult.durations[1]"><br/>{{ searchResult.durations[1] }}</span></td>
+    			<td>{{ searchResult.trips[0] }}<span ng-show="searchResult.trips[1]"><br/>{{ searchResult.trips[1] }}</span></td>
+    			<td>{{ searchResult.stops[0] }}<span ng-show="searchResult.stops[1] || searchResult.stops[1] === 0"><br/>{{ searchResult.stops[1] }}</span></td>
   			  </tr>
 	      	</tbody>
 		 </table>
