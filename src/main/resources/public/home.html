@@ -48,6 +48,37 @@
 		        </p>
 		        <p ng-show="homeForm.secondDate.$invalid && !homeForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
 		    </div>
+		    <div class="form-group">
+		    	<uib-accordion>
+				    <div uib-accordion-group class="panel-default">
+				    	<uib-accordion-heading>
+					        <span style="font-size: 14px;">Passengers: {{home.totalPassengers()}}</span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true}"></i>
+				      	</uib-accordion-heading>
+				      	<div  style="margin-left: 10px; margin-right: 10px;">
+					      	<div class="row">
+					      		<span style="width: 80%;">Adults</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.adultCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Children</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.childCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Lap infants</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.infantInLapCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Seat infants</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.infantInSeatCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Seniors</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.seniorCount"/>
+					    	</div>
+				    	</div>
+				    </div>
+			    </uib-accordion>
+		    </div>
 		    <br/>
 	    	<button type="submit" class="btn btn-primary" ng-disabled="homeForm.$invalid">Search</button>
 	    </div>

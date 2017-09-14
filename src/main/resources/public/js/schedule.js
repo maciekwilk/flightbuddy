@@ -11,7 +11,14 @@ angular.module('schedule', ['rzModule'])
 			minPrice : 0,
 			maxPrice : 400,
 			dates : [],
-			withReturn : false
+			withReturn : false,
+			passengers : {
+				adultCount : 1,
+				childCount : 0,
+				infantInLapCount : 0,
+				infantInSeatCount : 0,
+				seniorCount : 0
+			}
 	};
 	
 	self.save = function() {
@@ -80,5 +87,10 @@ angular.module('schedule', ['rzModule'])
     
     self.secondDatePopup = {
 	    opened: false
+    };
+    
+    self.totalPassengers = function() {
+    	var passengers = self.searchSchedule.passengers;
+    	return passengers.adultCount + passengers.childCount + passengers.infantInLapCount + passengers.infantInSeatCount + passengers.seniorCount;
     };
 });

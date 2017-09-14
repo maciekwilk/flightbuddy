@@ -53,6 +53,9 @@ public class ScheduledSearch extends MutableEntity {
 
 	private boolean withReturn;
 	
+	@OneToOne(mappedBy = "scheduledSearch", cascade = CascadeType.ALL)
+	private Passengers passengers;
+	
 	@JoinColumn(name = "user", nullable = false)
 	@OneToOne
 	private User user;
@@ -135,5 +138,13 @@ public class ScheduledSearch extends MutableEntity {
 
 	public void setScheduledSearchTasks(List<ScheduledSearchTask> scheduledSearchTasks) {
 		this.scheduledSearchTasks = scheduledSearchTasks;
+	}
+
+	public Passengers getPassengers() {
+		return passengers;
+	}
+
+	public void setPassengers(Passengers passengers) {
+		this.passengers = passengers;
 	}
 }

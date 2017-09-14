@@ -24,6 +24,7 @@ import com.flightbuddy.google.request.Slice;
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.error.Error;
 import com.flightbuddy.resources.Messages;
+import com.flightbuddy.search.ImmutablePassengers;
 import com.flightbuddy.search.ImmutableSearchInputData;
 
 @Service
@@ -64,7 +65,7 @@ public class GoogleConnectionService {
 
 	private GoogleRequest createGoogleRequest(ImmutableSearchInputData searchInputData) {
 		Request request = new Request();
-		request.setPassengers(new Passengers());
+		request.setPassengers(createPassengers(searchInputData));
 		request.setMaxPrice(currency + searchInputData.getMaxPrice() + ".00");
 		Slice[] slices = new Slice[2];
 		slices[0] = createSlice(searchInputData.getFrom(), searchInputData.getTo(), searchInputData.getDates()[0]);
@@ -75,6 +76,17 @@ public class GoogleConnectionService {
 		return new GoogleRequest(request);
 	}
 	
+	private Passengers createPassengers(ImmutableSearchInputData searchInputData) {
+		Passengers passengers = new Passengers();
+		ImmutablePassengers searchInputPassengers = searchInputData.getPassengers();
+		passengers.setAdultCount(searchInputPassengers.getAdultCount());
+		passengers.setChildCount(searchInputPassengers.getChildCount());
+		passengers.setInfantInLapCount(searchInputPassengers.getInfantInLapCount());
+		passengers.setInfantInSeatCount(searchInputPassengers.getInfantInSeatCount());
+		passengers.setSeniorCount(searchInputPassengers.getSeniorCount());
+		return passengers;
+	}
+
 	private Slice createSlice(String from, String to, LocalDate date) {
 		Slice slice = new Slice();
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);

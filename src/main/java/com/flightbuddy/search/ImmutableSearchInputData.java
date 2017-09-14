@@ -10,8 +10,10 @@ public final class ImmutableSearchInputData {
 	private final int minPrice;
 	private final LocalDate[] dates;
 	private final boolean withReturn;
+	private final ImmutablePassengers passengers;
 	
-	public ImmutableSearchInputData(String from, String to, int minPrice, int maxPrice, LocalDate[] dates, boolean withReturn) {
+	public ImmutableSearchInputData(String from, String to, int minPrice, int maxPrice, LocalDate[] dates, boolean withReturn,
+			ImmutablePassengers passengers) {
 		this.from = from;
 		this.to = to;
 		this.minPrice = minPrice;
@@ -21,6 +23,7 @@ public final class ImmutableSearchInputData {
 			this.dates[i] = LocalDate.of(dates[i].getYear(), dates[i].getMonth(), dates[i].getDayOfMonth());
 		}
 		this.withReturn = withReturn;
+		this.passengers = passengers;
 	}
 
 	public String getFrom() {
@@ -45,5 +48,9 @@ public final class ImmutableSearchInputData {
 
 	public boolean isWithReturn() {
 		return withReturn;
+	}
+
+	public ImmutablePassengers getPassengers() {
+		return passengers;
 	}
 }

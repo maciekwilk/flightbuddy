@@ -17,6 +17,7 @@ public class SearchInputData {
 	@JsonDeserialize(contentUsing = LocalDateDeserializer.class)
 	private LocalDate[] dates;
 	private boolean withReturn;
+	private Passengers passengers;
 	
 	public String getFrom() {
 		return from;
@@ -64,5 +65,13 @@ public class SearchInputData {
 
 	public void setWithReturn(boolean withReturn) {
 		this.withReturn = withReturn;
+	}
+
+	public Passengers getPassengers() {
+		return passengers;
+	}
+
+	public void setPassengers(Passengers passengers) {
+		this.passengers = passengers;
 	}
 }

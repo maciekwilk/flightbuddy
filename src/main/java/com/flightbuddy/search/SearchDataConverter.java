@@ -11,6 +11,7 @@ import com.flightbuddy.results.Flight;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.Stop;
 import com.flightbuddy.schedule.search.ScheduledSearch;
+import com.flightbuddy.schedule.search.Passengers;
 
 public class SearchDataConverter {
 
@@ -21,9 +22,10 @@ public class SearchDataConverter {
 		int maxPrice = scheduledSearch.getMaxPrice();
 		boolean withReturn = scheduledSearch.isWithReturn();
 		LocalDate[] dates = scheduledSearch.getDates().toArray(new LocalDate[]{});
-		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn);
+		ImmutablePassengers immutablePassengers = copyPassengers(scheduledSearch.getPassengers());
+		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn, immutablePassengers);
 	}
-	
+
 	public static ImmutableSearchInputData convertToImmutable(SearchInputData searchInputData) {
 		String from = searchInputData.getFrom();
 		String to = searchInputData.getTo();
@@ -31,7 +33,8 @@ public class SearchDataConverter {
 		int maxPrice = searchInputData.getMaxPrice();
 		boolean withReturn = searchInputData.isWithReturn();
 		LocalDate[] dates = searchInputData.getDates();
-		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn);
+		ImmutablePassengers immutablePassengers = new ImmutablePassengers(searchInputData.getPassengers());
+		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn, immutablePassengers);
 	}
 	
 	public static SearchResult convertToSearchResult(FoundTrip foundTrip) {
@@ -44,6 +47,11 @@ public class SearchDataConverter {
 		List<String> trips = getTrips(flights);
 		List<Integer> stops = countStops(flights);
 		return new SearchResult(price, hours, durations, trips, stops);
+	}
+	
+	private static ImmutablePassengers copyPassengers(Passengers passengers) {
+		return new ImmutablePassengers(passengers.getAdultCount(), passengers.getChildCount(), passengers.getInfantInLapCount(), 
+				passengers.getInfantInSeatCount(), passengers.getSeniorCount());
 	}
 
 	private static List<LocalDateTime> getDates(List<Flight> flights) {

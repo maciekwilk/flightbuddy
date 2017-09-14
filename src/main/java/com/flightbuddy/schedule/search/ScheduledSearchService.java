@@ -29,9 +29,7 @@ public class ScheduledSearchService {
 				updateSavedSchedule(alreadySavedOne, newScheduledSearch);
 				scheduledSearchDao.merge(alreadySavedOne);
 			} else {
-				newScheduledSearch.setUser(currentUser);
-				currentUser.setScheduledSearch(newScheduledSearch);
-				scheduledSearchDao.persist(newScheduledSearch);
+				persist(newScheduledSearch, currentUser);
 			}
 		}
 	}
@@ -43,5 +41,16 @@ public class ScheduledSearchService {
 		oldScheduledSearch.setMinPrice(newScheduledSearch.getMinPrice());
 		oldScheduledSearch.setMaxPrice(newScheduledSearch.getMaxPrice());
 		oldScheduledSearch.setWithReturn(newScheduledSearch.isWithReturn());
+		Passengers passengers = newScheduledSearch.getPassengers();
+		passengers.setScheduledSearch(oldScheduledSearch);
+		oldScheduledSearch.setPassengers(passengers);
+	}
+
+	private void persist(ScheduledSearch newScheduledSearch, User currentUser) {
+		newScheduledSearch.setUser(currentUser);
+		currentUser.setScheduledSearch(newScheduledSearch);
+		Passengers passengers = newScheduledSearch.getPassengers();
+		passengers.setScheduledSearch(newScheduledSearch);
+		scheduledSearchDao.persist(newScheduledSearch);
 	}
 }
