@@ -1,4 +1,4 @@
-angular.module('home', ['rzModule'])
+angular.module('home', ['rzModule', 'ui.bootstrap'])
 .controller('home', function($http) {
     var self = this;
     
@@ -91,5 +91,48 @@ angular.module('home', ['rzModule'])
     self.totalPassengers = function() {
     	var passengers = self.searchData.passengers;
     	return passengers.adultCount + passengers.childCount + passengers.infantInLapCount + passengers.infantInSeatCount + passengers.seniorCount;
+    };
+    
+    self.tableRowExpanded = false;
+    self.tableRowIndexExpandedCurr = "";
+    self.tableRowIndexExpandedPrev = "";
+    self.searchResultIdExpanded = "";
+    
+    self.searchResultRowCollapseInit = function () {
+    	if (self.searchResults === 'undefined') {
+    		return;
+    	}
+        self.searchResultRowCollapse = [];
+        for (var i = 0; i < self.searchResults.length; i += 1) {
+            self.searchResultRowCollapse.push(false);
+        }
+    };
+    
+       
+    self.selectTableRow = function (index, searchResultId) {
+        if (typeof self.searchResultRowCollapse === 'undefined') {
+            self.searchResultRowCollapseInit();
+        }
+
+        if (self.tableRowExpanded === false && self.tableRowIndexExpandedCurr === "" && self.searchResultIdExpanded === "") {
+            self.tableRowIndexExpandedPrev = "";
+            self.tableRowExpanded = true;
+            self.tableRowIndexExpandedCurr = index;
+            self.searchResultIdExpanded = searchResultId;
+            self.searchResultRowCollapse[index] = true;
+        } else if (self.tableRowExpanded === true) {
+            if (self.tableRowIndexExpandedCurr === index && self.searchResultIdExpanded === searchResultId) {
+                self.tableRowExpanded = false;
+                self.tableRowIndexExpandedCurr = "";
+                self.searchResultIdExpanded = "";
+                self.searchResultRowCollapse[index] = false;
+            } else {
+                self.tableRowIndexExpandedPrev = self.tableRowIndexExpandedCurr;
+                self.tableRowIndexExpandedCurr = index;
+                self.searchResultIdExpanded = searchResultId;
+                self.searchResultRowCollapse[self.tableRowIndexExpandedPrev] = false;
+                self.searchResultRowCollapse[self.tableRowIndexExpandedCurr] = true;
+            }
+        }
     };
 });

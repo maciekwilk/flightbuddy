@@ -86,9 +86,10 @@
 	</form>
 	</div>
 	<br/>
+        
 	<div class="row" ng-show="home.searchResults != null">
 		 Results found: {{home.searchResults.length}} <br/>
-		 <table class="table table-bordered">
+		 <table class="table table-bordered table-hover table-condensed table-striped">
 		 	<thead>
 		      <tr>
 		        <th>Price</th>
@@ -98,14 +99,60 @@
 		        <th>Stops</th>
 		      </tr>
 		    </thead>
-		    <tbody>
-		      <tr ng-repeat="searchResult in home.searchResults | orderBy : 'price'">
+		    <tbody data-ng-repeat="searchResult in home.searchResults | orderBy : 'price'" 
+		    		data-ng-switch on="home.searchResultRowCollapse[$index]">
+		      <tr class="clickableRow" title="Click to see trip details." 
+		      		data-ng-click="home.selectTableRow($index, searchResult.id)">
     			<td>&euro;{{ searchResult.price }}</td>
     			<td>{{ searchResult.hours[0] }}<span ng-show="searchResult.hours[1]"><br/>{{ searchResult.hours[1] }}</span></td>
     			<td>{{ searchResult.durations[0] }}<span ng-show="searchResult.durations[1]"><br/>{{ searchResult.durations[1] }}</span></td>
     			<td>{{ searchResult.trips[0] }}<span ng-show="searchResult.trips[1]"><br/>{{ searchResult.trips[1] }}</span></td>
     			<td>{{ searchResult.stops[0] }}<span ng-show="searchResult.stops[1] || searchResult.stops[1] === 0"><br/>{{ searchResult.stops[1] }}</span></td>
   			  </tr>
+  			  <tr data-ng-switch-when="true">
+  			  	<td colspan="5">
+  			  		<table class="table">
+  			  			<thead>
+  			  				<tr>
+  			  					<th><b>Depart - {{searchResult.dates[0]}}</b></th>
+  			  					<th><b>{{searchResult.hours[0]}}</b></th>
+  			  				</tr>
+  			  			</thead>
+  			  			<tbody data-ng-repeat="searchResultDetailEntry in searchResult.searchResultDetails[0].searchResultDetailsEntries">
+  			  				<tr>
+  			  					<td>
+	  			  					{{searchResultDetailEntry.hours}}<br/>
+	  			  					{{searchResultDetailEntry.trip}}<br/>
+	  			  					{{searchResultDetailEntry.airline}}
+  			  					</td>
+  			  					<td>
+  			  						{{searchResultDetailEntry.duration}}
+		  						</td>	
+  			  				</tr>
+  			  			</tbody>
+  			  		</table>
+                    <table class="table" ng-show="searchResult.dates[1]">
+  			  			<thead>
+  			  				<tr>
+  			  					<th><b>Return - {{searchResult.dates[1]}}</b></th>
+  			  					<th><b>{{searchResult.hours[1]}}</b></th>
+  			  				</tr>
+  			  			</thead>
+  			  			<tbody data-ng-repeat="searchResultDetailEntry in searchResult.searchResultDetails[1].searchResultDetailsEntries">
+  			  				<tr>
+  			  					<td>
+	  			  					{{searchResultDetailEntry.hours}}<br/>
+	  			  					{{searchResultDetailEntry.trip}}<br/>
+	  			  					{{searchResultDetailEntry.airline}}
+  			  					</td>
+  			  					<td>
+  			  						{{searchResultDetailEntry.duration}}
+		  						</td>	
+  			  				</tr>
+  			  			</tbody>
+  			  		</table>
+                </td>
+              </tr>
 	      	</tbody>
 		 </table>
 	</div>

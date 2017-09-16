@@ -136,8 +136,7 @@ public class GoogleFlightConverter {
 		if (date == null) {
 			addDateAndFirstStops(flight, leg, stops);
 		} else {
-			Stop destination = createStop(flight, leg.getDestination());
-			stops.add(destination);
+			addNextStops(flight, leg, stops);
 		}
 		flight.setStops(stops);
 	}
@@ -151,25 +150,36 @@ public class GoogleFlightConverter {
 	}
 
 	private static void addDateAndFirstStops(Flight flight, Leg leg, List<Stop> stops) {
-		LocalDateTime date = getDate(leg);
-		flight.setDate(date);
-		Stop origin = createStop(flight, leg.getOrigin());
+		LocalDateTime departureTime = getDate(leg.getDepartureTime());
+		LocalDateTime arrivalTime = getDate(leg.getArrivalTime());
+		flight.setDate(departureTime);
+		Stop origin = createStop(flight, leg.getOrigin(), null, departureTime);
 		stops.add(origin);
-		Stop destination = createStop(flight, leg.getDestination());
+		Stop destination = createStop(flight, leg.getDestination(), arrivalTime, null);
 		stops.add(destination);
 	}
 
-	private static LocalDateTime getDate(Leg leg) {
-		String departureTime = leg.getDepartureTime();
-		if (departureTime != null && Pattern.matches(RegularExpressions.ISO_OFFSET_DATE_TIME, departureTime)) {
+	private static void addNextStops(Flight flight, Leg leg, List<Stop> stops) {
+		LocalDateTime departureTime = getDate(leg.getDepartureTime());
+		LocalDateTime arrivalTime = getDate(leg.getArrivalTime());
+		Stop origin = stops.get(stops.size() - 1);
+		origin.setDepartureTime(departureTime);
+		Stop destination = createStop(flight, leg.getDestination(), arrivalTime, null);
+		stops.add(destination);
+	}
+
+	private static LocalDateTime getDate(String date) {
+		if (date != null && Pattern.matches(RegularExpressions.ISO_OFFSET_DATE_TIME, date)) {
 			DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-			return LocalDateTime.parse(departureTime, formatter);
+			return LocalDateTime.parse(date, formatter);
 		}
 		return DEFAULT_DATE;
 	}
 	
-	private static Stop createStop(Flight flight, String stopCode) {
+	private static Stop createStop(Flight flight, String stopCode, LocalDateTime arrivalTime, LocalDateTime departureTime) {
 		Stop stop = new Stop();
+		stop.setArrivalTime(arrivalTime);
+		stop.setDepartureTime(departureTime);
 		stop.setCode(stopCode);
 		stop.setFlight(flight);
 		return stop;

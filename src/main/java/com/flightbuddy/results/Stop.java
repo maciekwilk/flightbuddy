@@ -1,5 +1,6 @@
 package com.flightbuddy.results;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -24,6 +25,10 @@ public class Stop extends ImmutableEntity {
 	@ManyToOne
 	@JoinColumn(name = "flight")
 	private Flight flight;
+	
+	private LocalDateTime arrivalTime;
+	
+	private LocalDateTime departureTime;
 
 	public Stop() {
 		String uuid = UUID.randomUUID().toString();
@@ -52,5 +57,21 @@ public class Stop extends ImmutableEntity {
 
 	public void setFlight(Flight flight) {
 		this.flight = flight;
+	}
+
+	public LocalDateTime getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public void setArrivalTime(LocalDateTime arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
+
+	public LocalDateTime getDepartureTime() {
+		return departureTime;
+	}
+
+	public void setDepartureTime(LocalDateTime departureTime) {
+		this.departureTime = departureTime;
 	}
 }
