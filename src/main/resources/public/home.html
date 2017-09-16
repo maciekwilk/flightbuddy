@@ -9,7 +9,7 @@
     		<div class="form-group">
 			    <md-autocomplete required md-input-name="from" md-input-minlength="3" md-input-maxlength="3" md-selected-item="home.searchData.from"
 		            md-search-text="home.airportSearchTextFrom" md-items="item in home.airportSearch(home.airportSearchTextFrom)" md-item-text="item"
-		            md-floating-label="From where?">
+		            md-floating-label="Where from?">
 		          	<md-item-template>
 	          			<span md-highlight-text="home.airportSearchTextFrom" md-highlight-flags="^i">{{item}}</span>
 	      		  	</md-item-template>
@@ -23,7 +23,7 @@
 		    <div class="form-group">
 		        <md-autocomplete required md-input-name="to" md-input-minlength="3" md-input-maxlength="3" md-selected-item="home.searchData.to"
 		            md-search-text="home.airportSearchTextTo" md-items="item in home.airportSearch(home.airportSearchTextTo)" md-item-text="item"
-		         	md-floating-label="To where?">
+		         	md-floating-label="Where to?">
 		          	<md-item-template>
 	          			<span md-highlight-text="home.airportSearchTextTo" md-highlight-flags="^i">{{item}}</span>
 	      		  	</md-item-template>

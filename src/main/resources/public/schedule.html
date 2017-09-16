@@ -8,7 +8,7 @@
 		    <div class="form-group">
 		        <md-autocomplete required md-input-name="from" md-input-minlength="3" md-input-maxlength="3" md-selected-item="schedule.searchSchedule.from"
 		            md-search-text="schedule.airportSearchTextFrom" md-items="item in schedule.airportSearch(schedule.airportSearchTextFrom)" md-item-text="item"
-		            md-floating-label="From where?">
+		            md-floating-label="Where from?">
 		          	<md-item-template>
 	          			<span md-highlight-text="home.airportSearchTextFrom" md-highlight-flags="^i">{{item}}</span>
 	      		  	</md-item-template>
@@ -20,14 +20,14 @@
 		    	<p ng-show="scheduleForm.from.$invalid && !scheduleForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
 		    </div>
 		    <div class="form-group">
-		        <md-autocomplete required md-input-name="from" md-input-minlength="3" md-input-maxlength="3" md-selected-item="schedule.searchSchedule.from"
-		            md-search-text="schedule.airportSearchTextFrom" md-items="item in schedule.airportSearch(schedule.airportSearchTextFrom)" md-item-text="item"
-		            md-floating-label="From where?">
+		        <md-autocomplete required md-input-name="to" md-input-minlength="3" md-input-maxlength="3" md-selected-item="schedule.searchSchedule.to"
+		            md-search-text="schedule.airportSearchTextTo" md-items="item in schedule.airportSearch(schedule.airportSearchTextTo)" md-item-text="item"
+		            md-floating-label="Where to?">
 		          	<md-item-template>
-	          			<span md-highlight-text="schedule.airportSearchTextFrom" md-highlight-flags="^i">{{item}}</span>
+	          			<span md-highlight-text="schedule.airportSearchTextTo" md-highlight-flags="^i">{{item}}</span>
 	      		  	</md-item-template>
 	        	  	<md-not-found>
-	          			No airports matching "{{schedule.airportSearchTextFrom}}" were found.
+	          			No airports matching "{{schedule.airportSearchTextTo}}" were found.
 	        	  	</md-not-found>
 		        </md-autocomplete>
 		    	<p ng-show="scheduleForm.to.$error.minlength || scheduleForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
