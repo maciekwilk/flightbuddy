@@ -1,4 +1,4 @@
-angular.module('home', ['rzModule', 'ui.bootstrap'])
+angular.module('home', ['rzModule', 'ui.bootstrap', 'ngMaterial'])
 .controller('home', function($http) {
     var self = this;
     
@@ -20,25 +20,27 @@ angular.module('home', ['rzModule', 'ui.bootstrap'])
 			}
 	};
     
-    self.search = function() {
-    	$http.post('/search/perform', self.searchData).then(
+    self.initAirports = function() {
+    	$http.get('/airport/all').then(
 			function(response) {
-				self.showMessage = true;
-				if (response.data.error) {
-					self.error = response.data.error;
-				} else {
-					self.message = response.data.message;
-					self.searchResults = response.data.searchResults;
-				}
-			}, function(response) {
-				self.showMessage = true;
-				if (response.data.message) {
-					self.error = response.data.message;
-				} else {
-					self.error = response.status + ' ' + response.statusText;
-				}
+				self.airports = response.data;
 			}
     )};
+    
+    self.initAirports();
+    
+    self.airportSearch = function(query) {
+        var results = query ? self.airports.filter(createFilterFor(query)) : self.airports;
+        return results;
+    }
+    
+    function createFilterFor(query) {
+        var lowercaseQuery = angular.lowercase(query);
+        return function filterFn(airport) {
+        	var lowercaseAirport = angular.lowercase(airport);
+        	return (lowercaseAirport.indexOf(lowercaseQuery) === 0);
+        };
+    }
     
     self.slider = {
 		options: {
@@ -92,6 +94,26 @@ angular.module('home', ['rzModule', 'ui.bootstrap'])
     	var passengers = self.searchData.passengers;
     	return passengers.adultCount + passengers.childCount + passengers.infantInLapCount + passengers.infantInSeatCount + passengers.seniorCount;
     };
+    
+    self.search = function() {
+    	$http.post('/search/perform', self.searchData).then(
+			function(response) {
+				self.showMessage = true;
+				if (response.data.error) {
+					self.error = response.data.error;
+				} else {
+					self.message = response.data.message;
+					self.searchResults = response.data.searchResults;
+				}
+			}, function(response) {
+				self.showMessage = true;
+				if (response.data.message) {
+					self.error = response.data.message;
+				} else {
+					self.error = response.status + ' ' + response.statusText;
+				}
+			}
+    )};
     
     self.tableRowExpanded = false;
     self.tableRowIndexExpandedCurr = "";

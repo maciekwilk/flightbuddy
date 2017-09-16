@@ -6,13 +6,31 @@
 	<form name="homeForm" role="form" ng-submit="home.search()" novalidate>
     	<div class="col-md-4"></div>
     	<div class="col-md-4">
-		    <div class="form-group" ng-class="{'has-error': homeForm.from.$touched && homeForm.from.$invalid }">
-		        <input type="text" class="form-control" name="from" ng-model="home.searchData.from" placeholder="From where?" ng-minlength="3" ng-maxlength="3" required/>
-		    	<p ng-show="homeForm.from.$error.minlength || homeForm.from.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
-		    	<p ng-show="homeForm.from.$invalid && !homeForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
-		    </div>
-		    <div class="form-group" ng-class="{'has-error': homeForm.to.$touched && homeForm.to.$invalid }">
-		        <input type="text" class="form-control" name="to" ng-model="home.searchData.to" placeholder="To where?" ng-minlength="3" ng-maxlength="3" required/>
+    		<div class="form-group">
+			    <md-autocomplete required md-input-name="from" md-input-minlength="3" md-input-maxlength="3" md-selected-item="home.searchData.from"
+		            md-search-text="home.airportSearchTextFrom" md-items="item in home.airportSearch(home.airportSearchTextFrom)" md-item-text="item"
+		            md-floating-label="From where?">
+		          	<md-item-template>
+	          			<span md-highlight-text="home.airportSearchTextFrom" md-highlight-flags="^i">{{item}}</span>
+	      		  	</md-item-template>
+	        	  	<md-not-found>
+	          			No airports matching "{{home.airportSearchTextFrom}}" were found.
+	        	  	</md-not-found>
+		        </md-autocomplete>
+	          	<p ng-show="homeForm.from.$error.minlength || homeForm.from.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+	    		<p ng-show="homeForm.from.$invalid && !homeForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
+	        </div>
+		    <div class="form-group">
+		        <md-autocomplete required md-input-name="to" md-input-minlength="3" md-input-maxlength="3" md-selected-item="home.searchData.to"
+		            md-search-text="home.airportSearchTextTo" md-items="item in home.airportSearch(home.airportSearchTextTo)" md-item-text="item"
+		         	md-floating-label="To where?">
+		          	<md-item-template>
+	          			<span md-highlight-text="home.airportSearchTextTo" md-highlight-flags="^i">{{item}}</span>
+	      		  	</md-item-template>
+	        	  	<md-not-found>
+	          			No airports matching "{{home.airportSearchTextTo}}" were found.
+	        	  	</md-not-found>
+		        </md-autocomplete>
 		    	<p ng-show="homeForm.to.$error.minlength || homeForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
 		    	<p ng-show="homeForm.to.$invalid && !homeForm.to.$pristine" class="help-block">Enter a valid airport acronym.</p>
 		    </div>
@@ -88,7 +106,8 @@
 	<br/>
         
 	<div class="row" ng-show="home.searchResults != null">
-		 Results found: {{home.searchResults.length}} <br/>
+		<hr/>
+		 <p>Results found: {{home.searchResults.length}} </p><br/>
 		 <table class="table table-bordered table-hover table-condensed table-striped">
 		 	<thead>
 		      <tr>

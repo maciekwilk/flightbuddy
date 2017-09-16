@@ -21,25 +21,27 @@ angular.module('schedule', ['rzModule'])
 			}
 	};
 	
-	self.save = function() {
-		$http.post('/search/schedule/save', self.searchSchedule).then(
+	self.initAirports = function() {
+    	$http.get('/airport/all').then(
 			function(response) {
-				self.showMessage = true;
-				if (response.data.error) {
-					self.error = response.data.error;
-				} else {
-					self.message = response.data.message;
-				}
-			}, function(response) {
-				self.showMessage = true;
-				if (response.data.message) {
-					self.error = response.data.message;
-				} else {
-					self.error = response.status + ' ' + response.statusText;
-				}
+				self.airports = response.data;
 			}
-		);
-	}
+    )};
+    
+    self.initAirports();
+    
+    self.airportSearch = function(query) {
+        var results = query ? self.airports.filter(createFilterFor(query)) : self.airports;
+        return results;
+    }
+    
+    function createFilterFor(query) {
+        var lowercaseQuery = angular.lowercase(query);
+        return function filterFn(airport) {
+        	var lowercaseAirport = angular.lowercase(airport);
+        	return (lowercaseAirport.indexOf(lowercaseQuery) === 0);
+        };
+    }
 	
 	self.slider = {
 		options: {
@@ -93,4 +95,24 @@ angular.module('schedule', ['rzModule'])
     	var passengers = self.searchSchedule.passengers;
     	return passengers.adultCount + passengers.childCount + passengers.infantInLapCount + passengers.infantInSeatCount + passengers.seniorCount;
     };
+	
+	self.save = function() {
+		$http.post('/search/schedule/save', self.searchSchedule).then(
+			function(response) {
+				self.showMessage = true;
+				if (response.data.error) {
+					self.error = response.data.error;
+				} else {
+					self.message = response.data.message;
+				}
+			}, function(response) {
+				self.showMessage = true;
+				if (response.data.message) {
+					self.error = response.data.message;
+				} else {
+					self.error = response.status + ' ' + response.statusText;
+				}
+			}
+		);
+	}
 });

@@ -23,9 +23,15 @@ tr th:last-child {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
 }
+
 .clickableRow {
     cursor: pointer;
 }
-table {
-    padding: 0px;
+
+md-autocomplete[md-floating-label] {
+	height: 50px;
+}
+
+.panel-default > .panel-heading {
+	background-color: white;
 }
