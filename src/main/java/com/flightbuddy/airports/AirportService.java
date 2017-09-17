@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +25,10 @@ public class AirportService {
 		URL airportsFileUrl = classLoader.getResource("airports.txt");
 		String airportsFilePath = airportsFileUrl.getFile();
 		File airportsFile = new File(airportsFilePath);
+		if (!airportsFile.exists()) {
+			Path airportsPath = Paths.get("/home/ubuntu/flightbuddyData/airports.txt");
+			airportsFile = airportsPath.toFile();
+		}
 		try {
 			return Files.readLines(airportsFile, Charset.defaultCharset());
 		} catch (IOException e) {
