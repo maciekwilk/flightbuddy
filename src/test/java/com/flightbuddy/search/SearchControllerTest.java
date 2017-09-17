@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -90,7 +89,7 @@ public class SearchControllerTest {
 	@Test
 	@WithMockUser(authorities = {"ROLE_USER"})
 	public void saveScheduledSearchWithSchedule() throws Exception {
-		ScheduledSearch scheduledSearch = createScheduledSearch("from", "to", "10.00", true, Collections.singletonList(LocalDate.of(2017, 8, 21)));
+		ScheduledSearch scheduledSearch = createScheduledSearch("from", "to", 10, true, Collections.singletonList(LocalDate.of(2017, 8, 21)));
 		String requestBody = convertToJson(scheduledSearch);
 		mvc.perform(post("/search/schedule/save").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isOk());
@@ -108,7 +107,7 @@ public class SearchControllerTest {
 	
 	@Test
 	public void performSearchWithSearchDataWithoutSearchResults() throws Exception {
-		SearchInputData searchData = createSearchInputData("from", "to", "10.00", false, new LocalDate[] {LocalDate.of(2017, 8, 21)});
+		SearchInputData searchData = createSearchInputData("from", "to", 10, false, new LocalDate[] {LocalDate.of(2017, 8, 21)});
 		String requestBody = convertToJson(searchData);
     	when(searchService.performSearch(any())).thenReturn(Collections.emptyList());
 		MvcResult mvcResult = mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
@@ -120,7 +119,7 @@ public class SearchControllerTest {
 	
 	@Test
 	public void performSearchWithSearchData() throws Exception {
-		SearchInputData searchData = createSearchInputData("from", "to", "10.00", false, new LocalDate[] {LocalDate.of(2017, 8, 21)});
+		SearchInputData searchData = createSearchInputData("from", "to", 10, false, new LocalDate[] {LocalDate.of(2017, 8, 21)});
 		String requestBody = convertToJson(searchData);
     	SearchResult searchResult = createSearchResult();
     	when(searchService.performSearch(any())).thenReturn(Collections.singletonList(searchResult));
@@ -136,25 +135,27 @@ public class SearchControllerTest {
 	private SearchResult createSearchResult() {
 		List<String> trips = Collections.singletonList("KRK-BSL"); 
 		List<Integer> stops = Collections.singletonList(1);
-		SearchResult searchResult = new SearchResult("9.00", Collections.emptyList(), Collections.emptyList(), trips, stops);
+		SearchResult searchResult = new SearchResult("9.00", Collections.emptyList(), Collections.emptyList(), trips, stops, Collections.emptyList(), Collections.emptyList());
 		return searchResult;
 	}
 
-	private ScheduledSearch createScheduledSearch(String from, String to, String price, boolean withReturn, List<LocalDate> dates) {
+	private ScheduledSearch createScheduledSearch(String from, String to, int maxPrice, boolean withReturn, List<LocalDate> dates) {
 		ScheduledSearch scheduledSearch = new ScheduledSearch();
 		scheduledSearch.setFrom(from);
 		scheduledSearch.setTo(to);
-		scheduledSearch.setPrice(new BigDecimal(price));
+		scheduledSearch.setMinPrice(0);
+		scheduledSearch.setMaxPrice(maxPrice);
 		scheduledSearch.setWithReturn(withReturn);
 		scheduledSearch.setDates(dates);
 		return scheduledSearch;
 	}
 	
-	private SearchInputData createSearchInputData(String from, String to, String price, boolean withReturn, LocalDate[] dates) {
+	private SearchInputData createSearchInputData(String from, String to, int maxPrice, boolean withReturn, LocalDate[] dates) {
 		SearchInputData searchInputData = new SearchInputData();
 		searchInputData.setFrom(from);
 		searchInputData.setTo(to);
-		searchInputData.setPrice(price);
+		searchInputData.setMinPrice(0);
+		searchInputData.setMaxPrice(maxPrice);
 		searchInputData.setWithReturn(withReturn);
 		searchInputData.setDates(dates);
 		return searchInputData;

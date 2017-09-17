@@ -1,5 +1,6 @@
 package com.flightbuddy.search;
 
+import static java.util.Collections.emptyList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -7,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static java.util.Collections.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -45,8 +45,9 @@ public class SearchServiceTest {
     
     @Before
 	public void setUp() {
-		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
-		SearchResult emptyConvertedSearchResult = new SearchResult("", emptyList(), emptyList(), emptyList(), emptyList());
+    	ImmutablePassengers immutablePassengers = new ImmutablePassengers(0, 0, 0, 0, 0);
+		emptyInputData = new ImmutableSearchInputData(null, null, 0, 0, new LocalDate[]{}, false, immutablePassengers);
+		SearchResult emptyConvertedSearchResult = new SearchResult("", emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
 		mockStatic(SearchDataConverter.class);
 		when(SearchDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
 		when(SearchDataConverter.convertToSearchResult(any())).thenReturn(emptyConvertedSearchResult);

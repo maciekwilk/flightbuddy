@@ -30,6 +30,7 @@ import com.flightbuddy.google.response.tripoption.TripOption;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.schedule.ScheduleRunnable;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
+import com.flightbuddy.search.ImmutablePassengers;
 import com.flightbuddy.search.ImmutableSearchInputData;
 
 @RunWith(PowerMockRunner.class)
@@ -49,10 +50,14 @@ public class GoogleServiceTest {
 	private ScheduledSearchService scheduledSearchService;
 	
 	private ImmutableSearchInputData emptyInputData;
+	
+	//TODO test minPrice
+	private int minPrice;
 
 	@Before
 	public void setUp() {
-		emptyInputData = new ImmutableSearchInputData(null, null, null, new LocalDate[]{}, false);
+		ImmutablePassengers immutablePassengers = new ImmutablePassengers(0, 0, 0, 0, 0);
+		emptyInputData = new ImmutableSearchInputData(null, null, 0, 0, new LocalDate[]{}, false, immutablePassengers);
 		mockStatic(GoogleFlightConverter.class);
 	}
 	
@@ -62,7 +67,7 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(emptyGoogleResponse);
 		googleService.getTrips(emptyInputData);
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse);
+		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse, minPrice);
 	}
 	
 	@Test
@@ -72,7 +77,7 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		googleService.getTrips(emptyInputData);
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(googleResponse);
+		GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice);
 	}
 	
 	@Test
@@ -82,7 +87,7 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		googleService.getTrips(emptyInputData);
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(googleResponse);
+		GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice);
 	}
 	
 	@Test
@@ -95,7 +100,7 @@ public class GoogleServiceTest {
 		List<FoundTrip> result = googleService.getTrips(emptyInputData);
 		assertThat(result, equalTo(conversionResult));
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(googleResponse);
+		GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice);
 	}
 
 	private Trips createTrips(TripOption[] tripOption) {
@@ -113,7 +118,7 @@ public class GoogleServiceTest {
 	private List<FoundTrip> mockGoogleFlightConverter(GoogleResponse googleResponse) {
 		List<FoundTrip> conversionResult = new ArrayList<>(1);
 		conversionResult.add(new FoundTrip());
-		when(GoogleFlightConverter.convertResponseToTrips(googleResponse)).thenReturn(conversionResult);
+		when(GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice)).thenReturn(conversionResult);
 		return conversionResult;
 	}
 }
