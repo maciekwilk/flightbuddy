@@ -8,7 +8,7 @@ import java.util.UUID;
 public final class SearchResult {
 
 	private final String id;
-	private final String price;
+	private final int price;
 	private final List<String> hours;
 	private final List<String> dates;
 	private final List<String> durations;
@@ -16,7 +16,7 @@ public final class SearchResult {
 	private final List<Integer> stops;
 	private final List<SearchResultDetails> searchResultDetails;
 	
-	public SearchResult(String price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops, 
+	public SearchResult(int price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops, 
 			List<SearchResultDetails> searchResultDetails, List<String> dates) {
 		this.id = UUID.randomUUID().toString();
 		this.price = price;
@@ -28,7 +28,7 @@ public final class SearchResult {
 		this.searchResultDetails = Collections.unmodifiableList(new ArrayList<SearchResultDetails>(searchResultDetails));
 	}
 
-	public String getPrice() {
+	public int getPrice() {
 		return price;
 	}
 

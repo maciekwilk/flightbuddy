@@ -135,7 +135,7 @@ public class SearchControllerTest {
 	private SearchResult createSearchResult() {
 		List<String> trips = Collections.singletonList("KRK-BSL"); 
 		List<Integer> stops = Collections.singletonList(1);
-		SearchResult searchResult = new SearchResult("9.00", Collections.emptyList(), Collections.emptyList(), trips, stops, Collections.emptyList(), Collections.emptyList());
+		SearchResult searchResult = new SearchResult(9, Collections.emptyList(), Collections.emptyList(), trips, stops, Collections.emptyList(), Collections.emptyList());
 		return searchResult;
 	}
 

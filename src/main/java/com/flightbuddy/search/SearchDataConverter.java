@@ -40,7 +40,7 @@ public class SearchDataConverter {
 	}
 	
 	public static SearchResult convertToSearchResult(FoundTrip foundTrip) {
-		String price = foundTrip.getPrice().toString();
+		int price = foundTrip.getPrice().intValue();
 		List<Flight> flights = foundTrip.getFlights();
 		List<LocalDateTime> localDateTimes = getLocalDateTimes(flights);
 		List<Integer> durationsInMins = getDurationsInMins(flights);
