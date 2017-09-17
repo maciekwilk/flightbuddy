@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,7 +40,6 @@ public class SearchDataConverter {
 	}
 	
 	public static SearchResult convertToSearchResult(FoundTrip foundTrip) {
-		String id = UUID.randomUUID().toString();
 		String price = foundTrip.getPrice().toString();
 		List<Flight> flights = foundTrip.getFlights();
 		List<LocalDateTime> localDateTimes = getLocalDateTimes(flights);
@@ -52,7 +50,7 @@ public class SearchDataConverter {
 		List<String> trips = getTrips(flights);
 		List<Integer> stops = countStops(flights);
 		List<SearchResultDetails> searchResultDetails = getSearchResultDetails(flights);
-		return new SearchResult(id, price, hours, durations, trips, stops, searchResultDetails, dates);
+		return new SearchResult(price, hours, durations, trips, stops, searchResultDetails, dates);
 	}
 
 	private static ImmutablePassengers copyPassengers(Passengers passengers) {

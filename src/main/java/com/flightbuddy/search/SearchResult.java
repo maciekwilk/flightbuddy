@@ -3,6 +3,7 @@ package com.flightbuddy.search;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 public final class SearchResult {
 
@@ -15,9 +16,9 @@ public final class SearchResult {
 	private final List<Integer> stops;
 	private final List<SearchResultDetails> searchResultDetails;
 	
-	public SearchResult(String id, String price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops, 
+	public SearchResult(String price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops, 
 			List<SearchResultDetails> searchResultDetails, List<String> dates) {
-		this.id = id;
+		this.id = UUID.randomUUID().toString();
 		this.price = price;
 		this.hours = Collections.unmodifiableList(new ArrayList<String>(hours));
 		this.dates = Collections.unmodifiableList(new ArrayList<String>(dates));
