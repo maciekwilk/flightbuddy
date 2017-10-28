@@ -3,6 +3,8 @@ package com.flightbuddy.google;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -115,7 +117,7 @@ public class GoogleServiceTest {
 	private List<FoundTrip> mockGoogleFlightConverter(GoogleResponse googleResponse) {
 		List<FoundTrip> conversionResult = new ArrayList<>(1);
 		conversionResult.add(new FoundTrip());
-		when(GoogleFlightConverter.convertResponseToTrips(googleResponse, any())).thenReturn(conversionResult);
+		when(GoogleFlightConverter.convertResponseToTrips(eq(googleResponse), anyInt())).thenReturn(conversionResult);
 		return conversionResult;
 	}
 }
