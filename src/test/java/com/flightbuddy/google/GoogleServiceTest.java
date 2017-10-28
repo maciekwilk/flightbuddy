@@ -50,9 +50,6 @@ public class GoogleServiceTest {
 	private ScheduledSearchService scheduledSearchService;
 	
 	private ImmutableSearchInputData emptyInputData;
-	
-	//TODO test minPrice
-	private int minPrice;
 
 	@Before
 	public void setUp() {
@@ -67,7 +64,7 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(emptyGoogleResponse);
 		googleService.getTrips(emptyInputData);
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse, minPrice);
+		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse, 0);
 	}
 	
 	@Test
@@ -77,7 +74,7 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		googleService.getTrips(emptyInputData);
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice);
+		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
 	
 	@Test
@@ -87,7 +84,7 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		googleService.getTrips(emptyInputData);
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice);
+		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
 	
 	@Test
@@ -100,7 +97,7 @@ public class GoogleServiceTest {
 		List<FoundTrip> result = googleService.getTrips(emptyInputData);
 		assertThat(result, equalTo(conversionResult));
 		verifyStatic(times(1));
-		GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice);
+		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
 
 	private Trips createTrips(TripOption[] tripOption) {
@@ -118,7 +115,7 @@ public class GoogleServiceTest {
 	private List<FoundTrip> mockGoogleFlightConverter(GoogleResponse googleResponse) {
 		List<FoundTrip> conversionResult = new ArrayList<>(1);
 		conversionResult.add(new FoundTrip());
-		when(GoogleFlightConverter.convertResponseToTrips(googleResponse, minPrice)).thenReturn(conversionResult);
+		when(GoogleFlightConverter.convertResponseToTrips(googleResponse, any())).thenReturn(conversionResult);
 		return conversionResult;
 	}
 }
