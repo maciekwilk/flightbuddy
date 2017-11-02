@@ -45,7 +45,8 @@ public class SearchServiceTest {
     
     @Before
 	public void setUp() {
-    	ImmutablePassengers immutablePassengers = new ImmutablePassengers(0, 0, 0, 0, 0);
+    	PassengersTO passengers = new PassengersTO();
+    	ImmutablePassengers immutablePassengers = new ImmutablePassengers(passengers);
 		emptyInputData = new ImmutableSearchInputData(null, null, 0, 0, new LocalDate[]{}, false, immutablePassengers);
 		SearchResult emptyConvertedSearchResult = new SearchResult(0, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
 		mockStatic(SearchDataConverter.class);
