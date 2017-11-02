@@ -1,5 +1,7 @@
 package com.flightbuddy.search;
 
+import com.flightbuddy.schedule.search.Passengers;
+
 public final class ImmutablePassengers {
 	
 	private final int adultCount;
@@ -8,15 +10,15 @@ public final class ImmutablePassengers {
     private final int infantInSeatCount;
     private final int seniorCount;
     
-    public ImmutablePassengers(int adultCount, int childCount, int infantInLapCount, int infantInSeatCount, int seniorCount) {
-		this.adultCount = adultCount;
-		this.childCount = childCount;
-		this.infantInLapCount = infantInLapCount;
-		this.infantInSeatCount = infantInSeatCount;
-		this.seniorCount = seniorCount;
+    public ImmutablePassengers(Passengers passengers) {
+    	this.adultCount = passengers.getAdultCount();
+		this.childCount = passengers.getChildCount();
+		this.infantInLapCount = passengers.getInfantInLapCount();
+		this.infantInSeatCount = passengers.getInfantInSeatCount();
+		this.seniorCount = passengers.getSeniorCount();
 	}
     
-    public ImmutablePassengers(Passengers passengers) {
+    public ImmutablePassengers(PassengersTO passengers) {
     	this.adultCount = passengers.getAdultCount();
 		this.childCount = passengers.getChildCount();
 		this.infantInLapCount = passengers.getInfantInLapCount();

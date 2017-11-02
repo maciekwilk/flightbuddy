@@ -1,6 +1,6 @@
 package com.flightbuddy.search;
 
-public class Passengers {
+public class PassengersTO {
 	
 	private int adultCount;
     private int childCount;

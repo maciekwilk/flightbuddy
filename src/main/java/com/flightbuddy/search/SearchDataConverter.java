@@ -12,7 +12,6 @@ import com.flightbuddy.results.Airline;
 import com.flightbuddy.results.Flight;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.Stop;
-import com.flightbuddy.schedule.search.Passengers;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 
 public class SearchDataConverter {
@@ -24,7 +23,7 @@ public class SearchDataConverter {
 		int maxPrice = scheduledSearch.getMaxPrice();
 		boolean withReturn = scheduledSearch.isWithReturn();
 		LocalDate[] dates = scheduledSearch.getDates().toArray(new LocalDate[]{});
-		ImmutablePassengers immutablePassengers = copyPassengers(scheduledSearch.getPassengers());
+		ImmutablePassengers immutablePassengers = new ImmutablePassengers(scheduledSearch.getPassengers());
 		return new ImmutableSearchInputData(from, to, minPrice, maxPrice, dates, withReturn, immutablePassengers);
 	}
 
@@ -51,11 +50,6 @@ public class SearchDataConverter {
 		List<Integer> stops = countStops(flights);
 		List<SearchResultDetails> searchResultDetails = getSearchResultDetails(flights);
 		return new SearchResult(price, hours, durations, trips, stops, searchResultDetails, dates);
-	}
-
-	private static ImmutablePassengers copyPassengers(Passengers passengers) {
-		return new ImmutablePassengers(passengers.getAdultCount(), passengers.getChildCount(), passengers.getInfantInLapCount(), 
-				passengers.getInfantInSeatCount(), passengers.getSeniorCount());
 	}
 
 	private static List<LocalDateTime> getLocalDateTimes(List<Flight> flights) {
