@@ -34,6 +34,7 @@ import com.flightbuddy.schedule.ScheduleRunnable;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.search.ImmutablePassengers;
 import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.PassengersTO;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
@@ -55,7 +56,7 @@ public class GoogleServiceTest {
 
 	@Before
 	public void setUp() {
-		ImmutablePassengers immutablePassengers = new ImmutablePassengers(0, 0, 0, 0, 0);
+		ImmutablePassengers immutablePassengers = new ImmutablePassengers(new PassengersTO());
 		emptyInputData = new ImmutableSearchInputData(null, null, 0, 0, new LocalDate[]{}, false, immutablePassengers);
 		mockStatic(GoogleFlightConverter.class);
 	}

@@ -32,10 +32,11 @@ import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripService;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
-import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.search.ImmutablePassengers;
 import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.PassengersTO;
 import com.flightbuddy.search.SearchDataConverter;
 
 @RunWith(PowerMockRunner.class)
@@ -60,7 +61,7 @@ public class ScheduleRunnableTest {
     
     @Before
 	public void setUp() {
-		ImmutablePassengers immutablePassengers = new ImmutablePassengers(0, 0, 0, 0, 0);
+		ImmutablePassengers immutablePassengers = new ImmutablePassengers(new PassengersTO());
 		emptyInputData = new ImmutableSearchInputData(null, null, 0, 0, new LocalDate[]{}, false, immutablePassengers);
 		mockStatic(SearchDataConverter.class);
 		when(SearchDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
