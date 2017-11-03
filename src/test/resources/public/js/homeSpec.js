@@ -14,22 +14,48 @@ describe("home", function() {
 	    $httpBackend.verifyNoOutstandingRequest();
     });
 	
-	it("showMessage variable should be false", function() {
+	it("airports should be initialized", function() {
+		var airports = '{some airports}';
+		$httpBackend.expect('GET', '/airport/all').respond(200, {
+			data : airports
+	    });
+		$httpBackend.flush();
+		expect($controller.airports.data).toEqual(airports);
+	})
+	
+	it("showMessage variable should be false and airports initialized", function() {
+		$httpBackend.expect('GET', '/airport/all').respond(200, {});
+		$httpBackend.flush();
 		expect($controller.showMessage).toEqual(false);
 	})
 	
 	describe('Given save function was called', function() {
 		
+		var searchData = {
+				from : '',
+				to : '',
+				minPrice : 0,
+				maxPrice : 400,
+				dates : [],
+				withReturn : false,
+				passengers : {
+					adultCount : 1,
+					childCount : 0,
+					infantInLapCount : 0,
+					infantInSeatCount : 0,
+					seniorCount : 0
+				}
+		};
+		
+		beforeEach(function() {
+			$httpBackend.expect('GET', '/airport/all').respond(200, {
+				data : ''
+		    });
+		})
+		
 		describe('when response fails with error message', function() {
 			it("error variable should have the message and search results undefined", function() {
 				var errorMessage = 'error message';
-				var searchData = {
-						from : '',
-						to : '',
-						price : '',
-						dates : [],
-						withReturn : false
-				};
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(401, {
 			    	message : errorMessage
 			    });
@@ -41,16 +67,21 @@ describe("home", function() {
 			})
 		});
 		
+		describe('when response fails without error message', function() {
+			it("error variable should have the message and search results undefined", function() {
+				var errorMessage = '401 ';
+				$httpBackend.expect('POST', '/search/perform', searchData).respond(401, {});
+				$controller.search();
+				$httpBackend.flush();
+				expect($controller.showMessage).toEqual(true);
+				expect($controller.error).toEqual(errorMessage);
+				expect($controller.searchResults).toBeUndefined();
+			})
+		});
+		
 		describe('when response is successful with error message', function() {
 			it("error variable should have the message and search results undefined", function() {
 				var errorMessage = 'error message';
-				var searchData = {
-						from : '',
-						to : '',
-						price : '',
-						dates : [],
-						withReturn : false
-				};
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
 			    	error : errorMessage
 			    });
@@ -66,13 +97,6 @@ describe("home", function() {
 			it("error variable should have the message and search results array empty", function() {
 				var message = 'success message';
 				var searchResults = [];
-				var searchData = {
-						from : '',
-						to : '',
-						price : '',
-						dates : [],
-						withReturn : false
-				};
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
 			    	message : message,
 			    	searchResults : searchResults
@@ -101,13 +125,6 @@ describe("home", function() {
 					trip : 'BSL-KRK',
 					stops : '1'
 			    }];
-				var searchData = {
-						from : '',
-						to : '',
-						price : '',
-						dates : [],
-						withReturn : false
-				};
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
 			    	message : message,
 			    	searchResults :  searchResults
@@ -119,5 +136,73 @@ describe("home", function() {
 				expect($controller.searchResults).toEqual(searchResults);
 			})
 		});
+	});
+	
+	describe('Given selectTableRow function was called', function() {
+		
+		beforeEach(function() {
+			$httpBackend.expect('GET', '/airport/all').respond(200, {
+				data : ''
+		    });
+			$httpBackend.flush();
+			$controller.searchResults = ['first', 'second', 'third'];
+		});
+		
+		it("searchResultRowCollapse is initalized properly", function() {
+			var searchResultRowCollapse = [false, false, false]
+			$controller.tableRowIndexExpandedCurr = '1';
+			$controller.selectTableRow();
+			expect($controller.searchResultRowCollapse).toEqual(searchResultRowCollapse);
+		})
+		
+		it("expanding a row is working", function() {
+			var searchResultRowCollapse = [false, true, false];
+			var rowId = 'rowId';
+			var index = 1;
+			
+			$controller.selectTableRow(index, rowId);
+			
+			expect($controller.searchResultRowCollapse).toEqual(searchResultRowCollapse);
+			expect($controller.tableRowIndexExpandedPrev).toEqual("");
+            expect($controller.tableRowExpanded).toEqual(true);
+            expect($controller.tableRowIndexExpandedCurr).toEqual(index);
+            expect($controller.searchResultIdExpanded).toEqual(rowId);
+		})
+		
+		it("collapsing already expanded is working", function() {
+			$controller.searchResultRowCollapse = [false, true, false];
+			var searchResultRowCollapse = [false, false, false];
+			var rowId = 'rowId';
+			var index = 1;
+			$controller.tableRowIndexExpandedCurr = index;
+			$controller.searchResultIdExpanded = rowId;
+			$controller.tableRowExpanded = true;
+			
+			$controller.selectTableRow(index, rowId);
+			
+			expect($controller.searchResultRowCollapse).toEqual(searchResultRowCollapse);
+            expect($controller.tableRowExpanded).toEqual(false);
+            expect($controller.tableRowIndexExpandedCurr).toEqual("");
+            expect($controller.searchResultIdExpanded).toEqual("");
+		})
+		
+		it("collapsing already expanded row and expanding a new one is working", function() {
+			$controller.searchResultRowCollapse = [false, true, false];
+			var searchResultRowCollapse = [false, false, true];
+			var rowId = 'rowId';
+			var index = 2;
+			var prevIndex = 1;
+			$controller.tableRowIndexExpandedCurr = prevIndex;
+			$controller.searchResultIdExpanded = 'rowId2';
+			$controller.tableRowExpanded = true;
+			
+			$controller.selectTableRow(index, rowId);
+			
+			expect($controller.searchResultRowCollapse).toEqual(searchResultRowCollapse);
+			expect($controller.tableRowIndexExpandedPrev).toEqual(prevIndex);
+            expect($controller.tableRowExpanded).toEqual(true);
+            expect($controller.tableRowIndexExpandedCurr).toEqual(index);
+            expect($controller.searchResultIdExpanded).toEqual(rowId);
+		})
 	});
 });
