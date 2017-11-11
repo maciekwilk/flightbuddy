@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default">
+    <div class="container" ng-controller="NavController as nav">
+        <div class="navbar-header">
+            <a class="navbar-brand" ui-sref="home">FlightBuddy</a>
+        </div>
+        
+        <ul class="nav navbar-nav navbar-right">
+      		<li><a ui-sref="home" >Home</a></li>
+   			<li ng-show="!user.username"><a ui-sref="login" >Login</a></li>
+		    <li ng-show="user.username && nav.isAdmin()"><a ui-sref="register" >Register</a></li>
+		    <li ng-show="user.username"><a ui-sref="schedule" >Schedule a search</a></li>
+		    <li ng-show="user.username"><a href="" ng-click="nav.logout()">Logout</a></li>
+        </ul>
+    </div>
+</nav>

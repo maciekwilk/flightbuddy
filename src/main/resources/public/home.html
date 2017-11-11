@@ -1,7 +1,8 @@
 <div class="col-md-1"></div>
-<div class="col-md-10">
-	<div class="alert alert-success" ng-show="home.showMessage && !home.error"> {{home.message}} </div>
-	<div class="alert alert-danger" ng-show="home.showMessage && home.error"> {{home.error}} </div>
+<div class="col-md-10" ng-controller="HomeController as home">
+
+	<div class="alert alert-success" ng-show="home.message"> {{home.message}} </div>
+	<div class="alert alert-danger" ng-show="home.error"> {{home.error}} </div>
 	<div class="row">
 	<form name="homeForm" role="form" ng-submit="home.search()" novalidate>
     	<div class="col-md-4"></div>

@@ -1,5 +1,5 @@
 <div class="col-md-1"></div>
-<div class="col-md-10">
+<div class="col-md-10" ng-controller="ScheduleController as schedule">
 	<div class="alert alert-success" ng-show="schedule.showMessage && !schedule.error"> {{schedule.message}} </div>
 	<div class="alert alert-danger" ng-show="schedule.showMessage && schedule.error"> {{schedule.error}} </div>
 	<form name="scheduleForm" role="form" ng-submit="schedule.save()" novalidate>

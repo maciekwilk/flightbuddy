@@ -1,40 +1,28 @@
-angular.module('navigation', ['auth'])
-.controller('navigation', function (auth) {
-
-	  var self = this;
-	  
-	  self.credentials = {};
-	  
-	  self.authenticated = function() {
-          return auth.authenticated;
-      }
-	  
-	  self.isAdmin = function() {
-		  var roles = auth.roles;
-		  if (roles) {
-			  for (var i = 0; i < roles.length; i++) {
-				  if (roles[i].authority === 'ROLE_ADMIN')
-					  return true;
-			  }
-		  }
-		  return false;
-	  }
-	  
-	  self.login = function() {
-	      auth.authenticate(self.credentials, function(authenticated) {
-	    	  self.setErrorIfNotAuthenticated(authenticated);
-	      });
-	  };
-	  
-	  self.logout = function() {
-		  auth.clear();
-	  };
-	  
-	  self.setErrorIfNotAuthenticated = function(authenticated) {
-		  if (authenticated) {
-			  self.error = false;
-		  } else {
-			  self.error = true;
-		  } 
-	  };
+angular.module('app')
+.controller('NavController', function ($http, $scope, AuthService, $state, $rootScope) {
+    var self = this;
+    
+	$scope.$on('LoginSuccessful', function () {
+        $scope.user = AuthService.user;
+    });
+    $scope.$on('LogoutSuccessful', function () {
+        $scope.user = null;
+    });
+    self.logout = function () {
+        AuthService.user = null;
+        $rootScope.$broadcast('LogoutSuccessful');
+        $state.go('home');
+    };
+    
+    self.isAdmin = function() {
+    	var user = AuthService.user;
+    	var roles = user.roles;
+		if (roles) {
+		    for (var i = 0; i < roles.length; i++) {
+				if (roles[i] === 'ROLE_ADMIN')
+					return true;
+			  	}
+		  	}
+		return false;
+    }
 });

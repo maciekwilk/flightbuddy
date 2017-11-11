@@ -1,8 +1,6 @@
 angular.module('home', ['rzModule', 'ui.bootstrap', 'ngMaterial'])
-.controller('home', function($http) {
+.controller('HomeController', function($http) {
     var self = this;
-    
-    self.showMessage = false;
     
     self.searchData = {
 			from : '',
@@ -98,7 +96,6 @@ angular.module('home', ['rzModule', 'ui.bootstrap', 'ngMaterial'])
     self.search = function() {
     	$http.post('/search/perform', self.searchData).then(
 			function(response) {
-				self.showMessage = true;
 				if (response.data.error) {
 					self.error = response.data.error;
 				} else {
@@ -106,7 +103,6 @@ angular.module('home', ['rzModule', 'ui.bootstrap', 'ngMaterial'])
 					self.searchResults = response.data.searchResults;
 				}
 			}, function(response) {
-				self.showMessage = true;
 				if (response.data.message) {
 					self.error = response.data.message;
 				} else {

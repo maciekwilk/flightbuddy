@@ -1,7 +1,7 @@
 <div class="col-md-1"></div>
-<div class="col-md-10">
-	<div class="alert alert-success" ng-show="reg.showMessage && !reg.error"> {{reg.message}} </div>
-	<div class="alert alert-danger" ng-show="reg.showMessage && reg.error"> {{reg.error}} </div>
+<div class="col-md-10" ng-controller="RegistrationController as reg">
+	<div class="alert alert-success" ng-show="reg.message"> {{reg.message}} </div>
+	<div class="alert alert-danger" ng-show="reg.error"> {{reg.error}} </div>
 	<form name="regForm" role="form" ng-submit="reg.register()" novalidate>
     	<div class="col-md-4"></div>
     	<div class="col-md-4">

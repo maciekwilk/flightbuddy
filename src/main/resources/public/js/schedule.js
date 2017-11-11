@@ -1,5 +1,5 @@
 angular.module('schedule', ['rzModule'])
-.controller('schedule', function ($http) {
+.controller('ScheduleController', function ($http) {
 	
 	var self = this;
 	
