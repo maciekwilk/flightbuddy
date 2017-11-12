@@ -23,6 +23,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 
 public class JWTFilter extends GenericFilterBean {
+	public static final String SIGNING_KEY = "bb21158c733229347bd4e681891e213d94c685be";
 	private static final String AUTHORIZATION_HEADER = "Authorization";
 	private static final String AUTHORITIES_KEY = "roles";
 
@@ -50,7 +51,7 @@ public class JWTFilter extends GenericFilterBean {
 	private void setAuthenticationInContext(FilterChain filterChain, HttpServletRequest request, String authHeader) throws IOException, 
 			ServletException {
 		String token = authHeader.substring(7);
-		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
+		Claims claims = Jwts.parser().setSigningKey(SIGNING_KEY).parseClaimsJws(token).getBody();
 		request.setAttribute("claims", claims);
 		SecurityContextHolder.getContext().setAuthentication(getAuthentication(claims));
 	}

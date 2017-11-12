@@ -11,6 +11,7 @@ import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.flightbuddy.user.authentication.JWTFilter;
 import com.flightbuddy.user.authentication.UserTokenDetails;
 
 import io.jsonwebtoken.Jwts;
@@ -43,7 +44,7 @@ public class UserService {
         Map<String, Object> tokenMap = new HashMap<String, Object>();
         if (user != null && user.getPassword().equals(encodedPassword)) {
         	String token = Jwts.builder().setSubject(user.getUsername()).claim("roles", user.getRoles()).setIssuedAt(new Date())
-                    .signWith(SignatureAlgorithm.HS256, "secretkey").compact();
+                    .signWith(SignatureAlgorithm.HS256, JWTFilter.SIGNING_KEY).compact();
             tokenMap.put("token", token);
             tokenMap.put("user", new UserTokenDetails(user));
         } else {
