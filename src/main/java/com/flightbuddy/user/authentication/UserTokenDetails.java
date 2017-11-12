@@ -1,6 +1,9 @@
-package com.flightbuddy.user;
+package com.flightbuddy.user.authentication;
 
 import java.util.Set;
+
+import com.flightbuddy.user.User;
+import com.flightbuddy.user.UserRole;
 
 public class UserTokenDetails {
 	

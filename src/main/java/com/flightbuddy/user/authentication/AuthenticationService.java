@@ -1,4 +1,4 @@
-package com.flightbuddy.user;
+package com.flightbuddy.user.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -20,7 +20,7 @@ import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.search.ImmutableSearchInputData;
 import com.flightbuddy.search.SearchDataConverter;
-import com.flightbuddy.user.AuthenticationService;
+import com.flightbuddy.user.authentication.AuthenticationService;
 
 @Component
 public class ScheduleRunnable implements Runnable {

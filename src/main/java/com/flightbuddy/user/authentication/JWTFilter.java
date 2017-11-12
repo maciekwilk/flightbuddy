@@ -1,4 +1,4 @@
-package com.flightbuddy.user;
+package com.flightbuddy.user.authentication;
 
 import java.io.IOException;
 import java.util.ArrayList;

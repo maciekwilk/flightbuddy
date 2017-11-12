@@ -1,4 +1,4 @@
-package com.flightbuddy.user;
+package com.flightbuddy.user.authentication;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,6 +7,9 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import com.flightbuddy.user.User;
+import com.flightbuddy.user.UserRole;
 
 public class UserAuthenticationDetails implements UserDetails {
 	

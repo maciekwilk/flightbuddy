@@ -1,4 +1,4 @@
-package com.flightbuddy.user;
+package com.flightbuddy.user.authentication;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.flightbuddy.user.UserRole;
 
 public class SystemAuthenticationToken extends UserAuthenticationDetails {
 

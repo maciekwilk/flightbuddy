@@ -17,8 +17,8 @@ import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.RequestService;
 import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
+import com.flightbuddy.user.authentication.AuthenticationService;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
-import com.flightbuddy.user.AuthenticationService;
 
 @Component
 public class ScheduleUpdateTimerTask {

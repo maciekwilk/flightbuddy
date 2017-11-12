@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchTask;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
-import com.flightbuddy.user.AuthenticationService;
+import com.flightbuddy.user.authentication.AuthenticationService;
 
 @Component
 public class ScheduleTrigger implements Trigger {
