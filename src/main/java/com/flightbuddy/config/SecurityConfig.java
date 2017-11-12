@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.dao.ReflectionSaltSource;
+import org.springframework.security.authentication.dao.SaltSource;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -53,11 +55,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 	
 	@Bean
-    public AuthenticationProvider authenticationProvider() throws Exception{
+    public AuthenticationProvider authenticationProvider() throws Exception {
     	DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     	provider.setUserDetailsService(customUserDetailsService);
     	provider.setPasswordEncoder(new ShaPasswordEncoder());
+    	provider.setSaltSource(saltSource());
     	provider.afterPropertiesSet();
     	return provider;
     }
+	
+	@Bean
+	public SaltSource saltSource() {
+		ReflectionSaltSource saltSource = new ReflectionSaltSource();
+		saltSource.setUserPropertyToUse("salt");
+		return saltSource;
+	}
 }

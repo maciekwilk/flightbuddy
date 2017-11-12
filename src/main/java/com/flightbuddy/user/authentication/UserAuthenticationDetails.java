@@ -20,6 +20,7 @@ public class UserAuthenticationDetails implements UserDetails {
 	private String username;
 	private String password;
 	private boolean enabled;
+	private String salt;
 	
 	public UserAuthenticationDetails(){
 		
@@ -31,6 +32,7 @@ public class UserAuthenticationDetails implements UserDetails {
 		this.username = user.getUsername();
 		this.enabled = user.isEnabled();
 		this.password = user.getPassword();
+		this.salt = user.getSalt();
 	}
 
 	public String getId() {
@@ -63,6 +65,14 @@ public class UserAuthenticationDetails implements UserDetails {
 
 	public void setStatus(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public String getSalt() {
+		return salt;
+	}
+
+	public void setSalt(String salt) {
+		this.salt = salt;
 	}
 
 	@Override

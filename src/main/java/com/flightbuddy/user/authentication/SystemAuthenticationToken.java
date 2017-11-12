@@ -14,6 +14,7 @@ public class SystemAuthenticationToken extends UserAuthenticationDetails {
 	private static final ShaPasswordEncoder ENCODER = new ShaPasswordEncoder();
 	public static final String SYSTEM_USERNAME = "j2Qiqmk$DdS#pHSd_x4rA8Y";
 	public static final String SYSTEM_PASSWORD = "GZw@1s21j*6PCY9YblASL(f";
+	public static final String SYSTEM_SALT = "095717e303a649d9a24516b061ee9045";
 	private static final List<GrantedAuthority> SYSTEM_AUTHORITIES;
 	private static final long serialVersionUID = 4663607279383413936L;	
 	
@@ -28,7 +29,7 @@ public class SystemAuthenticationToken extends UserAuthenticationDetails {
 
 	@Override
 	public String getPassword() {
-		return ENCODER.encodePassword(SYSTEM_PASSWORD, null);
+		return ENCODER.encodePassword(SYSTEM_PASSWORD, SYSTEM_SALT);
 	}
 
 	@Override
