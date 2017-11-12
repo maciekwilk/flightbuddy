@@ -27,24 +27,32 @@ public class JWTFilter extends GenericFilterBean {
 	private static final String AUTHORITIES_KEY = "roles";
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain)
-			throws IOException, ServletException {
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain filterChain) throws IOException, ServletException {
 		HttpServletRequest request = (HttpServletRequest) req;
 		String authHeader = request.getHeader(AUTHORIZATION_HEADER);
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Authorization header.");
 		} else {
-			try {
-				String token = authHeader.substring(7);
-				Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
-				request.setAttribute("claims", claims);
-				SecurityContextHolder.getContext().setAuthentication(getAuthentication(claims));
-				filterChain.doFilter(req, res);
-			} catch (SignatureException e) {
-				((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
-			}
-
+			setAuthenticationAndContinueTheChain(req, res, filterChain, request, authHeader);
 		}
+	}
+
+	private void setAuthenticationAndContinueTheChain(ServletRequest req, ServletResponse res, FilterChain filterChain,
+			HttpServletRequest request, String authHeader) throws IOException, ServletException {
+		try {
+			setAuthenticationInContext(filterChain, request, authHeader);
+			filterChain.doFilter(req, res);
+		} catch (SignatureException e) {
+			((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+		}
+	}
+
+	private void setAuthenticationInContext(FilterChain filterChain, HttpServletRequest request, String authHeader) throws IOException, 
+			ServletException {
+		String token = authHeader.substring(7);
+		Claims claims = Jwts.parser().setSigningKey("secretkey").parseClaimsJws(token).getBody();
+		request.setAttribute("claims", claims);
+		SecurityContextHolder.getContext().setAuthentication(getAuthentication(claims));
 	}
 
 	@SuppressWarnings("unchecked")

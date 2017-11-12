@@ -39,7 +39,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/user/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> login(@RequestBody UserAuthenticationDetails request) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody UserTokenDetails request) {
         String token = null;
         User user = userService.findByUsername(request.getUsername());
 		String encodedPassword = new ShaPasswordEncoder().encodePassword(request.getPassword(), null);
@@ -48,7 +48,7 @@ public class UserController {
             token = Jwts.builder().setSubject(user.getUsername()).claim("roles", user.getRoles()).setIssuedAt(new Date())
                     .signWith(SignatureAlgorithm.HS256, "secretkey").compact();
             tokenMap.put("token", token);
-            tokenMap.put("user", new UserAuthenticationDetails(user));
+            tokenMap.put("user", new UserTokenDetails(user));
             return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.OK);
         } else {
             tokenMap.put("token", null);
