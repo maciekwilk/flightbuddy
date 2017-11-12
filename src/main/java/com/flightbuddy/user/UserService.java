@@ -3,6 +3,7 @@ package com.flightbuddy.user;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ public class UserService {
 	@Autowired UserDao userDao;
 	
 	@Transactional
+	@PreAuthorize("hasRole('ADMIN')")
 	public User createUser(String username, String password) {
 		if (findByUsername(username) != null) {
 			throw new RuntimeException("User with username " + username + " already exists");

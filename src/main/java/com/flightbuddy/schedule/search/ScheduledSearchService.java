@@ -22,6 +22,7 @@ public class ScheduledSearchService {
 		return scheduledSearchDao.findAll();
 	}
 
+	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public void save(ScheduledSearch newScheduledSearch, User currentUser) {
 		if (!currentUser.getUsername().equals(GUEST_USERNAME)) {
 			ScheduledSearch alreadySavedOne = scheduledSearchDao.findForUser(currentUser);
