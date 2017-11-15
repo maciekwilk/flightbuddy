@@ -3,18 +3,17 @@ package com.flightbuddy.user.authentication;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.flightbuddy.user.UserRole;
 
 public class SystemAuthenticationToken extends UserAuthenticationDetails {
 
-	private static final ShaPasswordEncoder ENCODER = new ShaPasswordEncoder();
+	private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 	public static final String SYSTEM_USERNAME = "j2Qiqmk$DdS#pHSd_x4rA8Y";
 	public static final String SYSTEM_PASSWORD = "GZw@1s21j*6PCY9YblASL(f";
-	public static final String SYSTEM_SALT = "095717e303a649d9a24516b061ee9045";
 	private static final List<GrantedAuthority> SYSTEM_AUTHORITIES;
 	private static final long serialVersionUID = 4663607279383413936L;	
 	
@@ -29,7 +28,7 @@ public class SystemAuthenticationToken extends UserAuthenticationDetails {
 
 	@Override
 	public String getPassword() {
-		return ENCODER.encodePassword(SYSTEM_PASSWORD, SYSTEM_SALT);
+		return ENCODER.encode(SYSTEM_PASSWORD);
 	}
 
 	@Override

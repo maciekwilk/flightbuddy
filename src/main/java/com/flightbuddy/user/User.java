@@ -44,13 +44,10 @@ public class User extends MutableEntity {
     
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private ScheduledSearch scheduledSearch;
-    
-    private String salt;
 
 	public User() {
 		String uuid = UUID.randomUUID().toString();
 		id = uuid.replaceAll("-", "");
-		salt = UUID.randomUUID().toString();
 	}
 
 	public String getId() {
@@ -99,13 +96,5 @@ public class User extends MutableEntity {
 
 	public void setScheduledSearch(ScheduledSearch scheduledSearch) {
 		this.scheduledSearch = scheduledSearch;
-	}
-
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
 	}
 }

@@ -8,15 +8,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.authentication.dao.ReflectionSaltSource;
-import org.springframework.security.authentication.dao.SaltSource;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
@@ -58,16 +56,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationProvider authenticationProvider() throws Exception {
     	DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     	provider.setUserDetailsService(customUserDetailsService);
-    	provider.setPasswordEncoder(new ShaPasswordEncoder());
-    	provider.setSaltSource(saltSource());
+    	provider.setPasswordEncoder(new BCryptPasswordEncoder());
     	provider.afterPropertiesSet();
     	return provider;
     }
-	
-	@Bean
-	public SaltSource saltSource() {
-		ReflectionSaltSource saltSource = new ReflectionSaltSource();
-		saltSource.setUserPropertyToUse("salt");
-		return saltSource;
-	}
 }
