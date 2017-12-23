@@ -1,6 +1,5 @@
 package com.flightbuddy.user;
 
-import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 
@@ -9,15 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flightbuddy.resources.Messages;
-import com.flightbuddy.user.authentication.UserTokenDetails;
+import com.flightbuddy.user.authentication.TokenDTO;
+import com.flightbuddy.user.authentication.UserDTO;
 
 @RestController
 public class UserController {
@@ -26,15 +24,8 @@ public class UserController {
 	
 	@Autowired UserService userService;
 	
-	@RequestMapping("/user")
-    public User user(Principal principal) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedUsername = auth.getName();
-        return userService.findByUsername(loggedUsername);
-	}
-	
 	@RequestMapping(value = "/user/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> login(@RequestBody UserTokenDetails request) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody UserDTO request) {
         Map<String, Object> tokenMap = userService.authenticate(request.getUsername(), request.getPassword());
 		if (tokenMap.containsKey("user")) {
             return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.OK);
@@ -42,7 +33,16 @@ public class UserController {
 		return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.UNAUTHORIZED);
 	}
 	
-	@RequestMapping("/user/register")
+	@RequestMapping(value = "/user/authenticate/token", method = RequestMethod.POST)
+	public Map<String, Object> getUserForToken(@RequestBody TokenDTO token) {
+        UserDTO user = userService.getUser(token);
+		if (user.getUsername() == null) {
+            return Collections.emptyMap();
+		} 
+		return Collections.singletonMap("user", user);
+	}
+	
+	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
 	public Map<String, String> register(@RequestBody RegistrationFormData formData) {
 		try {
 			userService.createUser(formData.getUsername(), formData.getPassword());

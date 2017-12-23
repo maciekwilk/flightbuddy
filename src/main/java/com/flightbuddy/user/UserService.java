@@ -6,20 +6,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.flightbuddy.user.authentication.JWTFilter;
-import com.flightbuddy.user.authentication.UserTokenDetails;
+import com.flightbuddy.user.authentication.TokenDTO;
+import com.flightbuddy.user.authentication.UserDTO;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class UserService {
 
+	@Value("${jwt.signingkey}")
+	private String SIGNING_KEY;
+	
 	@Autowired UserDao userDao;
 	
 	@Transactional
@@ -42,14 +47,30 @@ public class UserService {
 		User user = findByUsername(username);
         Map<String, Object> tokenMap = new HashMap<String, Object>();
         if (user != null && isPasswordValid(password, user.getPassword())) {
-        	String token = Jwts.builder().setSubject(user.getUsername()).claim("roles", user.getRoles()).setIssuedAt(new Date())
-                    .signWith(SignatureAlgorithm.HS256, JWTFilter.SIGNING_KEY).compact();
+        	String token = Jwts.builder()
+        			.setSubject(user.getUsername())
+        			.claim("roles", user.getRoles())
+        			.setIssuedAt(new Date())
+                    .signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
             tokenMap.put("token", token);
-            tokenMap.put("user", new UserTokenDetails(user));
+            tokenMap.put("user", new UserDTO(user));
         } else {
             tokenMap.put("token", null);
         }
 		return tokenMap;
+	}
+	
+	public UserDTO getUser(TokenDTO tokenDTO) {
+		Claims claims = Jwts.parser()
+					.setSigningKey(SIGNING_KEY)
+					.parseClaimsJws(tokenDTO.token)
+					.getBody();
+		if (claims == null) {
+			return new UserDTO();
+		}
+		String username = claims.getSubject();
+		User user = findByUsername(username);
+		return new UserDTO(user);
 	}
 
 	public User findByUsername(String username) {

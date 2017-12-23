@@ -5,16 +5,16 @@ import java.util.Set;
 import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserRole;
 
-public class UserTokenDetails {
+public class UserDTO {
 	
 	private Set<UserRole> roles;
 	private String username;
 	private String password;
 	
-	public UserTokenDetails(){
+	public UserDTO(){
 	}
 	
-	public UserTokenDetails(User user) {
+	public UserDTO(User user) {
 		this.roles = user.getRoles();
 		this.username = user.getUsername();
 	}

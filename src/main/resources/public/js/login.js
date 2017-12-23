@@ -12,7 +12,7 @@ angular.module('login', ['ui.router'])
                  $http.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                  AuthService.user = response.data.user;
                  $rootScope.$broadcast('LoginSuccessful');
-                 $state.go('home');
+                 $state.go('schedule');
              } else {
                  self.error = true;
              }

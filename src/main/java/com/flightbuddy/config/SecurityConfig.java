@@ -3,6 +3,9 @@ package com.flightbuddy.config;
 import static com.flightbuddy.user.UserRole.ROLE_ADMIN;
 import static com.flightbuddy.user.UserRole.ROLE_USER;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +20,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import com.flightbuddy.user.authentication.CustomUserDetailsService;
 import com.flightbuddy.user.authentication.JWTFilter;
@@ -27,24 +33,28 @@ import com.flightbuddy.user.authentication.JWTFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
     @Autowired CustomUserDetailsService customUserDetailsService;
+    @Autowired JWTFilter jwtFilter;
+    
+    private String[] pathsForFiltering = new String[] {"/register.html", "/register", "/user/register", "/schedule.html", "/schedule", 
+                                          "/search/schedule/save"};
 		
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
+		RequestMatcher requestMatcher = createRequestMatcherFromPathsForFiltering();
+		jwtFilter.setPathsForFiltering(requestMatcher);
+		http			
 			.authorizeRequests()
 			.antMatchers("/register.html", "/register", "/user/register").hasAuthority(ROLE_ADMIN.name())
 	      	.antMatchers("/schedule.html", "/schedule", "/search/schedule/save").hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
 	      	.antMatchers("/**").permitAll()
 			.and()
-				.addFilterBefore(new JWTFilter(), UsernamePasswordAuthenticationFilter.class)
-					.antMatcher("/register.html").antMatcher("/register").antMatcher("/user/register")
-					.antMatcher("/schedule.html").antMatcher("/schedule").antMatcher("/search/schedule/save")
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.httpBasic()
 			.and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 				.csrf()
-		        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+		        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());			
 	}
 	
 	@Override
@@ -60,4 +70,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	provider.afterPropertiesSet();
     	return provider;
     }
+	
+	private RequestMatcher createRequestMatcherFromPathsForFiltering() {
+		List<RequestMatcher> requestMatchers = new ArrayList<>();
+		for (String pathForFiltering : pathsForFiltering) {
+			requestMatchers.add(new AntPathRequestMatcher(pathForFiltering));
+		}
+		return new OrRequestMatcher(requestMatchers);
+	}
 }
