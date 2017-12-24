@@ -14,38 +14,39 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.flightbuddy.resources.Messages;
-import com.flightbuddy.user.authentication.TokenDTO;
-import com.flightbuddy.user.authentication.UserDTO;
+import com.flightbuddy.user.authentication.TokenTO;
+import com.flightbuddy.user.authentication.UserTO;
 
 @RestController
 public class UserController {
 
-	Logger log = LoggerFactory.getLogger(UserController.class);
+	private Logger log = LoggerFactory.getLogger(UserController.class);
 	
-	@Autowired UserService userService;
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(value = "/user/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> login(@RequestBody UserDTO request) {
-        Map<String, Object> tokenMap = userService.authenticate(request.getUsername(), request.getPassword());
+    public ResponseEntity<Map<String, Object>> login(@RequestBody UserTO request) {
+        Map<String, Object> tokenMap = userService.authenticate(request.username, request.password);
 		if (tokenMap.containsKey("user")) {
-            return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.OK);
+            return new ResponseEntity<>(tokenMap, HttpStatus.OK);
 		} 
-		return new ResponseEntity<Map<String, Object>>(tokenMap, HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<>(tokenMap, HttpStatus.UNAUTHORIZED);
 	}
 	
 	@RequestMapping(value = "/user/authenticate/token", method = RequestMethod.POST)
-	public Map<String, Object> getUserForToken(@RequestBody TokenDTO token) {
-        UserDTO user = userService.getUser(token);
-		if (user.getUsername() == null) {
+	public Map<String, Object> getUserForToken(@RequestBody TokenTO token) {
+        UserTO user = userService.getUser(token);
+		if (user.username == null) {
             return Collections.emptyMap();
 		} 
 		return Collections.singletonMap("user", user);
 	}
 	
 	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
-	public Map<String, String> register(@RequestBody RegistrationFormData formData) {
+	public Map<String, String> register(@RequestBody RegistrationFormDataTO formData) {
 		try {
-			userService.createUser(formData.getUsername(), formData.getPassword());
+			userService.createUser(formData.username, formData.password);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Collections.singletonMap("error", e.getMessage());

@@ -12,8 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.flightbuddy.user.authentication.TokenDTO;
-import com.flightbuddy.user.authentication.UserDTO;
+import com.flightbuddy.user.authentication.TokenTO;
+import com.flightbuddy.user.authentication.UserTO;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -25,7 +25,8 @@ public class UserService {
 	@Value("${jwt.signingkey}")
 	private String SIGNING_KEY;
 	
-	@Autowired UserDao userDao;
+	@Autowired
+	private UserDao userDao;
 	
 	@Transactional
 	@PreAuthorize("hasRole('ADMIN')")
@@ -45,7 +46,7 @@ public class UserService {
 	
 	public Map<String, Object> authenticate(String username, String password) {
 		User user = findByUsername(username);
-        Map<String, Object> tokenMap = new HashMap<String, Object>();
+        Map<String, Object> tokenMap = new HashMap<>();
         if (user != null && isPasswordValid(password, user.getPassword())) {
         	String token = Jwts.builder()
         			.setSubject(user.getUsername())
@@ -53,24 +54,24 @@ public class UserService {
         			.setIssuedAt(new Date())
                     .signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
             tokenMap.put("token", token);
-            tokenMap.put("user", new UserDTO(user));
+            tokenMap.put("user", new UserTO(user));
         } else {
             tokenMap.put("token", null);
         }
 		return tokenMap;
 	}
 	
-	public UserDTO getUser(TokenDTO tokenDTO) {
+	public UserTO getUser(TokenTO tokenDTO) {
 		Claims claims = Jwts.parser()
 					.setSigningKey(SIGNING_KEY)
 					.parseClaimsJws(tokenDTO.token)
 					.getBody();
 		if (claims == null) {
-			return new UserDTO();
+			return new UserTO();
 		}
 		String username = claims.getSubject();
 		User user = findByUsername(username);
-		return new UserDTO(user);
+		return new UserTO(user);
 	}
 
 	public User findByUsername(String username) {
