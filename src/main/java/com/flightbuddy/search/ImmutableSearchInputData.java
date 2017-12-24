@@ -43,7 +43,7 @@ public final class ImmutableSearchInputData {
 	}
 
 	public LocalDate[] getDates() {
-		return (LocalDate[]) dates.clone();
+		return dates.clone();
 	}
 
 	public boolean isWithReturn() {

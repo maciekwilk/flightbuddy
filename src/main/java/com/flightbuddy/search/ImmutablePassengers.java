@@ -10,7 +10,7 @@ public final class ImmutablePassengers {
     private final int infantInSeatCount;
     private final int seniorCount;
     
-    public ImmutablePassengers(Passengers passengers) {
+    ImmutablePassengers(Passengers passengers) {
     	this.adultCount = passengers.getAdultCount();
 		this.childCount = passengers.getChildCount();
 		this.infantInLapCount = passengers.getInfantInLapCount();
@@ -19,11 +19,11 @@ public final class ImmutablePassengers {
 	}
     
     public ImmutablePassengers(PassengersTO passengers) {
-    	this.adultCount = passengers.getAdultCount();
-		this.childCount = passengers.getChildCount();
-		this.infantInLapCount = passengers.getInfantInLapCount();
-		this.infantInSeatCount = passengers.getInfantInSeatCount();
-		this.seniorCount = passengers.getSeniorCount();
+    	this.adultCount = passengers.adultCount;
+		this.childCount = passengers.childCount;
+		this.infantInLapCount = passengers.infantInLapCount;
+		this.infantInSeatCount = passengers.infantInSeatCount;
+		this.seniorCount = passengers.seniorCount;
     }
 
 	public int getAdultCount() {

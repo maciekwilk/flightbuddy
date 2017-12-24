@@ -23,7 +23,7 @@ import com.flightbuddy.user.UserService;
 @RestController
 public class SearchController {
 
-	Logger log = LoggerFactory.getLogger(SearchController.class);
+	final Logger log = LoggerFactory.getLogger(SearchController.class);
 
 	@Autowired UserService userService;
 	@Autowired ScheduledSearchService scheduledSearchService;
@@ -44,17 +44,16 @@ public class SearchController {
 	
 	@RequestMapping("/search/perform")
 	public Map<String, Object> performSearch(@RequestBody SearchInputData searchData) {
-		Map<String, Object> results = new HashMap<>();
 		try {
-			performSearch(searchData, results);
+			return doPerformSearch(searchData);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Collections.singletonMap("error", e.getMessage());
 		}
-		return results;
 	}
 
-	private void performSearch(SearchInputData searchData, Map<String, Object> results) {
+	private Map<String, Object> doPerformSearch(SearchInputData searchData) {
+		Map<String, Object> results = new HashMap<>();
 		List<SearchResult> searchResults = searchService.performSearch(searchData);
 		if (searchResults.isEmpty()) {
 			results.put("message", Messages.get("search.empty"));
@@ -62,5 +61,6 @@ public class SearchController {
 			results.put("searchResults", searchResults);
 			results.put("message", Messages.get("search.successful"));
 		}
+		return results;
 	}
 }

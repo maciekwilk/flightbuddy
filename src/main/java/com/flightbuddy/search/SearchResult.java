@@ -20,12 +20,12 @@ public final class SearchResult {
 			List<SearchResultDetails> searchResultDetails, List<String> dates) {
 		this.id = UUID.randomUUID().toString();
 		this.price = price;
-		this.hours = Collections.unmodifiableList(new ArrayList<String>(hours));
-		this.dates = Collections.unmodifiableList(new ArrayList<String>(dates));
-		this.durations = Collections.unmodifiableList(new ArrayList<String>(durations));
-		this.trips = Collections.unmodifiableList(new ArrayList<String>(trips));
-		this.stops = Collections.unmodifiableList(new ArrayList<Integer>(stops));
-		this.searchResultDetails = Collections.unmodifiableList(new ArrayList<SearchResultDetails>(searchResultDetails));
+		this.hours = Collections.unmodifiableList(new ArrayList<>(hours));
+		this.dates = Collections.unmodifiableList(new ArrayList<>(dates));
+		this.durations = Collections.unmodifiableList(new ArrayList<>(durations));
+		this.trips = Collections.unmodifiableList(new ArrayList<>(trips));
+		this.stops = Collections.unmodifiableList(new ArrayList<>(stops));
+		this.searchResultDetails = Collections.unmodifiableList(new ArrayList<>(searchResultDetails));
 	}
 
 	public int getPrice() {

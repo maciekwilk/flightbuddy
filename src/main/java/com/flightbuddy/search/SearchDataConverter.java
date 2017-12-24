@@ -93,8 +93,7 @@ public class SearchDataConverter {
 		LocalDateTime tripEndDate = tripStartDate.plusMinutes(tripDuration);
 		String tripStartTime = tripStartDate.getHour() + ":" + convertMins(tripStartDate.getMinute());
 		String tripEndTime = tripEndDate.getHour() + ":" + convertMins(tripEndDate.getMinute());
-		String tripTimes = tripStartTime + "-" + tripEndTime;
-		return tripTimes;
+		return tripStartTime + "-" + tripEndTime;
 	}
 
 	private static String convertMins(int mins) {

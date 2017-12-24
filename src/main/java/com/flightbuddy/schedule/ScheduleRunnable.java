@@ -87,8 +87,7 @@ public class ScheduleRunnable implements Runnable {
 	private List<FoundTrip> performSearch(ScheduledSearchTask scheduledSearchTask) {
 		ScheduledSearch scheduledSearch = scheduledSearchTask.getScheduledSearch();
 		ImmutableSearchInputData searchInputData = SearchDataConverter.convertToImmutable(scheduledSearch);
-		List<FoundTrip> foundTrips = googleService.getTrips(searchInputData);
-		return foundTrips;
+		return googleService.getTrips(searchInputData);
 	}
 
 	private void handleFoundTrips(ScheduledSearchTask scheduledSearchTask, List<FoundTrip> foundTrips) {

@@ -1,6 +1,6 @@
 package com.flightbuddy.search;
 
-public final class SearchResultDetailsEntry {
+final class SearchResultDetailsEntry {
 
 	private final String hours;
 	private final String duration;
