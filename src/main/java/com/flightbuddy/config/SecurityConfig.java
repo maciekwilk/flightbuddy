@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,24 +32,26 @@ import com.flightbuddy.user.authentication.JWTFilter;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
-    @Autowired CustomUserDetailsService customUserDetailsService;
-    @Autowired JWTFilter jwtFilter;
+
+	@Value("${jwt.signingkey}")
+	private String SIGNING_KEY;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
     
-    private String[] pathsForFiltering = new String[] {"/register.html", "/register", "/user/register", "/schedule.html", "/schedule", 
+    private String[] securedPaths = new String[] {"/register.html", "/register", "/user/register", "/schedule.html", "/schedule",
                                           "/search/schedule/save"};
-		
-	@Override
+
+    @Override
 	protected void configure(HttpSecurity http) throws Exception {
-		RequestMatcher requestMatcher = createRequestMatcherFromPathsForFiltering();
-		jwtFilter.setPathsForFiltering(requestMatcher);
+		RequestMatcher requestMatcher = createRequestMatcherFromSecuredPaths();
 		http			
 			.authorizeRequests()
 			.antMatchers("/register.html", "/register", "/user/register").hasAuthority(ROLE_ADMIN.name())
 	      	.antMatchers("/schedule.html", "/schedule", "/search/schedule/save").hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
 	      	.antMatchers("/**").permitAll()
 			.and()
-				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JWTFilter(requestMatcher, SIGNING_KEY), UsernamePasswordAuthenticationFilter.class)
 				.httpBasic()
 			.and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -62,7 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.authenticationProvider(authenticationProvider());
     }
 	
-	@Bean
+	@SuppressWarnings("WeakerAccess")
+    @Bean
     public AuthenticationProvider authenticationProvider() throws Exception {
     	DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
     	provider.setUserDetailsService(customUserDetailsService);
@@ -71,9 +75,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     	return provider;
     }
 	
-	private RequestMatcher createRequestMatcherFromPathsForFiltering() {
+	private RequestMatcher createRequestMatcherFromSecuredPaths() {
 		List<RequestMatcher> requestMatchers = new ArrayList<>();
-		for (String pathForFiltering : pathsForFiltering) {
+		for (String pathForFiltering : securedPaths) {
 			requestMatchers.add(new AntPathRequestMatcher(pathForFiltering));
 		}
 		return new OrRequestMatcher(requestMatchers);

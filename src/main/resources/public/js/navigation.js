@@ -23,19 +23,22 @@ angular.module('app')
     self.logout = function () {
         AuthService.user = null;
         $cookies.remove('JWT-TOKEN');
+        $http.defaults.headers.common['Authorization'] = '';
         $rootScope.$broadcast('LogoutSuccessful');
         $state.go('home');
     };
     
     self.isAdmin = function() {
     	var user = AuthService.user;
-    	var roles = user.roles;
-		if (roles) {
-		    for (var i = 0; i < roles.length; i++) {
-				if (roles[i] === 'ROLE_ADMIN')
-					return true;
-			  	}
-		  	}
+    	if (user) {
+            var roles = user.roles;
+            if (roles) {
+                for (var i = 0; i < roles.length; i++) {
+                    if (roles[i] === 'ROLE_ADMIN')
+                        return true;
+                    }
+                }
+        }
 		return false;
     }
 });

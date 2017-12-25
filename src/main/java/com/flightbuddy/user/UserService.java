@@ -60,7 +60,8 @@ public class UserService {
         }
 		return tokenMap;
 	}
-	
+
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	public UserTO getUser(TokenTO tokenDTO) {
 		Claims claims = Jwts.parser()
 					.setSigningKey(SIGNING_KEY)
