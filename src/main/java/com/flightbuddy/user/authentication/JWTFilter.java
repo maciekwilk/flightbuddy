@@ -50,8 +50,9 @@ public class JWTFilter extends GenericFilterBean {
 			response.addHeader(SET_COOKIE_HEADER, COOKIE_KEY + "=" + token + ";path=/");
 		} else if (securedPaths.matches(request)) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No Authentication token found.");
+            return;
         }
-		filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
 	}
 
 	private String getAuthenticationToken(HttpServletRequest request) {

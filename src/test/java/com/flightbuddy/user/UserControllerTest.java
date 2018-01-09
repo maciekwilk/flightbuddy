@@ -1,8 +1,30 @@
 package com.flightbuddy.user;
 
-import static com.flightbuddy.user.UserRole.ROLE_ADMIN;
-import static com.flightbuddy.user.UserRole.ROLE_USER;
-import static org.hamcrest.core.StringContains.containsString;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.flightbuddy.Application;
+import com.flightbuddy.resources.Messages;
+import com.flightbuddy.user.authentication.TokenTO;
+import com.flightbuddy.user.authentication.UserTO;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -13,122 +35,121 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.Collections;
-import java.util.Map;
-
-import org.apache.commons.codec.binary.Base64;
-import org.hamcrest.Matcher;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.security.authentication.encoding.ShaPasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.flightbuddy.Application;
-import com.flightbuddy.resources.Messages;
-import com.flightbuddy.schedule.search.ScheduledSearchService;
-import com.flightbuddy.search.SearchService;
-import com.flightbuddy.user.RegistrationFormData;
-import com.flightbuddy.user.User;
-import com.flightbuddy.user.UserDao;
-import com.flightbuddy.user.UserRole;
-import com.flightbuddy.user.UserService;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
-    @Autowired MockMvc mvc;
+	@Value("${jwt.signingkey}")
+	private String SIGNING_KEY;
+
+    @Autowired
+    private MockMvc mvc;
     
-    @MockBean UserService userService;
-    @MockBean UserDao userDao;
-    @MockBean ScheduledSearchService scheduledSearchService;
-    @MockBean SearchService searchService;
+    @MockBean
+    private UserService userService;
 	
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     
-    
     @Test
-    public void authenticateWithoutAuthHeader() throws Exception {
-    	given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser(ROLE_USER));
-        HttpHeaders headers = new HttpHeaders();
-    	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
-    	.andExpect(status().isOk())
-    	.andExpect(content().string(""));
+    public void loginWithoutUser() throws Exception {
+    	given(userService.authenticate(eq(USERNAME), eq(PASSWORD))).willReturn(Collections.emptyMap());
+        UserTO user = createUserTO();
+        String requestBody = convertToJson(user);
+        String expectedBody = convertToJson(Collections.emptyMap());
+    	mvc.perform(post("/user/authenticate").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+    	.andExpect(status().isUnauthorized())
+    	.andExpect(content().string(expectedBody));
     }
-    
+
     @Test
-    public void authenticateWithoutUser() throws Exception {
-    	given(userDao.findByUsername(eq(USERNAME))).willReturn(null);
-        HttpHeaders headers = new HttpHeaders();
-        byte[] authorizationString = (USERNAME + ":" + PASSWORD).getBytes();
-        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.encodeBase64String(authorizationString));
-    	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
-    	.andExpect(status().isUnauthorized());
+    public void loginWithUser() throws Exception {
+        Map<String, Object> mapWithUser = Collections.singletonMap("user", USERNAME);
+        given(userService.authenticate(eq(USERNAME), eq(PASSWORD))).willReturn(mapWithUser);
+        UserTO user = createUserTO();
+        String requestBody = convertToJson(user);
+        String expectedBody = convertToJson(mapWithUser);
+        mvc.perform(post("/user/authenticate").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedBody));
     }
-    
+
     @Test
-    public void authenticateUser() throws Exception {
-		given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser(ROLE_USER));
-        HttpHeaders headers = new HttpHeaders();
-        byte[] authorizationString = (USERNAME + ":" + PASSWORD).getBytes();
-        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.encodeBase64String(authorizationString));
-    	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
-    	.andExpect(status().isOk())
-    	.andExpect(content().string(containsUsername(USERNAME)))
-    	.andExpect(content().string(containsRole(ROLE_USER)));
+    public void getUserForTokenWithoutAuthentication() throws Exception {
+        given(userService.getUser(any())).willReturn(new UserTO());
+        String requestBody = convertToJson(new TokenTO());
+        mvc.perform(post("/user/authenticate/token").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string(""));
     }
-    
+
     @Test
-    public void authenticateAdmin() throws Exception {
-    	given(userDao.findByUsername(eq(USERNAME))).willReturn(createUser(ROLE_ADMIN));
-        HttpHeaders headers = new HttpHeaders();
-        byte[] authorizationString = (USERNAME + ":" + PASSWORD).getBytes();
-        headers.add(HttpHeaders.AUTHORIZATION, "Basic " + Base64.encodeBase64String(authorizationString));
-    	mvc.perform(post("/user/authenticate").headers(headers).with(csrf()))
-    	.andExpect(status().isOk())
-    	.andExpect(content().string(containsUsername(USERNAME)))
-    	.andExpect(content().string(containsRole(ROLE_ADMIN)));
+    public void getUserForTokenWithoutUser() throws Exception {
+        given(userService.getUser(any())).willReturn(new UserTO());
+        String requestBody = convertToJson(new TokenTO());
+        String expectedBody = convertToJson(Collections.emptyMap());
+        String token = createToken(UserRole.ROLE_USER);
+        mvc.perform(post("/user/authenticate/token").contentType(MediaType.APPLICATION_JSON).content(requestBody)
+                .header("Authorization", "Bearer " + token).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedBody));
     }
-    
-	@Test
-	@WithMockUser(authorities = {"ROLE_ADMIN"})
+
+    @Test
+    public void getUserForTokenWithUser() throws Exception {
+        UserTO user = createUserTO();
+        given(userService.getUser(any())).willReturn(user);
+        String requestBody = convertToJson(new TokenTO());
+        String expectedBody = convertToJson(Collections.singletonMap("user", user));
+        String token = createToken(UserRole.ROLE_USER);
+        mvc.perform(post("/user/authenticate/token").contentType(MediaType.APPLICATION_JSON).content(requestBody)
+                .header("Authorization", "Bearer " + token).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedBody));
+    }
+
+    @Test
+    public void getUserForTokenWithUserAsAdmin() throws Exception {
+        UserTO user = createUserTO();
+        given(userService.getUser(any())).willReturn(user);
+        String requestBody = convertToJson(new TokenTO());
+        String expectedBody = convertToJson(Collections.singletonMap("user", user));
+        String token = createToken(UserRole.ROLE_ADMIN);
+        mvc.perform(post("/user/authenticate/token").contentType(MediaType.APPLICATION_JSON).content(requestBody)
+                .header("Authorization", "Bearer " + token).with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(content().string(expectedBody));
+    }
+
+    @Test
     public void registerUserAsAdmin() throws Exception {
-    	RegistrationFormData formData = createRegistrationFormData();
+    	RegistrationFormDataTO formData = createRegistrationFormDataTO();
     	String requestBody = convertToJson(formData);
     	Map<String, String> returnMessage = Collections.singletonMap("message", Messages.get("user.registered"));
 		String expectedResponse = convertToJson(returnMessage);
-    	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+        String token = createToken(UserRole.ROLE_ADMIN);
+    	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody)
+                .header("Authorization", "Bearer " + token).with(csrf()))
     	.andExpect(status().isOk())
     	.andExpect(content().string(expectedResponse));
 		verify(userService, times(1)).createUser(eq(USERNAME), any());
     }
 	
 	@Test
-	@WithMockUser(authorities = {"ROLE_USER"})
     public void registerUserAsUser() throws Exception {
-    	RegistrationFormData formData = createRegistrationFormData();
+    	RegistrationFormDataTO formData = createRegistrationFormDataTO();
     	String requestBody = convertToJson(formData);
-    	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
+        String token = createToken(UserRole.ROLE_USER);
+    	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody)
+                .header("Authorization", "Bearer " + token).with(csrf()))
     	.andExpect(status().isForbidden());
 		verify(userService, times(0)).createUser(eq(USERNAME), any());
     }
 	
 	@Test
     public void registerUserNoUser() throws Exception {
-    	RegistrationFormData formData = createRegistrationFormData();
+    	RegistrationFormDataTO formData = createRegistrationFormDataTO();
     	String requestBody = convertToJson(formData);
     	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
     	.andExpect(status().isUnauthorized());
@@ -140,33 +161,29 @@ public class UserControllerTest {
 	private String convertToJson(Object object) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		String requestBody = objectMapper.writeValueAsString(object);
-		return requestBody;
+        return objectMapper.writeValueAsString(object);
 	}
 
-	private RegistrationFormData createRegistrationFormData() {
-		RegistrationFormData formData = new RegistrationFormData();
-    	formData.setUsername(USERNAME);
-    	formData.setPassword(PASSWORD);
+	private RegistrationFormDataTO createRegistrationFormDataTO() {
+		RegistrationFormDataTO formData = new RegistrationFormDataTO();
+    	formData.username = USERNAME;
+    	formData.password = PASSWORD;
 		return formData;
 	}
-	
-	private User createUser(UserRole role) {
-		String encodedPassword = new ShaPasswordEncoder().encodePassword(PASSWORD, null);
-		User user = new User();
-		user.setUsername(USERNAME);
-		user.setPassword(encodedPassword);
-		user.setRoles(Collections.singleton(role));
-		user.setEnabled(true);
-		return user;
-	}
 
-	private Matcher<String> containsRole(UserRole role) {
-		return containsString("\"authorities\":[{\"authority\":\"" + role + "\"}]");
-	}
+    private UserTO createUserTO() {
+        UserTO user = new UserTO();
+        user.username = USERNAME;
+        user.password = PASSWORD;
+        return user;
+    }
 
-	private Matcher<String> containsUsername(String username) {
-		return containsString("\"username\":\"" + username + "\"");
-	}
-
+    private String createToken(UserRole role) {
+        Set userRoles = Collections.singleton(role);
+        return Jwts.builder()
+                .setSubject("username")
+                .claim("roles", userRoles)
+                .setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
+    }
 }

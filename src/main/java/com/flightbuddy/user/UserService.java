@@ -62,16 +62,19 @@ public class UserService {
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-	public UserTO getUser(TokenTO tokenDTO) {
-		Claims claims = Jwts.parser()
-					.setSigningKey(SIGNING_KEY)
-					.parseClaimsJws(tokenDTO.token)
-					.getBody();
-		if (claims == null) {
+	public UserTO getUser(TokenTO tokenTO) {
+		if (tokenTO.token == null) {
 			return new UserTO();
 		}
+		Claims claims = Jwts.parser()
+					.setSigningKey(SIGNING_KEY)
+					.parseClaimsJws(tokenTO.token)
+					.getBody();
 		String username = claims.getSubject();
 		User user = findByUsername(username);
+		if (user == null) {
+			return new UserTO();
+		}
 		return new UserTO(user);
 	}
 

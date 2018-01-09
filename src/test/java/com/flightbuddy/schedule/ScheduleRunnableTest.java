@@ -46,7 +46,8 @@ import com.flightbuddy.search.SearchDataConverter;
 @TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleRunnableTest {
 	
-	@Autowired ScheduleRunnable scheduleRunnable;
+	@Autowired
+	private ScheduleRunnable scheduleRunnable;
 	
 	@MockBean
 	private GoogleService googleService;
@@ -109,7 +110,7 @@ public class ScheduleRunnableTest {
 		when(googleService.getTrips(eq(emptyInputData))).thenThrow(new RuntimeException());
 		try {
 			scheduleRunnable.run();
-		} catch(Throwable e) {}
+		} catch(Throwable ignored) {}
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(0)).saveFoundTrips(any());
 		verify(mailService, times(0)).sendTrips(any());

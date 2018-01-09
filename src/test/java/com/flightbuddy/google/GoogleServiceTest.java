@@ -36,6 +36,7 @@ import com.flightbuddy.search.ImmutablePassengers;
 import com.flightbuddy.search.ImmutableSearchInputData;
 import com.flightbuddy.search.PassengersTO;
 
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @SpringBootTest(classes = Application.class)

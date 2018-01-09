@@ -37,9 +37,12 @@ import com.flightbuddy.schedule.search.ScheduledSearch;
 @PrepareForTest(SearchDataConverter.class)
 public class SearchServiceTest {
 
-	@Autowired SearchService searchService;
-	@MockBean GoogleService googleService;
-    @MockBean FoundTripService foundTripService;
+	@Autowired
+	private SearchService searchService;
+	@MockBean
+	private GoogleService googleService;
+    @MockBean
+	private FoundTripService foundTripService;
     
     private ImmutableSearchInputData emptyInputData;
     

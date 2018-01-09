@@ -35,11 +35,15 @@ import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 @TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleUpdateTimerTaskTest {
 
-	@Autowired ScheduleUpdateTimerTask task;
+	@Autowired
+	private ScheduleUpdateTimerTask task;
 	
-	@MockBean ScheduledSearchService scheduledSearchService;
-	@MockBean ScheduledSearchTaskService scheduledSearchTaskService;
-	@MockBean GoogleService googleService;
+	@MockBean
+	private ScheduledSearchService scheduledSearchService;
+	@MockBean
+	private ScheduledSearchTaskService scheduledSearchTaskService;
+	@MockBean
+	private GoogleService googleService;
 	
 	@Test
 	public void noScheduledSearch() {

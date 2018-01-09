@@ -26,7 +26,7 @@ public class SearchDataConverterTest {
 	public void convertToImmutableForScheduledSearchWithOneScheduledSearchWithOneDate() {
 		LocalDate date = LocalDate.of(2017, 12, 2);
 		Passengers passengers = createPassengers(3, 1, 5, 2, 3);
-		ScheduledSearch scheduledSearch = createScheduledSearch("from", "to", 10, true, Collections.singletonList(date), passengers);
+		ScheduledSearch scheduledSearch = createScheduledSearch(Collections.singletonList(date), passengers);
 		ImmutableSearchInputData result = SearchDataConverter.convertToImmutable(scheduledSearch);
 		assertEqualFields(result, scheduledSearch);
 	}
@@ -34,7 +34,7 @@ public class SearchDataConverterTest {
 	@Test
 	public void convertToImmutableForScheduledSearchWithOneScheduledSearchWithThreeDates() {
 		Passengers passengers = createPassengers(1, 2, 3, 10, 2);
-		ScheduledSearch scheduledSearch = createScheduledSearchWithThreeDates("from", "to", 10, true, passengers);
+		ScheduledSearch scheduledSearch = createScheduledSearchWithThreeDates(passengers);
 		ImmutableSearchInputData result = SearchDataConverter.convertToImmutable(scheduledSearch);
 		assertEqualFields(result, scheduledSearch);
 	}
@@ -43,7 +43,7 @@ public class SearchDataConverterTest {
 	public void convertToImmutableForSearchInputDataWithOneScheduledSearchWithOneDate() {
 		LocalDate date = LocalDate.of(2017, 12, 2);
 		PassengersTO passengers = createPassengersTO(3, 1, 5, 2, 3);
-		SearchInputData searchInputData = createSearchInputData("from", "to", 10, true, new LocalDate[] {date}, passengers);
+		SearchInputData searchInputData = createSearchInputData(new LocalDate[] {date}, passengers);
 		ImmutableSearchInputData result = SearchDataConverter.convertToImmutable(searchInputData);
 		assertEqualFields(result, searchInputData);
 	}
@@ -51,7 +51,7 @@ public class SearchDataConverterTest {
 	@Test
 	public void convertToImmutableForSearchInputDataWithOneScheduledSearchWithThreeDates() {
 		PassengersTO passengers = createPassengersTO(1, 2, 3, 10, 2);
-		SearchInputData searchInputData = createSearchInputDataWithThreeDates("from", "to", 10, true, passengers);
+		SearchInputData searchInputData = createSearchInputDataWithThreeDates(passengers);
 		ImmutableSearchInputData result = SearchDataConverter.convertToImmutable(searchInputData);
 		assertEqualFields(result, searchInputData);
 	}
@@ -59,13 +59,13 @@ public class SearchDataConverterTest {
 	@Test
 	public void convertToSearchResultForFoundTrip() {
 		LocalDateTime[] datesTo = new LocalDateTime[] {LocalDateTime.of(2017, 8, 29, 12, 30), LocalDateTime.of(2017, 8, 29, 14, 30), 
-				LocalDateTime.of(2017, 8, 29, 15, 30), LocalDateTime.of(2017, 8, 29, 17, 00)};
-		LocalDateTime[] datesFrom = new LocalDateTime[] {LocalDateTime.of(2017, 9, 14, 14, 30), LocalDateTime.of(2017, 9, 14, 16, 00), 
-				LocalDateTime.of(2017, 9, 14, 17, 00), LocalDateTime.of(2017, 9, 14, 18, 15)};
+				LocalDateTime.of(2017, 8, 29, 15, 30), LocalDateTime.of(2017, 8, 29, 17, 0)};
+		LocalDateTime[] datesFrom = new LocalDateTime[] {LocalDateTime.of(2017, 9, 14, 14, 30), LocalDateTime.of(2017, 9, 14, 16, 0),
+				LocalDateTime.of(2017, 9, 14, 17, 0), LocalDateTime.of(2017, 9, 14, 18, 15)};
 		int[] durations = new int[] {120, 65};
 		String[][] airlineNames = new String[][] {{"KLM", "EZY"},{"RYA", "LFH"}};
 		String[][] stopCodes = new String[][] {{"BSL", "AMS", "KRK"}, {"KRK", "LND", "BSL"}};
-		FoundTrip foundTrip = createFoundTrip("150.00", datesTo, datesFrom, durations, airlineNames, stopCodes);
+		FoundTrip foundTrip = createFoundTrip(datesTo, datesFrom, durations, airlineNames, stopCodes);
 		SearchResult result = SearchDataConverter.convertToSearchResult(foundTrip);
 		assertEqualFields(result, foundTrip);
 	}
@@ -80,19 +80,18 @@ public class SearchDataConverterTest {
 		return passengers;
 	}
 
-	private ScheduledSearch createScheduledSearchWithThreeDates(String from, String to, int maxPrice, boolean withReturn, Passengers passengers) {
+	private ScheduledSearch createScheduledSearchWithThreeDates(Passengers passengers) {
 		List<LocalDate> dates = Arrays.asList(LocalDate.of(2017, 8, 5), LocalDate.of(2017, 9, 12), LocalDate.of(2018, 3, 2));
-		ScheduledSearch scheduledSearch = createScheduledSearch(from, to, maxPrice, withReturn, dates, passengers);
-		return scheduledSearch;
+		return createScheduledSearch(dates, passengers);
 	}
 
-	private ScheduledSearch createScheduledSearch(String from, String to, int maxPrice, boolean withReturn, List<LocalDate> dates, Passengers passengers) {
+	private ScheduledSearch createScheduledSearch(List<LocalDate> dates, Passengers passengers) {
 		ScheduledSearch scheduledSearch = new ScheduledSearch();
-		scheduledSearch.setFrom(from);
-		scheduledSearch.setTo(to);
+		scheduledSearch.setFrom("from");
+		scheduledSearch.setTo("to");
 		scheduledSearch.setMinPrice(0);
-		scheduledSearch.setMaxPrice(maxPrice);
-		scheduledSearch.setWithReturn(withReturn);
+		scheduledSearch.setMaxPrice(10);
+		scheduledSearch.setWithReturn(true);
 		scheduledSearch.setDates(dates);
 		scheduledSearch.setPassengers(passengers);
 		return scheduledSearch;
@@ -100,37 +99,36 @@ public class SearchDataConverterTest {
 
 	private PassengersTO createPassengersTO(int adultCount, int childCount, int infantInLapCount, int infantInSeatCount, int seniorCount) {
 		PassengersTO passengers = new PassengersTO();
-		passengers.setAdultCount(adultCount);
-		passengers.setChildCount(childCount);
-		passengers.setInfantInLapCount(infantInLapCount);
-		passengers.setInfantInSeatCount(infantInSeatCount);
-		passengers.setSeniorCount(seniorCount);
+		passengers.adultCount = adultCount;
+		passengers.childCount = childCount;
+		passengers.infantInLapCount = infantInLapCount;
+		passengers.infantInSeatCount = infantInSeatCount;
+		passengers.seniorCount = seniorCount;
 		return passengers;
 	}
 	
-	private SearchInputData createSearchInputDataWithThreeDates(String from, String to, int maxPrice, boolean withReturn, PassengersTO passengers) {
+	private SearchInputData createSearchInputDataWithThreeDates(PassengersTO passengers) {
 		LocalDate[] dates = new LocalDate[] {LocalDate.of(2017, 8, 5), LocalDate.of(2017, 9, 12), LocalDate.of(2018, 3, 2)};
-		SearchInputData searchInputData = createSearchInputData(from, to, maxPrice, withReturn, dates, passengers);
-		return searchInputData;
+		return createSearchInputData(dates, passengers);
 	}
 
-	private SearchInputData createSearchInputData(String from, String to, int maxPrice, boolean withReturn, LocalDate[] dates, PassengersTO passengers) {
+	private SearchInputData createSearchInputData(LocalDate[] dates, PassengersTO passengers) {
 		SearchInputData searchInputData = new SearchInputData();
-		searchInputData.setFrom(from);
-		searchInputData.setTo(to);
+		searchInputData.setFrom("from");
+		searchInputData.setTo("to");
 		searchInputData.setMinPrice(0);
-		searchInputData.setMaxPrice(maxPrice);
-		searchInputData.setWithReturn(withReturn);
+		searchInputData.setMaxPrice(10);
+		searchInputData.setWithReturn(true);
 		searchInputData.setDates(dates);
 		searchInputData.setPassengers(passengers);
 		return searchInputData;
 	}
 	
-	private FoundTrip createFoundTrip(String price, LocalDateTime[] datesTo, LocalDateTime[] datesFrom, int[] durations, String[][] airlineNames, 
-			String[][] stopCodes) {
+	private FoundTrip createFoundTrip(LocalDateTime[] datesTo, LocalDateTime[] datesFrom, int[] durations, String[][] airlineNames,
+									  String[][] stopCodes) {
 		FoundTrip foundTrip = new FoundTrip();
 		foundTrip.setFlights(createFlights(datesTo, datesFrom, durations, airlineNames, stopCodes));
-		foundTrip.setPrice(new BigDecimal(price));
+		foundTrip.setPrice(new BigDecimal("150.00"));
 		return foundTrip;
 	}
 
@@ -202,10 +200,10 @@ public class SearchDataConverterTest {
 
 	private void assertEqualFields(SearchResult result, FoundTrip foundTrip) {
 		assertThat(result.getPrice(), equalTo(foundTrip.getPrice().intValue()));
-		assertThat(result.getDurations(), equalTo(Arrays.asList(new String[] {"2h", "1h 05m"})));
-		assertThat(result.getHours(), equalTo(Arrays.asList(new String[] {"12:30-14:30", "14:30-15:35"})));
+		assertThat(result.getDurations(), equalTo(Arrays.asList("2h", "1h 05m")));
+		assertThat(result.getHours(), equalTo(Arrays.asList("12:30-14:30", "14:30-15:35")));
 		assertThat(result.getStops().toArray(), equalTo(new int[] {1, 1}));
-		assertThat(result.getTrips(), equalTo(Arrays.asList(new String[] {"BSL -> AMS -> KRK (KLM -> EZY)", "KRK -> LND -> BSL (RYA -> LFH)"})));
-		assertThat(result.getDates(), equalTo(Arrays.asList(new String[] {"TUESDAY, AUGUST 29", "THURSDAY, SEPTEMBER 14"})));
+		assertThat(result.getTrips(), equalTo(Arrays.asList("BSL -> AMS -> KRK (KLM -> EZY)", "KRK -> LND -> BSL (RYA -> LFH)")));
+		assertThat(result.getDates(), equalTo(Arrays.asList("TUESDAY, AUGUST 29", "THURSDAY, SEPTEMBER 14")));
 	}
 }

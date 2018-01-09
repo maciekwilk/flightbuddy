@@ -33,9 +33,11 @@ import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 @TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleTriggerTest {
 	
-	@Autowired ScheduleTrigger scheduleTrigger;
+	@Autowired
+	private ScheduleTrigger scheduleTrigger;
 	
-	@MockBean ScheduledSearchTaskService scheduledSearchTaskService;
+	@MockBean
+	private ScheduledSearchTaskService scheduledSearchTaskService;
 	
 	@Test
 	public void whenNoReadyTasksThenNextExecutionInFiveMins() {

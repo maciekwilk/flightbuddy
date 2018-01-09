@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
     
     private String[] securedPaths = new String[] {"/register.html", "/register", "/user/register", "/schedule.html", "/schedule",
-                                          "/search/schedule/save"};
+                                          "/search/schedule/save", "/user/authenticate/token"};
 
     @Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -48,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http			
 			.authorizeRequests()
 			.antMatchers("/register.html", "/register", "/user/register").hasAuthority(ROLE_ADMIN.name())
-	      	.antMatchers("/schedule.html", "/schedule", "/search/schedule/save").hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
+	      	.antMatchers("/schedule.html", "/schedule", "/search/schedule/save", "/user/authenticate/token").hasAnyAuthority(ROLE_ADMIN.name(), ROLE_USER.name())
 	      	.antMatchers("/**").permitAll()
 			.and()
 				.addFilterBefore(new JWTFilter(requestMatcher, SIGNING_KEY), UsernamePasswordAuthenticationFilter.class)
