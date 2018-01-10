@@ -1,4 +1,4 @@
-angular.module('app', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ui.router', 'home', 'login', 'registration', 'schedule'])
+angular.module('app', ['ngCookies', 'ui.bootstrap', 'ui.router', 'home', 'login', 'registration', 'schedule'])
 .run(function(AuthService, $rootScope, $state, $cookies, $http) {
 
 	var token = $cookies.get('JWT-TOKEN');
