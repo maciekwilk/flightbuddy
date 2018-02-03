@@ -5,7 +5,7 @@ describe("registration", function() {
 	var $controller, $httpBackend;
     
 	beforeEach(inject(function(_$controller_, _$httpBackend_) {
-		$controller = _$controller_('registration', {});
+		$controller = _$controller_('RegistrationController', {});
 		$httpBackend = _$httpBackend_;
 	}));
 	
@@ -14,8 +14,8 @@ describe("registration", function() {
 	    $httpBackend.verifyNoOutstandingRequest();
     });
 	
-	it("showMessage variable should be false", function() {
-		expect($controller.showMessage).toEqual(false);
+	it("message variable should be undefined", function() {
+		expect($controller.message).toBeUndefined();
 	})
 	
 	describe('Given register function was called', function() {
@@ -33,13 +33,13 @@ describe("registration", function() {
 			    });
 				$controller.register();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.message).toBeUndefined();
 				expect($controller.error).toEqual(errorMessage);
 			})
 		});
 		
 		describe('when response is successful with no error message', function() {
-			it("error variable should have the message", function() {
+			it("message variable should have the message", function() {
 				var message = 'success message';
 				var formData = {
 					  username : '',
@@ -51,7 +51,7 @@ describe("registration", function() {
 			    });
 				$controller.register();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.error).toBeUndefined();
 				expect($controller.message).toEqual(message);
 			})
 		});
@@ -69,7 +69,7 @@ describe("registration", function() {
 			    });
 				$controller.register();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.message).toBeUndefined();
 				expect($controller.error).toEqual(errorMessage);
 			})
 		});

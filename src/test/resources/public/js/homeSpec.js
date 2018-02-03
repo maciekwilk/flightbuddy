@@ -5,7 +5,7 @@ describe("home", function() {
 	var $controller, $httpBackend;
     
 	beforeEach(inject(function(_$controller_, _$httpBackend_) {
-		$controller = _$controller_('home', {});
+		$controller = _$controller_('HomeController', {});
 		$httpBackend = _$httpBackend_;
 	}));
 	
@@ -13,7 +13,7 @@ describe("home", function() {
 	    $httpBackend.verifyNoOutstandingExpectation();
 	    $httpBackend.verifyNoOutstandingRequest();
     });
-	
+
 	it("airports should be initialized", function() {
 		var airports = '{some airports}';
 		$httpBackend.expect('GET', '/airport/all').respond(200, {
@@ -22,11 +22,11 @@ describe("home", function() {
 		$httpBackend.flush();
 		expect($controller.airports.data).toEqual(airports);
 	})
-	
-	it("showMessage variable should be false and airports initialized", function() {
+
+	it("message variable should be undefined", function() {
 		$httpBackend.expect('GET', '/airport/all').respond(200, {});
 		$httpBackend.flush();
-		expect($controller.showMessage).toEqual(false);
+		expect($controller.message).toBeUndefined();
 	})
 	
 	describe('Given save function was called', function() {
@@ -61,7 +61,7 @@ describe("home", function() {
 			    });
 				$controller.search();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.message).toBeUndefined();
 				expect($controller.error).toEqual(errorMessage);
 				expect($controller.searchResults).toBeUndefined();
 			})
@@ -73,7 +73,7 @@ describe("home", function() {
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(401, {});
 				$controller.search();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.message).toBeUndefined();
 				expect($controller.error).toEqual(errorMessage);
 				expect($controller.searchResults).toBeUndefined();
 			})
@@ -87,14 +87,14 @@ describe("home", function() {
 			    });
 				$controller.search();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.message).toBeUndefined();
 				expect($controller.error).toEqual(errorMessage);
 				expect($controller.searchResults).toBeUndefined();
 			})
 		});
 		
 		describe('when response is successful with message and no search results', function() {
-			it("error variable should have the message and search results array empty", function() {
+			it("message variable should have the message and search results array empty", function() {
 				var message = 'success message';
 				var searchResults = [];
 				$httpBackend.expect('POST', '/search/perform', searchData).respond(200, {
@@ -103,14 +103,14 @@ describe("home", function() {
 			    });
 				$controller.search();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.error).toBeUndefined();
 				expect($controller.message).toEqual(message);
 				expect($controller.searchResults).toEqual(searchResults);
 			})
 		});
 		
 		describe('when response is successful with message and search results', function() {
-			it("error variable should have the message and search results", function() {
+			it("message variable should have the message and search results", function() {
 				var message = 'success message';
 				var searchResults = [{
 			    	price : '230',
@@ -131,7 +131,7 @@ describe("home", function() {
 			    });
 				$controller.search();
 				$httpBackend.flush();
-				expect($controller.showMessage).toEqual(true);
+				expect($controller.error).toBeUndefined();
 				expect($controller.message).toEqual(message);
 				expect($controller.searchResults).toEqual(searchResults);
 			})

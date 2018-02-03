@@ -5,7 +5,7 @@ describe("schedule", function() {
 	var $controller, $httpBackend;
     
 	beforeEach(inject(function(_$controller_, _$httpBackend_) {
-		$controller = _$controller_('schedule', {});
+		$controller = _$controller_('ScheduleController', {});
 		$httpBackend = _$httpBackend_;
 	}));
 	
