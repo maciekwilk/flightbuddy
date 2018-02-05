@@ -53,7 +53,7 @@ public class UserServiceTest {
 	public void createUserAsAdmin() {
 		User createdUser = userService.createUser(USERNAME, PASSWORD);
 		verify(userDao, times(1)).persist(any(User.class));
-		assertTrue(isPasswordValid(PASSWORD, createdUser.getPassword()));
+		assertTrue(isPasswordValid(createdUser.getPassword()));
 		assertEquals(createdUser.isEnabled(), true);
 		assertEquals(createdUser.getRoles(), Collections.singleton(ROLE_USER));
 	}
@@ -98,7 +98,7 @@ public class UserServiceTest {
         User user = createUser(role);
         given(userDao.findByUsername(eq(USERNAME))).willReturn(user);
         Map<String, Object> returnedMap = userService.authenticate(USERNAME, PASSWORD);
-        assertAuthenticationWasSuccesful(role, returnedMap);
+        assertAuthenticationWasSuccessful(role, returnedMap);
     }
 
     @Test
@@ -107,7 +107,7 @@ public class UserServiceTest {
         User user = createUser(role);
         given(userDao.findByUsername(eq(USERNAME))).willReturn(user);
         Map<String, Object> returnedMap = userService.authenticate(USERNAME, PASSWORD);
-        assertAuthenticationWasSuccesful(role, returnedMap);
+        assertAuthenticationWasSuccessful(role, returnedMap);
     }
 
     @Test(expected = AuthenticationCredentialsNotFoundException.class)
@@ -160,8 +160,8 @@ public class UserServiceTest {
     }
 
 
-	private boolean isPasswordValid(String insertedPassword, String validPassword) {
-		return new BCryptPasswordEncoder().matches(insertedPassword, validPassword);
+	private boolean isPasswordValid(String validPassword) {
+		return new BCryptPasswordEncoder().matches(UserServiceTest.PASSWORD, validPassword);
 	}
 
     private Claims getClaims(String token) {
@@ -194,7 +194,7 @@ public class UserServiceTest {
     }
 
     @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
-    private void assertAuthenticationWasSuccesful(UserRole role, Map<String, Object> returnedMap) {
+    private void assertAuthenticationWasSuccessful(UserRole role, Map<String, Object> returnedMap) {
         String token = (String) returnedMap.get("token");
         Claims claims = getClaims(token);
         UserTO userTO = (UserTO) returnedMap.get("user");

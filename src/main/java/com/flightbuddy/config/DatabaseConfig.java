@@ -1,11 +1,6 @@
 package com.flightbuddy.config;
 
-import java.beans.PropertyVetoException;
-import java.sql.SQLException;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import com.googlecode.flyway.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,11 +12,12 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.googlecode.flyway.core.Flyway;
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-public class DatabaseConfig {
+class DatabaseConfig {
 
 	@Value("${jdbc.username}")
 	private String JDBC_USERNAME;
@@ -37,7 +33,7 @@ public class DatabaseConfig {
 	private boolean loggingEnabled;
 	
 	@Bean
-	public Flyway flyway() throws PropertyVetoException, SQLException{
+	public Flyway flyway() {
 		Flyway flyway = new Flyway();
 		flyway.setDataSource(dataSource());
 		flyway.setInitOnMigrate(true);
@@ -48,7 +44,7 @@ public class DatabaseConfig {
 	}
 	
 	@Bean
-	public DataSource dataSource() throws PropertyVetoException, SQLException{
+	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 		dataSource.setUrl(JDBC_URL);
 		dataSource.setUsername(JDBC_USERNAME);
@@ -58,12 +54,12 @@ public class DatabaseConfig {
 	}
 	
 	@Bean
-	public JdbcTemplate jdbcTemplate() throws PropertyVetoException, SQLException{
+	public JdbcTemplate jdbcTemplate() {
 		return new JdbcTemplate(dataSource());
 	}
 	
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws PropertyVetoException, SQLException{
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 		factoryBean.setDataSource(dataSource());
@@ -80,7 +76,7 @@ public class DatabaseConfig {
 	}
 
     @Bean
-    public PlatformTransactionManager txManager() throws PropertyVetoException, SQLException {
+    public PlatformTransactionManager txManager() {
         return new JpaTransactionManager(entityManagerFactory().getObject());
     }
 }

@@ -2,14 +2,14 @@ package com.flightbuddy.db;
 
 import java.util.Collection;
 
-public interface Dao<T> {
+interface Dao<T> {
 
-	public T merge(T entity);
+	T merge(T entity);
 
-	public void persist(T entity);
+	void persist(T entity);
 
-	public void remove(T entity);
+	void remove(T entity);
 
-	public void remove(Collection<T> entity);
+	void remove(Collection<T> entity);
 
 }

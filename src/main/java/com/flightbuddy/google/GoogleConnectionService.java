@@ -28,11 +28,12 @@ import com.flightbuddy.search.ImmutablePassengers;
 import com.flightbuddy.search.ImmutableSearchInputData;
 
 @Service
-public class GoogleConnectionService {
+class GoogleConnectionService {
 	
-	Logger log = LoggerFactory.getLogger(GoogleConnectionService.class);
+	private final Logger log = LoggerFactory.getLogger(GoogleConnectionService.class);
 	
-	@Autowired RestTemplate restTemplate;
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@Value("${google.date.format}")
 	private String dateFormat;
@@ -47,8 +48,7 @@ public class GoogleConnectionService {
 		try {
 			RequestEntity<GoogleRequest> requestEntity = prepareRequestEntity(searchInputData);
 			ResponseEntity<GoogleResponse> response = restTemplate.exchange(requestEntity, GoogleResponse.class);
-			GoogleResponse googleResponse = handleResponse(response);
-			return googleResponse;
+			return handleResponse(response);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
@@ -59,8 +59,7 @@ public class GoogleConnectionService {
 		GoogleRequest googleRequest = createGoogleRequest(searchInputData);
 		MultiValueMap<String, String> headers = createHeaders();
 		URI uri = new URI(requestUrl + "?key=" + googleApiKey);
-		RequestEntity<GoogleRequest> requestEntity = new RequestEntity<GoogleRequest>(googleRequest, headers, HttpMethod.POST, uri);
-		return requestEntity;
+		return new RequestEntity<>(googleRequest, headers, HttpMethod.POST, uri);
 	}
 
 	private GoogleRequest createGoogleRequest(ImmutableSearchInputData searchInputData) {
@@ -106,6 +105,7 @@ public class GoogleConnectionService {
 	private GoogleResponse handleResponse(ResponseEntity<GoogleResponse> response) {
 		if (response == null || response.getBody() == null) {
 			log.error(Messages.get("error.google.response.empty"));
+			return new GoogleResponse();
 		}
 		GoogleResponse googleResponse = response.getBody();
 		if (googleResponse.getError() != null) {

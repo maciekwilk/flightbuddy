@@ -14,15 +14,15 @@ public class AuthenticationService {
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	public void login(UserDetails user, String password){
-		Authentication request = new UsernamePasswordAuthenticationToken(user.getUsername(), password, user.getAuthorities());
+	private void login(UserDetails user){
+		Authentication request = new UsernamePasswordAuthenticationToken(user.getUsername(), SystemAuthenticationToken.SYSTEM_PASSWORD, user.getAuthorities());
 		Authentication result = authenticationManager.authenticate(request);
 		SecurityContextHolder.getContext().setAuthentication(result);
 	}
 	
 	public void loginAsSystem(){
 		UserAuthenticationDetails system = new SystemAuthenticationToken();
-		login(system, SystemAuthenticationToken.SYSTEM_PASSWORD);
+		login(system);
 	}
 	
 	public void logoutUsers() {

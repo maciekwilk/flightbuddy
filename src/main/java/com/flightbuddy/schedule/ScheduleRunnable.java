@@ -25,13 +25,18 @@ import com.flightbuddy.user.authentication.AuthenticationService;
 @Component
 public class ScheduleRunnable implements Runnable {
 	
-	Logger log = Logger.getLogger(ScheduleRunnable.class);
+	private static final Logger log = Logger.getLogger(ScheduleRunnable.class);
 
-	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
-	@Autowired GoogleService googleService;
-    @Autowired FoundTripService foundTripService;
-    @Autowired MailService mailService;
-	@Autowired AuthenticationService authenticationService;
+	@Autowired
+	private ScheduledSearchTaskService scheduledSearchTaskService;
+	@Autowired
+	private GoogleService googleService;
+    @Autowired
+	private FoundTripService foundTripService;
+    @Autowired
+	private MailService mailService;
+	@Autowired
+	private AuthenticationService authenticationService;
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
 	

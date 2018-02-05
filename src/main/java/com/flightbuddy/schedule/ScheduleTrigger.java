@@ -20,12 +20,14 @@ import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.user.authentication.AuthenticationService;
 
 @Component
-public class ScheduleTrigger implements Trigger {
+class ScheduleTrigger implements Trigger {
 	
-	Logger log = LoggerFactory.getLogger(ScheduleTrigger.class);
+	private static final Logger log = LoggerFactory.getLogger(ScheduleTrigger.class);
 
-	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
-	@Autowired AuthenticationService authenticationService;
+	@Autowired
+	private ScheduledSearchTaskService scheduledSearchTaskService;
+	@Autowired
+	private AuthenticationService authenticationService;
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
 	

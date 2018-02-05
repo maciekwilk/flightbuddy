@@ -20,7 +20,7 @@ import com.flightbuddy.interceptors.LoggingControllerInterceptor;
 import com.flightbuddy.interceptors.LoggingRestInterceptor;
 
 @Configuration
-public class WebMvcConfig extends WebMvcConfigurerAdapter {
+class WebMvcConfig extends WebMvcConfigurerAdapter {
 	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -30,7 +30,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
-		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
+		List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
 		interceptors.add(new LoggingRestInterceptor());
 		restTemplate.setInterceptors(interceptors);
 		return restTemplate;

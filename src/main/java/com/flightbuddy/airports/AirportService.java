@@ -16,24 +16,32 @@ import org.springframework.stereotype.Service;
 import com.google.common.io.Files;
 
 @Service
-public class AirportService {
+class AirportService {
 
-	Logger log = LoggerFactory.getLogger(AirportService.class);
-	
+	private static final Logger log = LoggerFactory.getLogger(AirportService.class);
+	private static final String AIRPORTS_PATH = "/home/ubuntu/flightbuddyData/airports.txt";
+
 	public List<String> getAirportList() {
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 		URL airportsFileUrl = classLoader.getResource("airports.txt");
-		String airportsFilePath = airportsFileUrl.getFile();
-		File airportsFile = new File(airportsFilePath);
-		if (!airportsFile.exists()) {
-			Path airportsPath = Paths.get("/home/ubuntu/flightbuddyData/airports.txt");
-			airportsFile = airportsPath.toFile();
-		}
-		try {
-			return Files.readLines(airportsFile, Charset.defaultCharset());
-		} catch (IOException e) {
-			log.error(e.getMessage(), e);
+		if (airportsFileUrl != null) {
+			String airportsFilePath = airportsFileUrl.getFile();
+			File airportsFile = getFile(airportsFilePath);
+			try {
+				return Files.readLines(airportsFile, Charset.defaultCharset());
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+			}
 		}
 		return Collections.emptyList();
+	}
+
+	private File getFile(String airportsFilePath) {
+		File airportsFile = new File(airportsFilePath);
+		if (!airportsFile.exists()) {
+            Path airportsPath = Paths.get(AIRPORTS_PATH);
+            airportsFile = airportsPath.toFile();
+        }
+		return airportsFile;
 	}
 }

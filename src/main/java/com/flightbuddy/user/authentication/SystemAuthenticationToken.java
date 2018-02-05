@@ -1,13 +1,12 @@
 package com.flightbuddy.user.authentication;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.flightbuddy.user.UserRole;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.flightbuddy.user.UserRole;
+import java.util.Collections;
+import java.util.List;
 
 public class SystemAuthenticationToken extends UserAuthenticationDetails {
 
@@ -18,7 +17,7 @@ public class SystemAuthenticationToken extends UserAuthenticationDetails {
 	private static final long serialVersionUID = 4663607279383413936L;	
 	
 	static{
-		SYSTEM_AUTHORITIES = Arrays.asList( (GrantedAuthority)new SimpleGrantedAuthority(UserRole.ROLE_SYSTEM.name()));
+		SYSTEM_AUTHORITIES = Collections.singletonList(new SimpleGrantedAuthority(UserRole.ROLE_SYSTEM.name()));
 	}
 	
 	@Override

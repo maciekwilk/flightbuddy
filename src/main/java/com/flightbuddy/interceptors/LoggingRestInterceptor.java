@@ -1,10 +1,5 @@
 package com.flightbuddy.interceptors;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
@@ -13,9 +8,13 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class LoggingRestInterceptor implements ClientHttpRequestInterceptor {
 
-    final static Logger log = LoggerFactory.getLogger(LoggingRestInterceptor.class);
+    private final static Logger log = LoggerFactory.getLogger(LoggingRestInterceptor.class);
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
@@ -50,7 +49,7 @@ public class LoggingRestInterceptor implements ClientHttpRequestInterceptor {
         log.debug("=======================response end=================================================");
     }
 
-	private StringBuilder putResponseIntoInputStream(ClientHttpResponse response) throws UnsupportedEncodingException, IOException {
+	private StringBuilder putResponseIntoInputStream(ClientHttpResponse response) throws IOException {
 		StringBuilder inputStringBuilder = new StringBuilder();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(response.getBody(), "UTF-8"));
         String line = bufferedReader.readLine();

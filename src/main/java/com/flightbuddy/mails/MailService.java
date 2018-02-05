@@ -19,7 +19,7 @@ import com.flightbuddy.results.FoundTrip;
 @PreAuthorize("hasRole('SYSTEM')")
 public class MailService {
 
-	Logger log = LoggerFactory.getLogger(MailService.class);
+	private static final Logger log = LoggerFactory.getLogger(MailService.class);
 	
 	@Value("${mail.address}")
 	private String emailAddress;

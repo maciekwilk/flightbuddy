@@ -8,7 +8,7 @@ final class SearchResultDetails {
 	
 	private final List<SearchResultDetailsEntry> searchResultDetailsEntries;
 	
-	public SearchResultDetails(List<SearchResultDetailsEntry> searchResultDetailsEntries) {
+	SearchResultDetails(List<SearchResultDetailsEntry> searchResultDetailsEntries) {
 		this.searchResultDetailsEntries = Collections.unmodifiableList(new ArrayList<>(searchResultDetailsEntries));
 	}
 

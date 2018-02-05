@@ -7,9 +7,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class AirportController {
+class AirportController {
 	
-	@Autowired AirportService airportService;
+	@Autowired
+	private AirportService airportService;
 
 	@RequestMapping("/airport/all")
 	public List<String> getAllAirports() {

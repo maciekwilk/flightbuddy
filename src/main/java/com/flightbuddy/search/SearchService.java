@@ -12,10 +12,12 @@ import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripService;
 
 @Service
-public class SearchService {
+class SearchService {
 	
-	@Autowired GoogleService googleService;
-	@Autowired FoundTripService foundTripService;
+	@Autowired
+	private GoogleService googleService;
+	@Autowired
+	private FoundTripService foundTripService;
 
 	public List<SearchResult> performSearch(SearchInputData searchData) {
 		if (searchData == null) {
@@ -32,7 +34,7 @@ public class SearchService {
 
 	private List<SearchResult> convertToSearchResults(List<FoundTrip> foundTrips) {
 		return foundTrips.stream()
-				.map(foundTrip -> SearchDataConverter.convertToSearchResult(foundTrip))
+				.map(SearchDataConverter::convertToSearchResult)
 				.collect(Collectors.toList());
 	}
 

@@ -31,7 +31,7 @@ import com.flightbuddy.user.authentication.JWTFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Value("${jwt.signingkey}")
 	private String SIGNING_KEY;
@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
     
-    private String[] securedPaths = new String[] {"/register.html", "/register", "/user/register", "/schedule.html", "/schedule",
+    private final String[] securedPaths = new String[] {"/register.html", "/register", "/user/register", "/schedule.html", "/schedule",
                                           "/search/schedule/save", "/user/authenticate/token"};
 
     @Override

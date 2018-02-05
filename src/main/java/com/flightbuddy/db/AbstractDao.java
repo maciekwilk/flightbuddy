@@ -37,7 +37,7 @@ public abstract class AbstractDao<T, K> implements Dao<T> {
 
 	@Override
 	public void remove(Collection<T> entities) {
-		entities.forEach(entity -> remove(entity));
+		entities.forEach(this::remove);
 	}
 
 	public boolean exists(JPAQuery<?> query) {
@@ -45,14 +45,14 @@ public abstract class AbstractDao<T, K> implements Dao<T> {
 	}
 
 	private JPAQuery<T> query() {
-		return new JPAQuery<T>(em);
+		return new JPAQuery<>(em);
 	}
 
 	protected JPAQuery<T> from() {
 		return query().from(getEntityPath()).select(getEntityPath());
 	}
 
-	protected EntityManager getEM() {
+	private EntityManager getEM() {
 		return em;
 	}
 }

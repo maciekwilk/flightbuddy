@@ -16,8 +16,8 @@ public final class SearchResult {
 	private final List<Integer> stops;
 	private final List<SearchResultDetails> searchResultDetails;
 	
-	public SearchResult(int price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops, 
-			List<SearchResultDetails> searchResultDetails, List<String> dates) {
+	SearchResult(int price, List<String> hours, List<String> durations, List<String> trips, List<Integer> stops,
+				 List<SearchResultDetails> searchResultDetails, List<String> dates) {
 		this.id = UUID.randomUUID().toString();
 		this.price = price;
 		this.hours = Collections.unmodifiableList(new ArrayList<>(hours));

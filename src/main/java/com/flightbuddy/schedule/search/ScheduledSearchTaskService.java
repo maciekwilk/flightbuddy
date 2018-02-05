@@ -12,7 +12,8 @@ import com.flightbuddy.schedule.search.ScheduledSearchTask.ScheduledSearchState;
 @PreAuthorize("hasRole('SYSTEM')")
 public class ScheduledSearchTaskService {
 	
-	@Autowired ScheduledSearchTaskDao scheduledSearchTaskDao;
+	@Autowired
+	private ScheduledSearchTaskDao scheduledSearchTaskDao;
 	
 	public void create(ScheduledSearchTask scheduledSearchTask) {
 		scheduledSearchTaskDao.persist(scheduledSearchTask);

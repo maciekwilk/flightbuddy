@@ -19,12 +19,14 @@ import com.flightbuddy.resources.Messages;
 
 @Configuration
 @EnableScheduling
-public class ScheduleConfig implements SchedulingConfigurer {
+class ScheduleConfig implements SchedulingConfigurer {
 
-	Logger log = Logger.getLogger(ScheduleConfig.class);
+	private final static Logger log = Logger.getLogger(ScheduleConfig.class);
 	
-	@Autowired ScheduleTrigger scheduleTrigger;
-	@Autowired ScheduleRunnable scheduleTask;
+	@Autowired
+	private ScheduleTrigger scheduleTrigger;
+	@Autowired
+	private ScheduleRunnable scheduleTask;
 	
 	private final static int NUMBER_OF_THREADS = 10;
 	

@@ -32,7 +32,7 @@ public class GoogleFlightConverterTest {
 	
 	private static final LocalDateTime DEFAULT_DATE = LocalDateTime.of(2000, 1, 1, 12, 30);
 	
-	private DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+	private final DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 	
 	@Test
 	public void checkConvertResponseToTripsWithEmptyResponse() {
@@ -171,7 +171,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{null, null});
+		assertDateAndStopsAndDurationEqualTo(trip, new String[]{null, null});
 	}
 	
 	@Test
@@ -256,7 +256,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{"BASEL", null});
+		assertDateAndStopsAndDurationEqualTo(trip, new String[]{"BASEL", null});
 	}
 	
 	@Test
@@ -269,7 +269,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{null, "CRACOW"});
+		assertDateAndStopsAndDurationEqualTo(trip, new String[]{null, "CRACOW"});
 	}
 	
 	@Test
@@ -282,7 +282,7 @@ public class GoogleFlightConverterTest {
 		GoogleResponse googleResponse = createGoogleResponse(tripOptions, tripData);
 		List<FoundTrip> result = GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 		FoundTrip trip = result.get(0);
-		assertDateAndStopsAndDurationEqualTo(trip, DEFAULT_DATE, new String[]{"BASEL", "CRACOW"});
+		assertDateAndStopsAndDurationEqualTo(trip, new String[]{"BASEL", "CRACOW"});
 	}
 	
 	@Test
@@ -421,14 +421,14 @@ public class GoogleFlightConverterTest {
 		assertThat(trip.getPrice(), equalTo(new BigDecimal(price)));
 		assertDateAndStopsAndDurationEqualTo(trip, date, times, stopCodes, duration);
 	}
-	private void assertDateAndStopsAndDurationEqualTo(FoundTrip trip, LocalDateTime date, String[] stopCodes) {
+	private void assertDateAndStopsAndDurationEqualTo(FoundTrip trip, String[] stopCodes) {
 		List<Flight> flights = trip.getFlights();
-		assertDateAndStopsAndDurationEqualTo(flights.get(0), date, stopCodes);
+		assertDateAndStopsAndDurationEqualTo(flights.get(0), stopCodes);
 	}
 	
-	private void assertDateAndStopsAndDurationEqualTo(Flight flight, LocalDateTime date, String[] stopCodes) {
+	private void assertDateAndStopsAndDurationEqualTo(Flight flight, String[] stopCodes) {
 		assertThat(flight.getDuration(), equalTo(120));
-		assertThat(flight.getDate(), equalTo(date));
+		assertThat(flight.getDate(), equalTo(GoogleFlightConverterTest.DEFAULT_DATE));
 		List<Stop> stops = flight.getStops();
 		for (int i = 0; i < stopCodes.length - 1; i++) {
 			Stop stop = stops.get(i);

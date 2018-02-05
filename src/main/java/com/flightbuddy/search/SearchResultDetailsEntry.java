@@ -7,7 +7,7 @@ final class SearchResultDetailsEntry {
 	private final String trip;
 	private final String airline;
 	
-	public SearchResultDetailsEntry(String hours, String duration, String trip, String airline) {
+	SearchResultDetailsEntry(String hours, String duration, String trip, String airline) {
 		this.hours = hours;
 		this.duration = duration;
 		this.trip = trip;

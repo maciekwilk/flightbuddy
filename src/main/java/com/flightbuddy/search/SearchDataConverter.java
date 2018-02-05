@@ -54,19 +54,19 @@ public class SearchDataConverter {
 
 	private static List<LocalDateTime> getLocalDateTimes(List<Flight> flights) {
 		return flights.stream()
-				.map(flight -> flight.getDate())
+				.map(Flight::getDate)
 				.collect(Collectors.toList());
 	}
 
 	private static List<Integer> getDurationsInMins(List<Flight> flights) {
 		return flights.stream()
-				.map(flight -> flight.getDuration())
+				.map(Flight::getDuration)
 				.collect(Collectors.toList());
 	}
 
 	private static List<String> convertDurationsToHours(List<Integer> durationsInMins) {
 		return durationsInMins.stream()
-				.map(duration -> convertMinsToHours(duration))
+				.map(SearchDataConverter::convertMinsToHours)
 				.collect(Collectors.toList());
 	}
 
@@ -117,13 +117,13 @@ public class SearchDataConverter {
 
 	private static String convertStops(List<Stop> stops) {
 		return stops.stream()
-				.map(stop -> stop.getCode())
+				.map(Stop::getCode)
 				.collect(Collectors.joining(" -> "));
 	}
 	
 	private static String convertAirlines(List<Airline> airlines) {
 		return airlines.stream()
-				.map(airline -> airline.getName())
+				.map(Airline::getName)
 				.collect(Collectors.joining(" -> "));
 	}
 
@@ -135,7 +135,7 @@ public class SearchDataConverter {
 	
 	private static List<SearchResultDetails> getSearchResultDetails(List<Flight> flights) {
 		return flights.stream()
-				.map(flight -> getSearchResultDetails(flight))
+				.map(SearchDataConverter::getSearchResultDetails)
 				.collect(Collectors.toList());
 	}
 

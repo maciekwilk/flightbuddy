@@ -10,13 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FoundTripService {
 
-	@Autowired FoundTripDao foundTripDao;
-	
-	public void saveFoundTrip(FoundTrip foundTrip) {
+	@Autowired
+	private FoundTripDao foundTripDao;
+
+	public void saveFoundTrips(List<FoundTrip> foundTrips) { foundTrips.forEach(this::saveFoundTrip); }
+
+	private void saveFoundTrip(FoundTrip foundTrip) {
 		foundTripDao.persist(foundTrip);
-	}
-	
-	public void saveFoundTrips(List<FoundTrip> foundTrips) {
-		foundTrips.forEach(foundTrip -> saveFoundTrip(foundTrip));
 	}
 }

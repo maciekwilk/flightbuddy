@@ -1,29 +1,27 @@
 package com.flightbuddy.google;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
+import com.flightbuddy.google.response.GoogleResponse;
+import com.flightbuddy.google.response.Trips;
+import com.flightbuddy.resources.Messages;
+import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.search.ImmutableSearchInputData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.flightbuddy.google.response.GoogleResponse;
-import com.flightbuddy.google.response.Trips;
-import com.flightbuddy.resources.Messages;
-import com.flightbuddy.results.FoundTrip;
-import com.flightbuddy.schedule.search.ScheduledSearchService;
-import com.flightbuddy.search.ImmutableSearchInputData;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class GoogleService {
 
-	Logger log = LoggerFactory.getLogger(GoogleService.class);
+	private final Logger log = LoggerFactory.getLogger(GoogleService.class);
 	
-	@Autowired GoogleConnectionService googleConnectionService;
-	@Autowired ScheduledSearchService scheduledSearchService;
+	@Autowired
+	private GoogleConnectionService googleConnectionService;
 
 	@Value("${google.date.format}")
 	private String dateFormat;
@@ -51,8 +49,8 @@ public class GoogleService {
 			fromDate = dates[0].format(formatter);
 			returnDate = formatReturnDate(dates, formatter);
 		}
-		log.error(Messages.get("error.google.flights.no", new Object[]{searchInputData.getMaxPrice(), fromDate, returnDate,
-				searchInputData.getFrom(), searchInputData.getTo()}));
+		log.error(Messages.get("error.google.flights.no", searchInputData.getMaxPrice(), fromDate, returnDate,
+                searchInputData.getFrom(), searchInputData.getTo()));
 	}
 
 	private String formatReturnDate(LocalDate[] dates, DateTimeFormatter formatter) {

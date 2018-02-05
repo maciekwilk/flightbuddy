@@ -13,14 +13,13 @@ public class LoggingControllerInterceptor extends HandlerInterceptorAdapter {
 	private static final Logger log = LoggerFactory.getLogger(LoggingControllerInterceptor.class);
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		return true;
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-			ModelAndView modelAndView) throws Exception {
+			ModelAndView modelAndView) {
 		log(request.getMethod() + " " + request.getRequestURI(), response.getStatus());
 	    log("Response : " + response.getStatus(), response.getStatus());
 	}

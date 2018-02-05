@@ -18,9 +18,9 @@ import com.flightbuddy.user.authentication.TokenTO;
 import com.flightbuddy.user.authentication.UserTO;
 
 @RestController
-public class UserController {
+class UserController {
 
-	private Logger log = LoggerFactory.getLogger(UserController.class);
+	private final Logger log = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
 	private UserService userService;

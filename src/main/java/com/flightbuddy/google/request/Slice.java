@@ -109,10 +109,10 @@ public class Slice {
 	}
 	
 	private enum Cabin {
-		COACH, PREMIUM_COACH, BUSINESS, FIRST;
-	}
+		COACH, PREMIUM_COACH, BUSINESS, FIRST
+    }
 	
 	private enum Alliance {
-		ONEWORLD, SKYTEAM, STAR;
-	}
+		ONEWORLD, SKYTEAM, STAR
+    }
 }

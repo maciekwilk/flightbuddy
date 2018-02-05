@@ -10,11 +10,12 @@ import java.util.Locale;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
-public class Bundle extends ResourceBundle {
+@SuppressWarnings("NullableProblems")
+class Bundle extends ResourceBundle {
 
-    protected static final String BUNDLE_NAME = "bundle.messages";
-    protected static final String BUNDLE_EXTENSION = "properties";
-    protected static final Control UTF8_CONTROL = new UTF8Control();
+    private static final String BUNDLE_NAME = "bundle.messages";
+    private static final String BUNDLE_EXTENSION = "properties";
+    private static final Control UTF8_CONTROL = new UTF8Control();
 
     public Bundle() {
         setParent(ResourceBundle.getBundle(BUNDLE_NAME, UTF8_CONTROL));
@@ -30,10 +31,10 @@ public class Bundle extends ResourceBundle {
         return parent.getKeys();
     }
 
-    protected static class UTF8Control extends Control {
+    static class UTF8Control extends Control {
         public ResourceBundle newBundle
             (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-                throws IllegalAccessException, InstantiationException, IOException {
+                throws IOException {
             // The below code is copied from default Control#newBundle() implementation.
             // Only the PropertyResourceBundle line is changed to read the file as UTF-8.
             String bundleName = toBundleName(baseName, locale);

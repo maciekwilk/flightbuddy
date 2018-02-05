@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
+import com.flightbuddy.google.response.tripdata.Carrier;
 import com.flightbuddy.google.response.tripdata.TripData;
 import com.flightbuddy.google.response.tripoption.TripOption;
 import com.flightbuddy.google.response.tripoption.slice.Leg;
@@ -23,7 +24,7 @@ import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.Stop;
 import com.flightbuddy.utils.RegularExpressions;
 
-public class GoogleFlightConverter {
+class GoogleFlightConverter {
 
 	private static final LocalDateTime DEFAULT_DATE = LocalDateTime.of(2000, 1, 1, 12, 30);
 
@@ -81,9 +82,8 @@ public class GoogleFlightConverter {
 		Flight flight = new Flight();
 		flight.setFoundTrip(foundTrip);
 		flight.setDuration(slice.getDuration());
-		Arrays.stream(slice.getSegment()).forEach((segment) -> {
-			extractFlightInfoFromSegment(flight, segment, tripData);
-		});
+		Arrays.stream(slice.getSegment()).forEach((segment) ->
+				extractFlightInfoFromSegment(flight, segment, tripData));
 		return flight;
 	}
 
@@ -91,9 +91,8 @@ public class GoogleFlightConverter {
 		if (segment.getFlight() != null && segment.getFlight().getCarrier() != null) {
 			addAirlineToFlight(flight, segment, tripData);
 		}
-		Arrays.stream(segment.getLeg()).forEach((leg) -> {
-			extractFlightInfoFromLeg(flight, leg);
-		});
+		Arrays.stream(segment.getLeg()).forEach((leg) ->
+				extractFlightInfoFromLeg(flight, leg));
 	}
 
 	private static void addAirlineToFlight(Flight flight, Segment segment, TripData tripData) {
@@ -117,7 +116,7 @@ public class GoogleFlightConverter {
 		if (tripData != null && tripData.getCarrier() != null) {
 			return Arrays.stream(tripData.getCarrier()).filter(
 						(carrier) -> airlineShort.equals(carrier.getCode())
-					).findFirst().map((carrier) -> carrier.getName()).orElse(airlineShort);
+					).findFirst().map(Carrier::getName).orElse(airlineShort);
 		}
 		return airlineShort;
 	}

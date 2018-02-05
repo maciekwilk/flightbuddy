@@ -10,13 +10,12 @@ import com.flightbuddy.search.SearchDataConverter;
 import com.flightbuddy.search.SearchResult;
 
 @Component
-public class MessageWriter {
+class MessageWriter {
 
 	public String prepareMessage(List<FoundTrip> foundTrips) {
-        String message = foundTrips.stream().map( 
-        		foundTrip -> getMessagePartFrom(foundTrip)
-        		).collect(Collectors.joining());
-        return message;
+		return foundTrips.stream()
+				.map(this::getMessagePartFrom)
+				.collect(Collectors.joining());
 	}
 	
 	private String getMessagePartFrom(FoundTrip foundTrip) {

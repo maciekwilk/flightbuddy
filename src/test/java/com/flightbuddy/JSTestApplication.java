@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @PropertySource({"classpath:environment.properties", 
 "file:${user.home}/flightbuddyData/environment.properties"})
-public class JSTestApplication {
+class JSTestApplication {
 
+	@SuppressWarnings("SameReturnValue")
 	@RequestMapping("/")
 	public String home() {
 		return "forward:/test.html";

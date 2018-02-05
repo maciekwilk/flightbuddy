@@ -21,13 +21,16 @@ import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserService;
 
 @RestController
-public class SearchController {
+class SearchController {
 
-	final Logger log = LoggerFactory.getLogger(SearchController.class);
+	private final static Logger log = LoggerFactory.getLogger(SearchController.class);
 
-	@Autowired UserService userService;
-	@Autowired ScheduledSearchService scheduledSearchService;
-	@Autowired SearchService searchService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private ScheduledSearchService scheduledSearchService;
+	@Autowired
+	private SearchService searchService;
 	
 	@RequestMapping("/search/schedule/save")
 	public Map<String, String> saveScheduledSearch(@RequestBody ScheduledSearch scheduledSearch, @AuthenticationPrincipal Principal principal) {

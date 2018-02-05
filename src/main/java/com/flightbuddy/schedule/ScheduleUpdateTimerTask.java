@@ -21,14 +21,18 @@ import com.flightbuddy.user.authentication.AuthenticationService;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 
 @Component
-public class ScheduleUpdateTimerTask {
+class ScheduleUpdateTimerTask {
 	
-	Logger log = LoggerFactory.getLogger(ScheduleUpdateTimerTask.class);
+	private final static Logger log = LoggerFactory.getLogger(ScheduleUpdateTimerTask.class);
 
-	@Autowired GoogleService googleService;
-	@Autowired ScheduledSearchService scheduledSearchService;
-	@Autowired ScheduledSearchTaskService scheduledSearchTaskService;
-	@Autowired AuthenticationService authenticationService;
+	@Autowired
+	private GoogleService googleService;
+	@Autowired
+	private ScheduledSearchService scheduledSearchService;
+	@Autowired
+	private ScheduledSearchTaskService scheduledSearchTaskService;
+	@Autowired
+	private AuthenticationService authenticationService;
 	@Value("${schedule.enable}")
 	private boolean scheduleEnabled;
 	
@@ -61,7 +65,7 @@ public class ScheduleUpdateTimerTask {
 		}
 	}
 
-	protected List<LocalDateTime> calculateExecutionTimes(int scheduledSearchAmount) {
+	List<LocalDateTime> calculateExecutionTimes(int scheduledSearchAmount) {
 		int maxAmountOfRequests = googleService.getMaxAmountOfRequests();
 		int requestsPerScheduledSearch = maxAmountOfRequests / scheduledSearchAmount;
 		long requestInterval = TWENTY_FOUR_HOURS_IN_SECONDS / requestsPerScheduledSearch;
@@ -78,7 +82,7 @@ public class ScheduleUpdateTimerTask {
 		return executionTimes;
 	}
 
-	protected ScheduledSearchTask createReadyScheduledSearchTask(ScheduledSearch scheduledSearch, LocalDateTime executionTime) {
+	ScheduledSearchTask createReadyScheduledSearchTask(ScheduledSearch scheduledSearch, LocalDateTime executionTime) {
 		ScheduledSearchTask scheduledSearchTask = new ScheduledSearchTask();
 		scheduledSearchTask.setScheduledSearch(scheduledSearch);
 		scheduledSearchTask.setState(ScheduledSearchState.READY);

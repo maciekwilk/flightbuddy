@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserRole;
 
-public class UserAuthenticationDetails implements UserDetails {
+class UserAuthenticationDetails implements UserDetails {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -21,11 +21,11 @@ public class UserAuthenticationDetails implements UserDetails {
 	private String password;
 	private boolean enabled;
 	
-	public UserAuthenticationDetails(){
+	UserAuthenticationDetails(){
 		
 	}
 	
-	public UserAuthenticationDetails(User user) {
+	UserAuthenticationDetails(User user) {
 		this.id = user.getId();
 		this.roles = user.getRoles();
 		this.username = user.getUsername();
@@ -67,7 +67,7 @@ public class UserAuthenticationDetails implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+		Set<GrantedAuthority> authorities = new HashSet<>();
         for(UserRole role : roles) {
             GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.name());
             authorities.add(grantedAuthority);

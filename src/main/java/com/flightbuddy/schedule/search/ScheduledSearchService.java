@@ -13,7 +13,8 @@ import com.flightbuddy.user.User;
 @Service
 public class ScheduledSearchService {
 	
-	@Autowired ScheduledSearchDao scheduledSearchDao;
+	@Autowired
+	private ScheduledSearchDao scheduledSearchDao;
 	
 	private static final String GUEST_USERNAME = "guest";
 	
