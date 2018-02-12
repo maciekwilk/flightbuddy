@@ -43,7 +43,8 @@ class GoogleConnectionService {
 	private String googleApiKey;
 	@Value("${google.request.url}")
 	private String requestUrl;
-	
+
+//	@Hysterix rest
 	public GoogleResponse askGoogleForTheTrips(ImmutableSearchInputData searchInputData) {
 		try {
 			RequestEntity<GoogleRequest> requestEntity = prepareRequestEntity(searchInputData);

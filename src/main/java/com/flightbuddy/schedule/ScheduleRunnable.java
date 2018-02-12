@@ -6,6 +6,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
+import com.flightbuddy.results.FoundTripsWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -64,8 +65,8 @@ public class ScheduleRunnable implements Runnable {
 		log(scheduledSearchTask, scheduledSearchTask.getScheduledSearch(), "scheduled search task found");
 		waitForExecutionTime(scheduledSearchTask);
 		changeStateToStarted(scheduledSearchTask);
-		List<FoundTrip> foundTrips = performSearch(scheduledSearchTask);
-		handleFoundTrips(scheduledSearchTask, foundTrips);
+		FoundTripsWrapper foundTripsWrapper = performSearch(scheduledSearchTask);
+		handleFoundTrips(scheduledSearchTask, foundTripsWrapper);
 		changeStateToFinished(scheduledSearchTask);
 	}
 
@@ -80,7 +81,6 @@ public class ScheduleRunnable implements Runnable {
 				log.error(e.getMessage(), e);
 			}
 		}
-		
 	}
 
 	private void changeStateToStarted(ScheduledSearchTask scheduledSearchTask) {
@@ -89,13 +89,14 @@ public class ScheduleRunnable implements Runnable {
 		log(scheduledSearchTask, scheduledSearch, "scheduled search task changed state to STARTED");
 	}
 
-	private List<FoundTrip> performSearch(ScheduledSearchTask scheduledSearchTask) {
+	private FoundTripsWrapper performSearch(ScheduledSearchTask scheduledSearchTask) {
 		ScheduledSearch scheduledSearch = scheduledSearchTask.getScheduledSearch();
 		ImmutableSearchInputData searchInputData = SearchDataConverter.convertToImmutable(scheduledSearch);
 		return googleService.getTrips(searchInputData);
 	}
 
-	private void handleFoundTrips(ScheduledSearchTask scheduledSearchTask, List<FoundTrip> foundTrips) {
+	private void handleFoundTrips(ScheduledSearchTask scheduledSearchTask, FoundTripsWrapper foundTripsWrapper) {
+		List<FoundTrip> foundTrips = foundTripsWrapper.getFoundTrips();
 		if (!foundTrips.isEmpty()) {
 	    	foundTripService.saveFoundTrips(foundTrips);
 	    	mailService.sendTrips(foundTrips);

@@ -1,11 +1,11 @@
 package com.flightbuddy.search;
 
-import java.security.Principal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.flightbuddy.resources.Messages;
+import com.flightbuddy.schedule.search.ScheduledSearch;
+import com.flightbuddy.schedule.search.ScheduledSearchService;
+import com.flightbuddy.user.User;
+import com.flightbuddy.user.UserService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.flightbuddy.resources.Messages;
-import com.flightbuddy.schedule.search.ScheduledSearch;
-import com.flightbuddy.schedule.search.ScheduledSearchService;
-import com.flightbuddy.user.User;
-import com.flightbuddy.user.UserService;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 class SearchController {
@@ -57,11 +56,12 @@ class SearchController {
 
 	private Map<String, Object> doPerformSearch(SearchInputData searchData) {
 		Map<String, Object> results = new HashMap<>();
-		List<SearchResult> searchResults = searchService.performSearch(searchData);
-		if (searchResults.isEmpty()) {
-			results.put("message", Messages.get("search.empty"));
+		SearchResultsWrapper searchResultsWrapper = searchService.performSearch(searchData);
+		String errorMessage = searchResultsWrapper.getErrorMessage();
+		if (StringUtils.isNotEmpty(errorMessage)) {
+			results.put("message", errorMessage);
 		} else {
-			results.put("searchResults", searchResults);
+			results.put("searchResults", searchResultsWrapper.getSearchResults());
 			results.put("message", Messages.get("search.successful"));
 		}
 		return results;

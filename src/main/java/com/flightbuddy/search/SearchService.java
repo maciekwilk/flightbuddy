@@ -1,15 +1,16 @@
 package com.flightbuddy.search;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.flightbuddy.google.GoogleService;
+import com.flightbuddy.resources.Messages;
+import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.results.FoundTripService;
+import com.flightbuddy.results.FoundTripsWrapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.flightbuddy.google.GoogleService;
-import com.flightbuddy.results.FoundTrip;
-import com.flightbuddy.results.FoundTripService;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 class SearchService {
@@ -19,17 +20,24 @@ class SearchService {
 	@Autowired
 	private FoundTripService foundTripService;
 
-	public List<SearchResult> performSearch(SearchInputData searchData) {
+	public SearchResultsWrapper performSearch(SearchInputData searchData) {
 		if (searchData == null) {
-			return Collections.emptyList();
+			return new SearchResultsWrapper(Messages.get("search.empty"));
 		}
 		ImmutableSearchInputData searchInputData = SearchDataConverter.convertToImmutable(searchData);
-		List<FoundTrip> foundTrips = googleService.getTrips(searchInputData);
-		if (foundTrips.isEmpty()) {
-			return Collections.emptyList();
+		FoundTripsWrapper foundTripsWrapper = googleService.getTrips(searchInputData);
+		return getSearchResultsWrapper(foundTripsWrapper);
+	}
+
+	private SearchResultsWrapper getSearchResultsWrapper(FoundTripsWrapper foundTripsWrapper) {
+		String errorMessage = foundTripsWrapper.getErrorMessage();
+		if (StringUtils.isNotEmpty(errorMessage)) {
+			return new SearchResultsWrapper(errorMessage);
 		}
-    	foundTripService.saveFoundTrips(foundTrips);
-		return convertToSearchResults(foundTrips);
+		List<FoundTrip> foundTrips = foundTripsWrapper.getFoundTrips();
+		foundTripService.saveFoundTrips(foundTrips);
+		List<SearchResult> searchResults = convertToSearchResults(foundTrips);
+		return new SearchResultsWrapper(searchResults);
 	}
 
 	private List<SearchResult> convertToSearchResults(List<FoundTrip> foundTrips) {

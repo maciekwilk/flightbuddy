@@ -4,7 +4,10 @@ import com.flightbuddy.google.response.GoogleResponse;
 import com.flightbuddy.google.response.Trips;
 import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.results.FoundTripsWrapper;
 import com.flightbuddy.search.ImmutableSearchInputData;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +30,26 @@ public class GoogleService {
 	private String dateFormat;
 	@Value("${google.request.max}")
 	private int maxAmountOfRequests;
-	
-	public List<FoundTrip> getTrips(ImmutableSearchInputData searchInputData) {
+
+	@HystrixCommand(fallbackMethod = "getTripsFallback", commandProperties = {
+			@HystrixProperty(name = "execution.timeout.enabled", value = "false"),
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
+            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "3600000"),
+            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50")
+	})
+	public FoundTripsWrapper getTrips(ImmutableSearchInputData searchInputData) {
 		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
 		Trips trips = response.getTrips();
 		if (trips == null || trips.getTripOption() == null || trips.getTripOption().length == 0) {
 			handleResponseWithoutFlights(searchInputData);
+			return new FoundTripsWrapper(Messages.get("search.empty"));
 		}
-		return GoogleFlightConverter.convertResponseToTrips(response, searchInputData.getMinPrice());
+		List<FoundTrip> foundTrips = GoogleFlightConverter.convertResponseToTrips(response, searchInputData.getMinPrice());
+		return new FoundTripsWrapper(foundTrips);
+	}
+
+	public FoundTripsWrapper getTripsFallback(ImmutableSearchInputData searchInputData) {
+		return new FoundTripsWrapper(Messages.get("search.requests.no"));
 	}
 	
 	public int getMaxAmountOfRequests() {
