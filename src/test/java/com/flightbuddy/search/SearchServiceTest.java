@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.flightbuddy.results.FoundTripsWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,13 +55,14 @@ public class SearchServiceTest {
 		SearchResult emptyConvertedSearchResult = new SearchResult(0, emptyList(), emptyList(), emptyList(), emptyList(), emptyList(), emptyList());
 		mockStatic(SearchDataConverter.class);
 		when(SearchDataConverter.convertToImmutable(any(ScheduledSearch.class))).thenReturn(emptyInputData);
+		when(SearchDataConverter.convertToImmutable(any(SearchInputData.class))).thenReturn(emptyInputData);
 		when(SearchDataConverter.convertToSearchResult(any())).thenReturn(emptyConvertedSearchResult);
 	}
     
 	@Test
 	public void performSearchWithEmptyInputDataReturnsEmptyList() {
-		List<SearchResult> results = searchService.performSearch(null);
-		assertEquals(results, Collections.emptyList());
+		SearchResultsWrapper results = searchService.performSearch(null);
+		assertEquals(results.getSearchResults(), Collections.emptyList());
 		verify(googleService, times(0)).getTrips(any());
 		verify(foundTripService, times(0)).saveFoundTrips(any());
 	}
@@ -68,21 +70,21 @@ public class SearchServiceTest {
 	@Test
 	public void performSearchWithInputDataAndNoFoundTrips() {
 		SearchInputData searchData = new SearchInputData();
-		when(googleService.getTrips(eq(emptyInputData))).thenReturn(Collections.emptyList());
-		List<SearchResult> results = searchService.performSearch(searchData);
-		assertEquals(results, Collections.emptyList());
+		when(googleService.getTrips(eq(emptyInputData))).thenReturn(new FoundTripsWrapper("error"));
+		SearchResultsWrapper results = searchService.performSearch(searchData);
+		assertEquals(results.getSearchResults(), Collections.emptyList());
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(0)).saveFoundTrips(any());
 	}
-	
 
 	@Test
 	public void performSearchWithInputDataAndFoundTrip() {
 		SearchInputData searchData = new SearchInputData();
 		List<FoundTrip> trips = createFoundTripsWithOneTrip();
-		when(googleService.getTrips(any())).thenReturn(trips);
-		List<SearchResult> results = searchService.performSearch(searchData);
-		assertEquals(results.size(), 1);
+		when(googleService.getTrips(any())).thenReturn(new FoundTripsWrapper(trips));
+		SearchResultsWrapper results = searchService.performSearch(searchData);
+		List<SearchResult> searchResults = results.getSearchResults();
+		assertEquals(searchResults.size(), 1);
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(1)).saveFoundTrips(any());
 	}
@@ -91,9 +93,10 @@ public class SearchServiceTest {
 	public void performSearchWithInputDataAndFewFoundTrips() {
 		SearchInputData searchData = new SearchInputData();
 		List<FoundTrip> trips = createFoundTripsWithThreeTrips();
-		when(googleService.getTrips(any())).thenReturn(trips);
-		List<SearchResult> results = searchService.performSearch(searchData);
-		assertEquals(results.size(), 3);
+		when(googleService.getTrips(any())).thenReturn(new FoundTripsWrapper(trips));
+		SearchResultsWrapper results = searchService.performSearch(searchData);
+		List<SearchResult> searchResults = results.getSearchResults();
+		assertEquals(searchResults.size(), 3);
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(1)).saveFoundTrips(any());
 	}

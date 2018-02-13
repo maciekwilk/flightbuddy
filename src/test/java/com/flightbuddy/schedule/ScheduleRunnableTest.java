@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.flightbuddy.results.FoundTripsWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,7 +94,7 @@ public class ScheduleRunnableTest {
 		ScheduledSearchTask scheduledSearchTask = createScheduledSearchTask(new ScheduledSearch(), scheduledSearchTaskId);
 		when(scheduledSearchTaskService.findNextSetTask()).thenReturn(scheduledSearchTask);
 		List<FoundTrip> emptyTrips = new ArrayList<>(0);
-		when(googleService.getTrips(any())).thenReturn(emptyTrips);
+		when(googleService.getTrips(any())).thenReturn(new FoundTripsWrapper(""));
 		scheduleRunnable.run();
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(0)).saveFoundTrips(any());
@@ -124,7 +125,7 @@ public class ScheduleRunnableTest {
 		ScheduledSearchTask scheduledSearchTask = createScheduledSearchTask(new ScheduledSearch(), scheduledSearchTaskId);
 		when(scheduledSearchTaskService.findNextSetTask()).thenReturn(scheduledSearchTask);
 		List<FoundTrip> trips = createFoundTripsWithOneTrip();
-		when(googleService.getTrips(eq(emptyInputData))).thenReturn(trips);
+		when(googleService.getTrips(eq(emptyInputData))).thenReturn(new FoundTripsWrapper(trips));
 		scheduleRunnable.run();
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(1)).saveFoundTrips(any());

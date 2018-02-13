@@ -121,11 +121,12 @@ public class SearchControllerTest {
 	public void performSearchWithSearchDataWithoutSearchResults() throws Exception {
 		SearchInputData searchData = createSearchInputData(new LocalDate[] {LocalDate.of(2017, 8, 21)});
 		String requestBody = convertToJson(searchData);
-    	when(searchService.performSearch(any())).thenReturn(Collections.emptyList());
+    	when(searchService.performSearch(any())).thenReturn(new SearchResultsWrapper(""));
 		MvcResult mvcResult = mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isOk()).andReturn();
 		Map<String, Object> result = getResult(mvcResult);
-		assertEquals(false, result.containsKey("searchResults"));
+		assertEquals(true, result.containsKey("searchResults"));
+		assertEquals(Collections.emptyList(), result.get("searchResults"));
 		assertEquals(true, result.containsKey("message"));
 	}
 	
@@ -134,7 +135,7 @@ public class SearchControllerTest {
 		SearchInputData searchData = createSearchInputData(new LocalDate[] {LocalDate.of(2017, 8, 21)});
 		String requestBody = convertToJson(searchData);
     	SearchResult searchResult = createSearchResult();
-    	when(searchService.performSearch(any())).thenReturn(Collections.singletonList(searchResult));
+    	when(searchService.performSearch(any())).thenReturn(new SearchResultsWrapper(Collections.singletonList(searchResult)));
 		MvcResult mvcResult = mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isOk()).andReturn();
 		Map<String, Object> result = getResult(mvcResult);

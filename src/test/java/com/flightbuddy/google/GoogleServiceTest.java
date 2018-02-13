@@ -1,6 +1,7 @@
 package com.flightbuddy.google;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -12,8 +13,10 @@ import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import com.flightbuddy.results.FoundTripsWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,8 +69,9 @@ public class GoogleServiceTest {
 	public void checkGetGoogleFlightsWithEmptyGoogleConnectionServiceResponse() {
 		GoogleResponse emptyGoogleResponse = new GoogleResponse();
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(emptyGoogleResponse);
-		googleService.getTrips(emptyInputData);
-		verifyStatic(times(1));
+        FoundTripsWrapper result = googleService.getTrips(emptyInputData);
+        assertThat(result.getFoundTrips(), is(Collections.emptyList()));
+		verifyStatic(times(0));
 		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse, 0);
 	}
 	
@@ -76,8 +80,9 @@ public class GoogleServiceTest {
 		Trips trips = createTrips(null);
 		GoogleResponse googleResponse = createGoogleResponse(trips);
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
-		googleService.getTrips(emptyInputData);
-		verifyStatic(times(1));
+		FoundTripsWrapper result = googleService.getTrips(emptyInputData);
+		assertThat(result.getFoundTrips(), is(Collections.emptyList()));
+		verifyStatic(times(0));
 		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
 	
@@ -86,8 +91,9 @@ public class GoogleServiceTest {
 		Trips trips = createTrips(new TripOption[0]);
 		GoogleResponse googleResponse = createGoogleResponse(trips);
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
-		googleService.getTrips(emptyInputData);
-		verifyStatic(times(1));
+        FoundTripsWrapper result = googleService.getTrips(emptyInputData);
+        assertThat(result.getFoundTrips(), is(Collections.emptyList()));
+		verifyStatic(times(0));
 		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
 	
@@ -98,8 +104,9 @@ public class GoogleServiceTest {
 		GoogleResponse googleResponse = createGoogleResponse(trips);
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		List<FoundTrip> conversionResult = mockGoogleFlightConverter(googleResponse);
-		List<FoundTrip> result = googleService.getTrips(emptyInputData);
-		assertThat(result, equalTo(conversionResult));
+		FoundTripsWrapper result = googleService.getTrips(emptyInputData);
+		List<FoundTrip> foundTrips = result.getFoundTrips();
+		assertThat(foundTrips, equalTo(conversionResult));
 		verifyStatic(times(1));
 		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
