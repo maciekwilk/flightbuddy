@@ -6,6 +6,8 @@
 *.class
 *.prefs
 *.iml
+*.log
+keystore.p12
 /src/main/resources/environment.properties
 /src/test/resources/environment.properties
 /README.md
