@@ -9,3 +9,9 @@ Some of the technologies used to create the project:
 * SpringBoot
 * AngularJS
 * MySQL
+
+Features to implement:
+* Change the flight search API
+* Add RabbitMQ
+* Change AngularJS to ReactJS
+* Send requests using https://github.com/jhalterman/failsafe
