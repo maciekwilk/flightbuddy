@@ -1,0 +1,105 @@
+<div class="col-md-1"></div>
+<div class="col-md-10" ng-controller="ScheduleController as schedule">
+	<div class="alert alert-success" ng-show="schedule.showMessage && !schedule.error"> {{schedule.message}} </div>
+	<div class="alert alert-danger" ng-show="schedule.showMessage && schedule.error"> {{schedule.error}} </div>
+	<form name="scheduleForm" role="form" ng-submit="schedule.save()" novalidate>
+    	<div class="col-md-4"></div>
+    	<div class="col-md-4">
+		    <div class="form-group">
+		        <md-autocomplete required md-input-name="from" md-input-minlength="3" md-input-maxlength="3" md-selected-item="schedule.searchSchedule.from"
+		            md-search-text="schedule.airportSearchTextFrom" md-items="item in schedule.airportSearch(schedule.airportSearchTextFrom)" md-item-text="item"
+		            md-floating-label="Where from?">
+		          	<md-item-template>
+	          			<span md-highlight-text="home.airportSearchTextFrom" md-highlight-flags="^i">{{item}}</span>
+	      		  	</md-item-template>
+	        	  	<md-not-found>
+	          			No airports matching "{{schedule.airportSearchTextFrom}}" were found.
+	        	  	</md-not-found>
+		        </md-autocomplete>
+		    	<p ng-show="scheduleForm.from.$error.minlength || scheduleForm.from.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="scheduleForm.from.$invalid && !scheduleForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group">
+		        <md-autocomplete required md-input-name="to" md-input-minlength="3" md-input-maxlength="3" md-selected-item="schedule.searchSchedule.to"
+		            md-search-text="schedule.airportSearchTextTo" md-items="item in schedule.airportSearch(schedule.airportSearchTextTo)" md-item-text="item"
+		            md-floating-label="Where to?">
+		          	<md-item-template>
+	          			<span md-highlight-text="schedule.airportSearchTextTo" md-highlight-flags="^i">{{item}}</span>
+	      		  	</md-item-template>
+	        	  	<md-not-found>
+	          			No airports matching "{{schedule.airportSearchTextTo}}" were found.
+	        	  	</md-not-found>
+		        </md-autocomplete>
+		    	<p ng-show="scheduleForm.to.$error.minlength || scheduleForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="scheduleForm.to.$invalid && !scheduleForm.to.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group">
+				<rzslider rz-slider-model="schedule.searchSchedule.minPrice" rz-slider-high="schedule.searchSchedule.maxPrice"
+	          					rz-slider-options="schedule.slider.options"></rzslider>
+			</div>
+		    <div class="form-group">
+		    	<label class="form-check-label">
+			        <input type="checkbox" class="form-check-input" ng-model="schedule.searchSchedule.withReturn">
+			        Round-trip
+    			</label>
+		    </div>
+		    <div class="form-group" ng-class="{'has-error': scheduleForm.firstDate.$touched && scheduleForm.firstDate.$invalid }">
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="schedule.searchSchedule.dates[0]" is-open="schedule.firstDatePopup.opened" 
+		          		datepicker-options="schedule.firstDateOptions" name="firstDate" ng-required="true" placeholder="Date" 
+		          		ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="schedule.openFirstDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="scheduleForm.firstDate.$invalid && !scheduleForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <div ng-show="schedule.searchSchedule.withReturn" class="form-group" ng-class="{'has-error': scheduleForm.secondDate.$touched && scheduleForm.secondDate.$invalid }">
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="schedule.searchSchedule.dates[1]" is-open="schedule.secondDatePopup.opened" 
+		          		datepicker-options="schedule.secondDateOptions" name="secondDate" ng-required="schedule.searchSchedule.withReturn" placeholder="Return date" 
+		          		ng-disabled="scheduleForm.firstDate.$invalid" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="schedule.openSecondDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="scheduleForm.secondDate.$invalid && !scheduleForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <div class="form-group">
+		    	<uib-accordion>
+				    <div uib-accordion-group class="panel-default">
+				    	<uib-accordion-heading>
+					        <span style="font-size: 14px;">Passengers: {{schedule.totalPassengers()}}</span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true}"></i>
+				      	</uib-accordion-heading>
+				      	<div  style="margin-left: 10px; margin-right: 10px;">
+					      	<div class="row">
+					      		<span style="width: 80%;">Adults</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="schedule.searchSchedule.passengers.adultCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Children</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="schedule.searchSchedule.passengers.childCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Lap infants</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="schedule.searchSchedule.passengers.infantInLapCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Seat infants</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="schedule.searchSchedule.passengers.infantInSeatCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Seniors</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="schedule.searchSchedule.passengers.seniorCount"/>
+					    	</div>
+				    	</div>
+				    </div>
+			    </uib-accordion>
+		    </div>
+		    <br/>
+	    	<button type="submit" class="btn btn-primary" ng-disabled="scheduleForm.$invalid">Save schedule</button>
+	    </div>
+    	<div class="col-md-4"></div>
+	</form>
+</div>
+<div class="col-md-1"></div>

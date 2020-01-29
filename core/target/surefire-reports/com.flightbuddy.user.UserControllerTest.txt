@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.flightbuddy.user.UserControllerTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.551 sec - in com.flightbuddy.user.UserControllerTest

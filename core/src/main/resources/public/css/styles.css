@@ -1,0 +1,37 @@
+.uib-button-bar {
+	display: none;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+    padding: 0px;
+}
+
+.table-bordered {
+	border: 0px;
+}
+
+tr td:first-child,
+tr th:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+tr td:last-child,
+tr th:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.clickableRow {
+    cursor: pointer;
+}
+
+md-autocomplete[md-floating-label] {
+	height: 50px;
+}
+
+.panel-default > .panel-heading {
+	background-color: white;
+}

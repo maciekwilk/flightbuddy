@@ -1,0 +1,180 @@
+<div class="col-md-1"></div>
+<div class="col-md-10" ng-controller="HomeController as home">
+
+	<div class="alert alert-success" ng-show="home.message"> {{home.message}} </div>
+	<div class="alert alert-danger" ng-show="home.error"> {{home.error}} </div>
+	<div class="row">
+	<form name="homeForm" role="form" ng-submit="home.search()" novalidate>
+    	<div class="col-md-4"></div>
+    	<div class="col-md-4">
+    		<div class="form-group">
+			    <md-autocomplete required md-input-name="from" md-input-minlength="3" md-input-maxlength="3" md-selected-item="home.searchData.from"
+		            md-search-text="home.airportSearchTextFrom" md-items="item in home.airportSearch(home.airportSearchTextFrom)" md-item-text="item"
+		            md-floating-label="Where from?">
+		          	<md-item-template>
+	          			<span md-highlight-text="home.airportSearchTextFrom" md-highlight-flags="^i">{{item}}</span>
+	      		  	</md-item-template>
+	        	  	<md-not-found>
+	          			No airports matching "{{home.airportSearchTextFrom}}" were found.
+	        	  	</md-not-found>
+		        </md-autocomplete>
+	          	<p ng-show="homeForm.from.$error.minlength || homeForm.from.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+	    		<p ng-show="homeForm.from.$invalid && !homeForm.from.$pristine" class="help-block">Enter a valid airport acronym.</p>
+	        </div>
+		    <div class="form-group">
+		        <md-autocomplete required md-input-name="to" md-input-minlength="3" md-input-maxlength="3" md-selected-item="home.searchData.to"
+		            md-search-text="home.airportSearchTextTo" md-items="item in home.airportSearch(home.airportSearchTextTo)" md-item-text="item"
+		         	md-floating-label="Where to?">
+		          	<md-item-template>
+	          			<span md-highlight-text="home.airportSearchTextTo" md-highlight-flags="^i">{{item}}</span>
+	      		  	</md-item-template>
+	        	  	<md-not-found>
+	          			No airports matching "{{home.airportSearchTextTo}}" were found.
+	        	  	</md-not-found>
+		        </md-autocomplete>
+		    	<p ng-show="homeForm.to.$error.minlength || homeForm.to.$error.maxlength" class="help-block">Airport acronym should be 3 characters long.</p>
+		    	<p ng-show="homeForm.to.$invalid && !homeForm.to.$pristine" class="help-block">Enter a valid airport acronym.</p>
+		    </div>
+		    <div class="form-group">
+				<rzslider rz-slider-model="home.searchData.minPrice" rz-slider-high="home.searchData.maxPrice"
+	          					rz-slider-options="home.slider.options"></rzslider>
+			</div>
+		    <div class="form-group">
+		    	<label class="form-check-label">
+			        <input type="checkbox" class="form-check-input" ng-model="home.searchData.withReturn">
+			        Round-trip
+    			</label>
+		    </div>
+			<div class="form-group" ng-class="{'has-error': homeForm.firstDate.$touched && homeForm.firstDate.$invalid }">
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="home.searchData.dates[0]" is-open="home.firstDatePopup.opened" 
+		          		datepicker-options="home.firstDateOptions" name="firstDate" ng-required="true" placeholder="Date" 
+		          		ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="home.openFirstDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="homeForm.firstDate.$invalid && !homeForm.firstDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <div ng-show="home.searchData.withReturn" class="form-group" ng-class="{'has-error': homeForm.secondDate.$touched && homeForm.secondDate.$invalid }">
+		        <p class="input-group">
+		          <input type="text" class="form-control" uib-datepicker-popup ng-model="home.searchData.dates[1]" is-open="home.secondDatePopup.opened" 
+		          		datepicker-options="home.secondDateOptions" name="secondDate" ng-required="home.searchData.withReturn" placeholder="Return date" 
+		          		ng-disabled="homeForm.firstDate.$invalid" ng-pattern="/^\d{4}\-[0-1][0-9]\-[0-3][0-9]$/"/>
+		          <span class="input-group-btn">
+		            <button type="button" class="btn btn-default" ng-click="home.openSecondDatePopup()"><i class="glyphicon glyphicon-calendar"></i></button>
+		          </span>
+		        </p>
+		        <p ng-show="homeForm.secondDate.$invalid && !homeForm.secondDate.$pristine" class="help-block">Enter a date with valid format year-month-day (2017-08-29)</p>
+		    </div>
+		    <div class="form-group">
+		    	<uib-accordion>
+				    <div uib-accordion-group class="panel-default">
+				    	<uib-accordion-heading>
+					        <span style="font-size: 14px;">Passengers: {{home.totalPassengers()}}</span><i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true}"></i>
+				      	</uib-accordion-heading>
+				      	<div  style="margin-left: 10px; margin-right: 10px;">
+					      	<div class="row">
+					      		<span style="width: 80%;">Adults</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.adultCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Children</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.childCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Lap infants</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.infantInLapCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Seat infants</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.infantInSeatCount"/>
+					    	</div>
+					    	<div class="row">
+					      		<span style="width: 80%;">Seniors</span>
+					      		<input type="number" style="width: 20%;" min="0" class="form-control pull-right" ng-model="home.searchData.passengers.seniorCount"/>
+					    	</div>
+				    	</div>
+				    </div>
+			    </uib-accordion>
+		    </div>
+		    <br/>
+	    	<button type="submit" class="btn btn-primary" ng-disabled="homeForm.$invalid">Search</button>
+	    </div>
+    	<div class="col-md-4"></div>
+	</form>
+	</div>
+	<br/>
+        
+	<div class="row" ng-show="home.searchResults != null">
+		<hr/>
+		 <p>Results found: {{home.searchResults.length}} </p><br/>
+		 <table class="table table-bordered table-hover table-condensed table-striped">
+		 	<thead>
+		      <tr>
+		        <th>Price</th>
+		        <th>Hours</th>
+		        <th>Duration</th>
+		        <th>Trip</th>
+		        <th>Stops</th>
+		      </tr>
+		    </thead>
+		    <tbody data-ng-repeat="searchResult in home.searchResults | orderBy : 'price'" 
+		    		data-ng-switch on="home.searchResultRowCollapse[$index]">
+		      <tr class="clickableRow" title="Click to see trip details." 
+		      		data-ng-click="home.selectTableRow($index, searchResult.id)">
+    			<td>&euro;{{ searchResult.price }}</td>
+    			<td>{{ searchResult.hours[0] }}<span ng-show="searchResult.hours[1]"><br/>{{ searchResult.hours[1] }}</span></td>
+    			<td>{{ searchResult.durations[0] }}<span ng-show="searchResult.durations[1]"><br/>{{ searchResult.durations[1] }}</span></td>
+    			<td>{{ searchResult.trips[0] }}<span ng-show="searchResult.trips[1]"><br/>{{ searchResult.trips[1] }}</span></td>
+    			<td>{{ searchResult.stops[0] }}<span ng-show="searchResult.stops[1] || searchResult.stops[1] === 0"><br/>{{ searchResult.stops[1] }}</span></td>
+  			  </tr>
+  			  <tr data-ng-switch-when="true">
+  			  	<td colspan="5">
+  			  		<table class="table">
+  			  			<thead>
+  			  				<tr>
+  			  					<th><b>Depart - {{searchResult.dates[0]}}</b></th>
+  			  					<th><b>{{searchResult.hours[0]}}</b></th>
+  			  				</tr>
+  			  			</thead>
+  			  			<tbody data-ng-repeat="searchResultDetailEntry in searchResult.searchResultDetails[0].searchResultDetailsEntries">
+  			  				<tr>
+  			  					<td>
+	  			  					{{searchResultDetailEntry.hours}}<br/>
+	  			  					{{searchResultDetailEntry.trip}}<br/>
+	  			  					{{searchResultDetailEntry.airline}}
+  			  					</td>
+  			  					<td>
+  			  						{{searchResultDetailEntry.duration}}
+		  						</td>	
+  			  				</tr>
+  			  			</tbody>
+  			  		</table>
+                    <table class="table" ng-show="searchResult.dates[1]">
+  			  			<thead>
+  			  				<tr>
+  			  					<th><b>Return - {{searchResult.dates[1]}}</b></th>
+  			  					<th><b>{{searchResult.hours[1]}}</b></th>
+  			  				</tr>
+  			  			</thead>
+  			  			<tbody data-ng-repeat="searchResultDetailEntry in searchResult.searchResultDetails[1].searchResultDetailsEntries">
+  			  				<tr>
+  			  					<td>
+	  			  					{{searchResultDetailEntry.hours}}<br/>
+	  			  					{{searchResultDetailEntry.trip}}<br/>
+	  			  					{{searchResultDetailEntry.airline}}
+  			  					</td>
+  			  					<td>
+  			  						{{searchResultDetailEntry.duration}}
+		  						</td>	
+  			  				</tr>
+  			  			</tbody>
+  			  		</table>
+                </td>
+              </tr>
+	      	</tbody>
+		 </table>
+	</div>
+</div>
+<div class="col-md-1"></div>

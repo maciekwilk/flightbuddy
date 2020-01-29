@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.flightbuddy.schedule.ScheduleUpdateTimerTaskTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.846 sec - in com.flightbuddy.schedule.ScheduleUpdateTimerTaskTest
