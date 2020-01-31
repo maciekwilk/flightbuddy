@@ -20,6 +20,7 @@ import com.flightbuddy.results.FoundTripsWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
@@ -42,6 +43,7 @@ import com.flightbuddy.search.PassengersTO;
 @SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
+@PowerMockIgnore("javax.net.ssl.*")
 @SpringBootTest(classes = Application.class)
 @PrepareForTest(GoogleFlightConverter.class)
 public class GoogleServiceTest {
