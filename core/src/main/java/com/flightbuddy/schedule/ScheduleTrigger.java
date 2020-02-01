@@ -5,8 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.Trigger;
@@ -20,10 +19,9 @@ import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 import com.flightbuddy.user.authentication.AuthenticationService;
 
 @Component
+@Slf4j
 class ScheduleTrigger implements Trigger {
 	
-	private static final Logger log = LoggerFactory.getLogger(ScheduleTrigger.class);
-
 	@Autowired
 	private ScheduledSearchTaskService scheduledSearchTaskService;
 	@Autowired

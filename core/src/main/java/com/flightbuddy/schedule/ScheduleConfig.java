@@ -1,11 +1,7 @@
 package com.flightbuddy.schedule;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import org.apache.log4j.Logger;
+import com.flightbuddy.resources.Messages;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,13 +11,15 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import com.flightbuddy.resources.Messages;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @Configuration
 @EnableScheduling
+@Slf4j
 class ScheduleConfig implements SchedulingConfigurer {
-
-	private final static Logger log = Logger.getLogger(ScheduleConfig.class);
 	
 	@Autowired
 	private ScheduleTrigger scheduleTrigger;

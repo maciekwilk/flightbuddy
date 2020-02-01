@@ -1,14 +1,13 @@
 package com.flightbuddy.resources;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.context.annotation.ApplicationScope;
 
 @ApplicationScope
+@Slf4j
 public class Messages{
-	private static final Logger LOG = LoggerFactory.getLogger(Messages.class);
 	private static final String MESSAGE_BUNDLE_NAME = "classpath:bundle/messages";
 	private static final ReloadableResourceBundleMessageSource bundle;
 
@@ -35,7 +34,7 @@ public class Messages{
 		try{
 			return get(key);
 		}catch(NoSuchMessageException ex){
-			LOG.error("key not found in bundle : " + key);
+			log.error("key not found in bundle : " + key);
 			return key;
 		}
 	}

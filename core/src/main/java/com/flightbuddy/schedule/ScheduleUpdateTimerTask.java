@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,9 +20,8 @@ import com.flightbuddy.user.authentication.AuthenticationService;
 import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
 
 @Component
+@Slf4j
 class ScheduleUpdateTimerTask {
-	
-	private final static Logger log = LoggerFactory.getLogger(ScheduleUpdateTimerTask.class);
 
 	@Autowired
 	private GoogleService googleService;

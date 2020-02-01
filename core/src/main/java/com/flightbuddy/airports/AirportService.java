@@ -9,16 +9,15 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.google.common.io.Files;
 
 @Service
+@Slf4j
 class AirportService {
 
-	private static final Logger log = LoggerFactory.getLogger(AirportService.class);
 	private static final String AIRPORTS_PATH = "/home/ubuntu/flightbuddyData/airports.txt";
 
 	public List<String> getAirportList() {

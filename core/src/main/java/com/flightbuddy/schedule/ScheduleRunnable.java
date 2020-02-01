@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.flightbuddy.results.FoundTripsWrapper;
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,9 +24,8 @@ import com.flightbuddy.search.SearchDataConverter;
 import com.flightbuddy.user.authentication.AuthenticationService;
 
 @Component
+@Slf4j
 public class ScheduleRunnable implements Runnable {
-	
-	private static final Logger log = Logger.getLogger(ScheduleRunnable.class);
 
 	@Autowired
 	private ScheduledSearchTaskService scheduledSearchTaskService;

@@ -5,9 +5,8 @@ import com.flightbuddy.schedule.search.ScheduledSearch;
 import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,9 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Slf4j
 class SearchController {
-
-	private final static Logger log = LoggerFactory.getLogger(SearchController.class);
 
 	@Autowired
 	private UserService userService;
