@@ -6,8 +6,6 @@ import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripsWrapper;
 import com.flightbuddy.search.ImmutableSearchInputData;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +27,6 @@ public class GoogleService {
 	@Value("${google.request.max}")
 	private int maxAmountOfRequests;
 
-	@HystrixCommand(fallbackMethod = "getTripsFallback", commandProperties = {
-			@HystrixProperty(name = "execution.timeout.enabled", value = "false"),
-            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "5"),
-            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "3600000"),
-            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50")
-	})
 	public FoundTripsWrapper getTrips(ImmutableSearchInputData searchInputData) {
 		GoogleResponse response = googleConnectionService.askGoogleForTheTrips(searchInputData);
 		Trips trips = response.getTrips();

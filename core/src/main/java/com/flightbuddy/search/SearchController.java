@@ -6,7 +6,7 @@ import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.user.User;
 import com.flightbuddy.user.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;

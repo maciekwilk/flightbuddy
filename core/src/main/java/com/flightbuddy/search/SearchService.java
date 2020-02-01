@@ -5,7 +5,7 @@ import com.flightbuddy.resources.Messages;
 import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripService;
 import com.flightbuddy.results.FoundTripsWrapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
