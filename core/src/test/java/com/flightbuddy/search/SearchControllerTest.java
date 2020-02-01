@@ -9,8 +9,8 @@ import com.flightbuddy.schedule.search.ScheduledSearchService;
 import com.flightbuddy.user.UserRole;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,21 +19,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class SearchControllerTest {
@@ -48,7 +55,7 @@ public class SearchControllerTest {
 	private ScheduledSearchService scheduledSearchService;
     @MockBean
 	private SearchService searchService;
-    
+
     @Test
 	public void saveScheduledSearchWithoutSchedule() throws Exception {
 		byte[] requestBody = new byte[]{};
@@ -76,7 +83,7 @@ public class SearchControllerTest {
                 .header("Authorization", "Bearer " + token).with(csrf()))
                 .andExpect(status().isForbidden());
     }
-	
+
 	@Test
 	public void saveScheduledSearchAsUser() throws Exception {
 		ScheduledSearch search = new ScheduledSearch();
@@ -109,14 +116,14 @@ public class SearchControllerTest {
 		verify(scheduledSearchService, times(1)).save(argument.capture(), any());
 		assertEquals("from", argument.getValue().getFrom());
 	}
-	
+
 	@Test
 	public void performSearchWithoutSearchData() throws Exception {
 		byte[] requestBody = new byte[]{};
 		mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isBadRequest());
 	}
-	
+
 	@Test
 	public void performSearchWithSearchDataWithoutSearchResults() throws Exception {
 		SearchInputData searchData = createSearchInputData(new LocalDate[] {LocalDate.of(2017, 8, 21)});
@@ -125,11 +132,11 @@ public class SearchControllerTest {
 		MvcResult mvcResult = mvc.perform(post("/search/perform").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
 		.andExpect(status().isOk()).andReturn();
 		Map<String, Object> result = getResult(mvcResult);
-		assertEquals(true, result.containsKey("searchResults"));
+		assertTrue(result.containsKey("searchResults"));
 		assertEquals(Collections.emptyList(), result.get("searchResults"));
-		assertEquals(true, result.containsKey("message"));
+		assertTrue(result.containsKey("message"));
 	}
-	
+
 	@Test
 	public void performSearchWithSearchData() throws Exception {
 		SearchInputData searchData = createSearchInputData(new LocalDate[] {LocalDate.of(2017, 8, 21)});
@@ -142,11 +149,11 @@ public class SearchControllerTest {
 		String searchResultBody = convertToJson(result.get("searchResults"));
 		String expectedSearchResultBody = convertToJson(searchResult);
 		assertEquals("[" + expectedSearchResultBody + "]", searchResultBody);
-		assertEquals(true, result.containsKey("message"));
+		assertTrue(result.containsKey("message"));
 	}
 
 	private SearchResult createSearchResult() {
-		List<String> trips = Collections.singletonList("KRK-BSL"); 
+		List<String> trips = Collections.singletonList("KRK-BSL");
 		List<Integer> stops = Collections.singletonList(1);
         return new SearchResult(9, Collections.emptyList(), Collections.emptyList(), trips, stops, Collections.emptyList(), Collections.emptyList());
 	}
@@ -161,7 +168,7 @@ public class SearchControllerTest {
 		scheduledSearch.setDates(dates);
 		return scheduledSearch;
 	}
-	
+
 	private SearchInputData createSearchInputData(LocalDate[] dates) {
 		SearchInputData searchInputData = new SearchInputData();
 		searchInputData.setFrom("from");

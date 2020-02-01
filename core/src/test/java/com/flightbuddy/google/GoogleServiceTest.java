@@ -1,25 +1,19 @@
 package com.flightbuddy.google;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.flightbuddy.Application;
+import com.flightbuddy.google.response.GoogleResponse;
+import com.flightbuddy.google.response.Trips;
+import com.flightbuddy.google.response.tripoption.TripOption;
+import com.flightbuddy.results.FoundTrip;
 import com.flightbuddy.results.FoundTripsWrapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.flightbuddy.schedule.ScheduleRunnable;
+import com.flightbuddy.schedule.search.ScheduledSearchService;
+import com.flightbuddy.search.ImmutablePassengers;
+import com.flightbuddy.search.ImmutableSearchInputData;
+import com.flightbuddy.search.PassengersTO;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -29,54 +23,59 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.flightbuddy.Application;
-import com.flightbuddy.google.response.GoogleResponse;
-import com.flightbuddy.google.response.Trips;
-import com.flightbuddy.google.response.tripoption.TripOption;
-import com.flightbuddy.results.FoundTrip;
-import com.flightbuddy.schedule.ScheduleRunnable;
-import com.flightbuddy.schedule.search.ScheduledSearchService;
-import com.flightbuddy.search.ImmutablePassengers;
-import com.flightbuddy.search.ImmutableSearchInputData;
-import com.flightbuddy.search.PassengersTO;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 
 @SuppressWarnings("unused")
-@RunWith(PowerMockRunner.class)
+@ExtendWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PowerMockIgnore("javax.net.ssl.*")
 @SpringBootTest(classes = Application.class)
 @PrepareForTest(GoogleFlightConverter.class)
 public class GoogleServiceTest {
-	
+
 	@Autowired
 	private GoogleService googleService;
-	
+
 	@MockBean
 	private GoogleConnectionService googleConnectionService;
 	@MockBean
 	private ScheduleRunnable googleTask;
 	@MockBean
 	private ScheduledSearchService scheduledSearchService;
-	
+
 	private ImmutableSearchInputData emptyInputData;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		ImmutablePassengers immutablePassengers = new ImmutablePassengers(new PassengersTO());
 		emptyInputData = new ImmutableSearchInputData(null, null, 0, 0, new LocalDate[]{}, false, immutablePassengers);
 		mockStatic(GoogleFlightConverter.class);
 	}
-	
+
 	@Test
 	public void checkGetGoogleFlightsWithEmptyGoogleConnectionServiceResponse() {
 		GoogleResponse emptyGoogleResponse = new GoogleResponse();
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(emptyGoogleResponse);
         FoundTripsWrapper result = googleService.getTrips(emptyInputData);
         assertThat(result.getFoundTrips(), is(Collections.emptyList()));
-		verifyStatic(times(0));
+		verifyStatic(GoogleFlightConverter.class, times(0));
 		GoogleFlightConverter.convertResponseToTrips(emptyGoogleResponse, 0);
 	}
-	
+
 	@Test
 	public void checkGetGoogleFlightsWithGoogleConnectionServiceResponseWithNullTripOption() {
 		Trips trips = createTrips(null);
@@ -84,10 +83,10 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
 		FoundTripsWrapper result = googleService.getTrips(emptyInputData);
 		assertThat(result.getFoundTrips(), is(Collections.emptyList()));
-		verifyStatic(times(0));
+		verifyStatic(GoogleFlightConverter.class, times(0));
 		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
-	
+
 	@Test
 	public void checkGetGoogleFlightsWithGoogleConnectionServiceResponseWithEmptyTripOption() {
 		Trips trips = createTrips(new TripOption[0]);
@@ -95,10 +94,10 @@ public class GoogleServiceTest {
 		when(googleConnectionService.askGoogleForTheTrips(any())).thenReturn(googleResponse);
         FoundTripsWrapper result = googleService.getTrips(emptyInputData);
         assertThat(result.getFoundTrips(), is(Collections.emptyList()));
-		verifyStatic(times(0));
+		verifyStatic(GoogleFlightConverter.class, times(0));
 		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
-	
+
 	@Test
 	public void checkGetGoogleFlightsWithValidGoogleConnectionServiceResponse() {
 		TripOption[] tripOption = new TripOption[]{new TripOption()};
@@ -109,7 +108,7 @@ public class GoogleServiceTest {
 		FoundTripsWrapper result = googleService.getTrips(emptyInputData);
 		List<FoundTrip> foundTrips = result.getFoundTrips();
 		assertThat(foundTrips, equalTo(conversionResult));
-		verifyStatic(times(1));
+		verifyStatic(GoogleFlightConverter.class, times(1));
 		GoogleFlightConverter.convertResponseToTrips(googleResponse, 0);
 	}
 

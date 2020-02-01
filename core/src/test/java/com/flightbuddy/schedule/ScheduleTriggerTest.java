@@ -1,12 +1,16 @@
 package com.flightbuddy.schedule;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.flightbuddy.Application;
+import com.flightbuddy.schedule.search.ScheduledSearch;
+import com.flightbuddy.schedule.search.ScheduledSearchTask;
+import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.scheduling.TriggerContext;
+import org.springframework.test.context.TestPropertySource;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,31 +18,25 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.scheduling.TriggerContext;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-import com.flightbuddy.Application;
-import com.flightbuddy.schedule.search.ScheduledSearch;
-import com.flightbuddy.schedule.search.ScheduledSearchTask;
-import com.flightbuddy.schedule.search.ScheduledSearchTaskService;
-
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @TestPropertySource(properties = "schedule.enable=true")
 public class ScheduleTriggerTest {
-	
+
 	@Autowired
 	private ScheduleTrigger scheduleTrigger;
-	
+
 	@MockBean
 	private ScheduledSearchTaskService scheduledSearchTaskService;
-	
+
 	@Test
 	public void whenNoReadyTasksThenNextExecutionInFiveMins() {
 		TriggerContext triggerContext = mock(TriggerContext.class);
@@ -46,7 +44,7 @@ public class ScheduleTriggerTest {
 		Date result = scheduleTrigger.nextExecutionTime(triggerContext);
 		assertDatesAreEqual(result, LocalDateTime.now().plusMinutes(5));
 	}
-	
+
 	@Test
 	public void whenReadyTaskWithoutExecutionTimeThenNextExecutionInFiveMins() {
 		TriggerContext triggerContext = mock(TriggerContext.class);
@@ -55,7 +53,7 @@ public class ScheduleTriggerTest {
 		Date result = scheduleTrigger.nextExecutionTime(triggerContext);
 		assertDatesAreEqual(result, LocalDateTime.now().plusMinutes(5));
 	}
-	
+
 	@Test
 	public void whenReadyTaskThenNextExecution() {
 		LocalDateTime nextExecution = LocalDateTime.now().plusHours(2);

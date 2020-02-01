@@ -1,7 +1,12 @@
 package com.flightbuddy.search;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.flightbuddy.results.Airline;
+import com.flightbuddy.results.Flight;
+import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.results.Stop;
+import com.flightbuddy.schedule.search.Passengers;
+import com.flightbuddy.schedule.search.ScheduledSearch;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,14 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Test;
-
-import com.flightbuddy.results.Airline;
-import com.flightbuddy.results.Flight;
-import com.flightbuddy.results.FoundTrip;
-import com.flightbuddy.results.Stop;
-import com.flightbuddy.schedule.search.Passengers;
-import com.flightbuddy.schedule.search.ScheduledSearch;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class SearchDataConverterTest {
 		

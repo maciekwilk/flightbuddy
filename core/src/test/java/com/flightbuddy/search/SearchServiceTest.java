@@ -1,39 +1,37 @@
 package com.flightbuddy.search;
 
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.flightbuddy.Application;
+import com.flightbuddy.google.GoogleService;
+import com.flightbuddy.results.FoundTrip;
+import com.flightbuddy.results.FoundTripService;
 import com.flightbuddy.results.FoundTripsWrapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.flightbuddy.schedule.search.ScheduledSearch;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.flightbuddy.Application;
-import com.flightbuddy.google.GoogleService;
-import com.flightbuddy.results.FoundTrip;
-import com.flightbuddy.results.FoundTripService;
-import com.flightbuddy.schedule.search.ScheduledSearch;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-@RunWith(PowerMockRunner.class)
+import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+@ExtendWith(PowerMockExtension.class)
 @PowerMockRunnerDelegate(SpringRunner.class)
 @PowerMockIgnore("javax.net.ssl.*")
 @SpringBootTest(classes = Application.class)
@@ -46,10 +44,10 @@ public class SearchServiceTest {
 	private GoogleService googleService;
     @MockBean
 	private FoundTripService foundTripService;
-    
+
     private ImmutableSearchInputData emptyInputData;
-    
-    @Before
+
+    @BeforeEach
 	public void setUp() {
     	PassengersTO passengers = new PassengersTO();
     	ImmutablePassengers immutablePassengers = new ImmutablePassengers(passengers);
@@ -60,7 +58,7 @@ public class SearchServiceTest {
 		when(SearchDataConverter.convertToImmutable(any(SearchInputData.class))).thenReturn(emptyInputData);
 		when(SearchDataConverter.convertToSearchResult(any())).thenReturn(emptyConvertedSearchResult);
 	}
-    
+
 	@Test
 	public void performSearchWithEmptyInputDataReturnsEmptyList() {
 		SearchResultsWrapper results = searchService.performSearch(null);
@@ -68,7 +66,7 @@ public class SearchServiceTest {
 		verify(googleService, times(0)).getTrips(any());
 		verify(foundTripService, times(0)).saveFoundTrips(any());
 	}
-	
+
 	@Test
 	public void performSearchWithInputDataAndNoFoundTrips() {
 		SearchInputData searchData = new SearchInputData();
@@ -90,7 +88,7 @@ public class SearchServiceTest {
 		verify(googleService, times(1)).getTrips(any());
 		verify(foundTripService, times(1)).saveFoundTrips(any());
 	}
-	
+
 	@Test
 	public void performSearchWithInputDataAndFewFoundTrips() {
 		SearchInputData searchData = new SearchInputData();

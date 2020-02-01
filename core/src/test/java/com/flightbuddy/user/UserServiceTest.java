@@ -6,8 +6,8 @@ import com.flightbuddy.user.authentication.UserTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +16,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,14 +24,18 @@ import java.util.Map;
 
 import static com.flightbuddy.user.UserRole.ROLE_ADMIN;
 import static com.flightbuddy.user.UserRole.ROLE_USER;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 public class UserServiceTest {
 
@@ -44,36 +47,33 @@ public class UserServiceTest {
 
     @MockBean
     private UserDao userDao;
-    
+
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
-    
+
 	@Test
 	@WithMockUser(authorities = {"ROLE_ADMIN"})
 	public void createUserAsAdmin() {
 		User createdUser = userService.createUser(USERNAME, PASSWORD);
 		verify(userDao, times(1)).persist(any(User.class));
 		assertTrue(isPasswordValid(createdUser.getPassword()));
-		assertEquals(createdUser.isEnabled(), true);
+        assertTrue(createdUser.isEnabled());
 		assertEquals(createdUser.getRoles(), Collections.singleton(ROLE_USER));
 	}
 
-	@Test(expected = RuntimeException.class)
 	@WithMockUser(authorities = {"ROLE_ADMIN"})
 	public void createUserAsAdminWhenUserExists() {
 		given(userDao.findByUsername(eq(USERNAME))).willReturn(new User());
-		userService.createUser(USERNAME, PASSWORD);
+		assertThrows(RuntimeException.class, () -> userService.createUser(USERNAME, PASSWORD));
 	}
 
-	@Test(expected = AccessDeniedException.class)
 	@WithMockUser(authorities = {"ROLE_USER"})
 	public void createUserAsUser() {
-		userService.createUser(USERNAME, PASSWORD);
+        assertThrows(AccessDeniedException.class, () -> userService.createUser(USERNAME, PASSWORD));
 	}
 
-    @Test(expected = AuthenticationCredentialsNotFoundException.class)
     public void createUserAsAnonymous() {
-        userService.createUser(USERNAME, PASSWORD);
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userService.createUser(USERNAME, PASSWORD));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class UserServiceTest {
         given(userDao.findByUsername(eq(USERNAME))).willReturn(null);
         Map<String, Object> returnedMap = userService.authenticate(USERNAME, PASSWORD);
         assertFalse(returnedMap.containsKey("user"));
-        assertEquals(returnedMap.get("token"), null);
+        assertNull(returnedMap.get("token"));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class UserServiceTest {
         given(userDao.findByUsername(eq(USERNAME))).willReturn(null);
         Map<String, Object> returnedMap = userService.authenticate(USERNAME, "wrongpassword");
         assertFalse(returnedMap.containsKey("user"));
-        assertEquals(returnedMap.get("token"), null);
+        assertNull(returnedMap.get("token"));
     }
 
     @Test
@@ -110,10 +110,9 @@ public class UserServiceTest {
         assertAuthenticationWasSuccessful(role, returnedMap);
     }
 
-    @Test(expected = AuthenticationCredentialsNotFoundException.class)
     public void getUserAsAnonymous() {
 	    TokenTO token = createTokenTO(false);
-	    userService.getUser(token);
+        assertThrows(AuthenticationCredentialsNotFoundException.class, () -> userService.getUser(token));
     }
 
     @Test
@@ -201,7 +200,7 @@ public class UserServiceTest {
         ArrayList<UserRole> claimsRoles = (ArrayList<UserRole>) claims.get("roles");
         assertEquals(userTO.username, USERNAME);
         assertTrue(userTO.roles.contains(role));
-        assertEquals(userTO.password, null);
+        assertNull(userTO.password);
         assertEquals(claims.getSubject(), USERNAME);
         assertTrue(claimsRoles.contains(role.name()));
     }

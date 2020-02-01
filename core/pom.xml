@@ -13,6 +13,14 @@
         <version>1.5.6.RELEASE</version>
     </parent>
 
+
+	<properties>
+		<java.version>1.8</java.version>
+		<junit-jupiter.version>5.6.0</junit-jupiter.version>
+		<mockito.version>2.24.0</mockito.version>
+		<powermock.version>2.0.5</powermock.version>
+	</properties>
+
     <dependencies>
     	<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -26,6 +34,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
         </dependency>
         <dependency>
 		    <groupId>org.springframework.security</groupId>
@@ -48,10 +62,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-hystrix</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -95,16 +111,31 @@
 	        <artifactId>h2</artifactId>
 	        <scope>runtime</scope>
 	    </dependency>
+
+		<!-- TESTS -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit-jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
 	    <dependency>
 		    <groupId>org.powermock</groupId>
 		    <artifactId>powermock-module-junit4</artifactId>
-		    <version>1.6.6</version>
+		    <version>${powermock.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	    <dependency>
 		    <groupId>org.powermock</groupId>
-		    <artifactId>powermock-api-mockito</artifactId>
-		    <version>1.6.6</version>
+		    <artifactId>powermock-api-mockito2</artifactId>
+		    <version>${powermock.version}</version>
 		</dependency>
+
 		<dependency>
 	        <groupId>com.fasterxml.jackson.datatype</groupId>
 	        <artifactId>jackson-datatype-jsr310</artifactId>
@@ -115,6 +146,7 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.0</version>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -134,11 +166,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
 
     <build>
         <plugins>

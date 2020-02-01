@@ -9,15 +9,14 @@ import com.flightbuddy.user.authentication.TokenTO;
 import com.flightbuddy.user.authentication.UserTO;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -25,9 +24,9 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Application.class)
 @AutoConfigureMockMvc
 public class UserControllerTest {
@@ -45,13 +44,13 @@ public class UserControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    
+
     @MockBean
     private UserService userService;
-	
+
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
-    
+
     @Test
     public void loginWithoutUser() throws Exception {
     	given(userService.authenticate(eq(USERNAME), eq(PASSWORD))).willReturn(Collections.emptyMap());
@@ -135,7 +134,7 @@ public class UserControllerTest {
     	.andExpect(content().string(expectedResponse));
 		verify(userService, times(1)).createUser(eq(USERNAME), any());
     }
-	
+
 	@Test
     public void registerUserAsUser() throws Exception {
     	RegistrationFormDataTO formData = createRegistrationFormDataTO();
@@ -146,7 +145,7 @@ public class UserControllerTest {
     	.andExpect(status().isForbidden());
 		verify(userService, times(0)).createUser(eq(USERNAME), any());
     }
-	
+
 	@Test
     public void registerUserNoUser() throws Exception {
     	RegistrationFormDataTO formData = createRegistrationFormDataTO();
@@ -155,8 +154,8 @@ public class UserControllerTest {
     	.andExpect(status().isUnauthorized());
 		verify(userService, times(0)).createUser(eq(USERNAME), any());
     }
-	
-	
+
+
 
 	private String convertToJson(Object object) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
