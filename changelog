@@ -1,2 +1,3 @@
 TBA
 - Update dependencies
+- Move core into a separate module
