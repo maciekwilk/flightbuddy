@@ -1,6 +1,6 @@
 package com.flightbuddy.config;
 
-import com.googlecode.flyway.core.Flyway;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,17 +31,6 @@ class DatabaseConfig {
 	private String FLYWAY_INIT_VERSION;
 	@Value("${jdbc.logging.enable}")
 	private boolean loggingEnabled;
-	
-	@Bean
-	public Flyway flyway() {
-		Flyway flyway = new Flyway();
-		flyway.setDataSource(dataSource());
-		flyway.setInitOnMigrate(true);
-		flyway.setInitVersion(FLYWAY_INIT_VERSION);
-		flyway.getPlaceholders().put("owner", JDBC_USERNAME);
-		flyway.migrate();
-		return flyway;
-	}
 	
 	@Bean
 	public DataSource dataSource() {
