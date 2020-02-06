@@ -16,6 +16,8 @@ import com.flightbuddy.resources.Messages;
 import com.flightbuddy.user.authentication.TokenTO;
 import com.flightbuddy.user.authentication.UserTO;
 
+import javax.validation.Valid;
+
 @RestController
 @Slf4j
 class UserController {
@@ -42,9 +44,13 @@ class UserController {
 	}
 	
 	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
-	public Map<String, String> register(@RequestBody RegistrationFormDataTO formData) {
+	public Map<String, String> register(
+					@Valid
+					@RequestBody
+					RegistrationRequest request
+	) {
 		try {
-			userService.createUser(formData.username, formData.password);
+			userService.createUser(request.getUsername(), request.getPassword());
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return Collections.singletonMap("error", e.getMessage());

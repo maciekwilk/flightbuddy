@@ -49,7 +49,7 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    private static final String USERNAME = "username";
+    private static final String USERNAME = "test@example.com";
     private static final String PASSWORD = "password";
 
     @Test
@@ -124,7 +124,7 @@ public class UserControllerTest {
 
     @Test
     public void registerUserAsAdmin() throws Exception {
-    	RegistrationFormDataTO formData = createRegistrationFormDataTO();
+    	RegistrationRequest formData = createRegistrationFormDataTO();
     	String requestBody = convertToJson(formData);
     	Map<String, String> returnMessage = Collections.singletonMap("message", Messages.get("user.registered"));
 		String expectedResponse = convertToJson(returnMessage);
@@ -138,7 +138,7 @@ public class UserControllerTest {
 
 	@Test
     public void registerUserAsUser() throws Exception {
-    	RegistrationFormDataTO formData = createRegistrationFormDataTO();
+    	RegistrationRequest formData = createRegistrationFormDataTO();
     	String requestBody = convertToJson(formData);
         String token = createToken(UserRole.ROLE_USER);
     	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody)
@@ -149,7 +149,7 @@ public class UserControllerTest {
 
 	@Test
     public void registerUserNoUser() throws Exception {
-    	RegistrationFormDataTO formData = createRegistrationFormDataTO();
+    	RegistrationRequest formData = createRegistrationFormDataTO();
     	String requestBody = convertToJson(formData);
     	mvc.perform(post("/user/register").contentType(MediaType.APPLICATION_JSON).content(requestBody).with(csrf()))
     	.andExpect(status().isUnauthorized());
@@ -164,11 +164,8 @@ public class UserControllerTest {
         return objectMapper.writeValueAsString(object);
 	}
 
-	private RegistrationFormDataTO createRegistrationFormDataTO() {
-		RegistrationFormDataTO formData = new RegistrationFormDataTO();
-    	formData.username = USERNAME;
-    	formData.password = PASSWORD;
-		return formData;
+	private RegistrationRequest createRegistrationFormDataTO() {
+		return new RegistrationRequest(USERNAME, PASSWORD);
 	}
 
     private UserTO createUserTO() {
