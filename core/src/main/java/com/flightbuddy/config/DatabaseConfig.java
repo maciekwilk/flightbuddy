@@ -1,6 +1,5 @@
 package com.flightbuddy.config;
 
-import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +26,6 @@ class DatabaseConfig {
 	private String JDBC_DRIVER;
 	@Value("${jdbc.password}")
 	private String JDBC_PASSWORD;
-	@Value("${flyway.init_version}")
-	private String FLYWAY_INIT_VERSION;
 	@Value("${jdbc.logging.enable}")
 	private boolean loggingEnabled;
 	
